@@ -3,17 +3,41 @@
   "version": "1.0.0",
   "description": "MadaBrand - Premium Design Studio Website",
   "main": "index.html",
+  "homepage": "https://madabrand.vercel.app",
   "scripts": {
     "dev": "npx tailwindcss -i ./styles/style.css -o ./dist/output.css --watch",
     "build": "npx tailwindcss -i ./styles/style.css -o ./dist/output.css --minify",
-    "start": "live-server ."
+    "start": "live-server .",
+    "predeploy": "npm run build",
+    "deploy": "echo 'Deploy to Vercel via dashboard or CLI'",
+    "vercel-build": "npm run build",
+    "fix-paths": "node fix-paths.js",
+    "optimize-images": "npx sharp -i ./assets/images/* -o ./assets/images/optimized/ -f webp -q 80",
+    "test": "echo 'No tests yet'"
   },
-  "keywords": ["branding", "design", "portfolio", "website"],
+  "keywords": [
+    "branding",
+    "design",
+    "portfolio",
+    "website"
+  ],
   "author": "MadaBrand",
   "license": "MIT",
   "devDependencies": {
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.38",
-    "tailwindcss": "^3.4.1"
+    "tailwindcss": "^3.4.1",
+    "live-server": "^1.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hendrix-D-Dev/madabrand.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Hendrix-D-Dev/madabrand/issues"
   }
 }
