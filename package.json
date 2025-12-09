@@ -6,13 +6,13 @@
   "homepage": "https://madabrand.vercel.app",
   "scripts": {
     "dev": "tailwindcss -i ./styles/style.css -o ./dist/output.css --watch",
-    "build": "tailwindcss -i ./styles/style.css -o ./dist/output.css --minify",
+    "build": "node move-pages.js && tailwindcss -i ./styles/style.css -o ./dist/output.css --minify",
     "build:vercel": "npm run build",
     "start": "live-server .",
     "predeploy": "npm run build",
     "deploy": "echo 'Deploy to Vercel via dashboard or CLI'",
     "fix-paths": "node fix-paths.js",
-    "prebuild": "node pre-build.js",
+    "move-pages": "node move-pages.js",
     "test": "echo 'No tests yet'"
   },
   "keywords": [
