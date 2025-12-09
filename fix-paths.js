@@ -2,9 +2,9 @@
 const fs = require('fs');
 const path = require('path');
 
-console.log('🔧 Fixing paths for deployment...');
+console.log('🔧 FIXING COMPONENT PATHS FOR VERCEL...');
 
-const htmlFiles = [
+const files = [
   'index.html',
   'pages/about.html',
   'pages/services.html',
@@ -12,8 +12,7 @@ const htmlFiles = [
   'pages/contact.html'
 ];
 
-// For each HTML file, fix the paths
-htmlFiles.forEach(file => {
+files.forEach(file => {
   try {
     const filePath = path.join(__dirname, file);
     if (!fs.existsSync(filePath)) {
@@ -22,41 +21,50 @@ htmlFiles.forEach(file => {
     }
     
     let content = fs.readFileSync(filePath, 'utf8');
-    console.log(`📄 Processing ${file}...`);
+    console.log(`\n📄 Processing ${file}...`);
     
-    // Fix CSS paths - all should be absolute
-    content = content.replace(/href="\.\.\/dist\/output\.css"/g, 'href="/dist/output.css"');
-    
-    // Fix JS paths - all should be absolute
-    content = content.replace(/src="\.\.\/scripts\//g, 'src="/scripts/');
-    
-    // Fix favicon paths
-    content = content.replace(/href="\.\.\/assets\//g, 'href="/assets/');
-    
-    // Fix fetch paths for components - these need special handling
-    // For pages/*.html, components are at /components/
-    // For index.html, components are at ./components/
-    
-    if (file === 'index.html') {
-      // For index.html, use relative paths
-      content = content.replace(/fetch\('\.\/components\//g, `fetch('./components/`);
-      content = content.replace(/fetch\("\.\/components\//g, `fetch("./components/`);
-    } else {
-      // For pages, use absolute paths
-      content = content.replace(/fetch\('\.\.\/components\//g, `fetch('/components/`);
-      content = content.replace(/fetch\("\.\.\/components\//g, `fetch("/components/`);
+    // Check what fetch paths exist
+    const fetchMatches = content.match(/fetch\(['"]([^'"]+)['"]\)/g);
+    if (fetchMatches) {
+      console.log('Found fetch calls:', fetchMatches);
     }
     
-    // Fix internal links between pages
-    content = content.replace(/href="\.\.\/pages\//g, 'href="/pages/');
-    content = content.replace(/href="\.\.\/index\.html/g, 'href="/index.html');
-    content = content.replace(/href="\.\/index\.html/g, 'href="/index.html');
+    // FIX 1: Replace ALL component fetch paths to /components/navbar and /components/footer
+    content = content.replace(/fetch\(['"]\.\.\/components\/(navbar|footer)\.html['"]\)/g, `fetch('/components/$1')`);
+    content = content.replace(/fetch\(['"]\.\/components\/(navbar|footer)\.html['"]\)/g, `fetch('/components/$1')`);
+    content = content.replace(/fetch\(['"]\/styles\/components\/(navbar|footer)['"]\)/g, `fetch('/components/$1')`);
+    content = content.replace(/fetch\(['"]\/components\/(navbar|footer)\.html['"]\)/g, `fetch('/components/$1')`);
+    content = content.replace(/fetch\(['"]components\/(navbar|footer)\.html['"]\)/g, `fetch('/components/$1')`);
+    
+    // FIX 2: Make all CSS/JS paths absolute
+    content = content.replace(/href="\.\.\/dist\/output\.css"/g, 'href="/dist/output.css"');
+    content = content.replace(/href="\.\/dist\/output\.css"/g, 'href="/dist/output.css"');
+    content = content.replace(/src="\.\.\/scripts\//g, 'src="/scripts/');
+    content = content.replace(/src="\.\/scripts\//g, 'src="/scripts/');
+    
+    // FIX 3: Make all asset paths absolute
+    content = content.replace(/href="\.\.\/assets\//g, 'href="/assets/');
+    content = content.replace(/href="\.\/assets\//g, 'href="/assets/');
+    content = content.replace(/src="\.\.\/assets\//g, 'src="/assets/');
+    content = content.replace(/src="\.\/assets\//g, 'src="/assets/');
+    
+    // FIX 4: Make page links use clean URLs
+    content = content.replace(/href="\.\.\/pages\/(about|services|portfolio|contact)\.html"/g, 'href="/$1"');
+    content = content.replace(/href="\.\/pages\/(about|services|portfolio|contact)\.html"/g, 'href="/$1"');
+    content = content.replace(/href="pages\/(about|services|portfolio|contact)\.html"/g, 'href="/$1"');
     
     fs.writeFileSync(filePath, content);
-    console.log(`✅ Fixed paths in ${file}`);
+    console.log(`✅ Fixed ${file}`);
+    
   } catch (error) {
     console.error(`❌ Error fixing ${file}:`, error.message);
   }
 });
 
-console.log('🎉 Path fixing complete!');
+console.log('\n🎉 Path fixing complete!');
+console.log('\n📋 VERIFICATION:');
+console.log('1. Components will load from: /components/navbar');
+console.log('2. Components will load from: /components/footer');
+console.log('3. Test URLs:');
+console.log('   - https://your-site.vercel.app/components/navbar');
+console.log('   - https://your-site.vercel.app/components/footer');

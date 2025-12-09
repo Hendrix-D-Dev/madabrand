@@ -284,7 +284,7 @@
         // Function to load components
         function loadComponents() {
             // Load navbar
-            fetch('/components/navbar.html')
+            fetch('/components/navbar')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Navbar not found');
@@ -318,7 +318,7 @@
                 });
             
             // Load footer
-            fetch('/components/footer.html')
+            fetch('/components/footer')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Footer not found');

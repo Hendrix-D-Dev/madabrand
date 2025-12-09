@@ -31,7 +31,7 @@
     },
     {
       "source": "/components/:component",
-      "destination": "/components/:component"
+      "destination": "/components/:component.html"
     },
     {
       "source": "/(.*)",
@@ -47,11 +47,6 @@
     {
       "source": "/index",
       "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/components/:component.html",
-      "destination": "/components/:component",
       "permanent": true
     }
   ],
@@ -101,10 +96,6 @@
         {
           "key": "Content-Type",
           "value": "text/html"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600"
         }
       ]
     }
