@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Lato:wght@300;400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply font-body text-black bg-off-white;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-semibold;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-deep-blue text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all duration-300 hover:scale-105 shadow-lg;
+  }
+  
+  .btn-secondary {
+    @apply bg-gold text-black px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all duration-300 hover:scale-105;
+  }
+  
+  .card-hover {
+    @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl;
+  }
+  
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8 py-12 lg:py-20;
+  }
+  
+  .container-custom {
+    @apply max-w-7xl mx-auto;
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "madabrand-website",
+  "version": "1.0.0",
+  "description": "MadaBrand - Premium Design Studio Website",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx tailwindcss -i ./styles/style.css -o ./dist/output.css --watch",
+    "build": "npx tailwindcss -i ./styles/style.css -o ./dist/output.css --minify",
+    "start": "live-server ."
+  },
+  "keywords": ["branding", "design", "portfolio", "website"],
+  "author": "MadaBrand",
+  "license": "MIT",
+  "devDependencies": {
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.1"
+  }
+}

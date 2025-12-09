@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | MadaBrand</title>
+    <link href="../dist/output.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.ico">
+    <meta name="description" content="Get in touch with MadaBrand for brand design, logo design, and graphic design services. Start your project today.">
+</head>
+<body class="font-body bg-off-white">
+    <!-- Navigation -->
+    <div id="navbar"></div>
+    
+    <!-- Hero -->
+    <section class="pt-32 pb-20 bg-gradient-to-r from-deep-blue/5 to-gold/5">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in">Let's Create Together</h1>
+                <p class="text-xl text-gray-600 mb-8">Ready to transform your brand? Get in touch for a free consultation.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section class="py-12 lg:py-20">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Contact Form -->
+                <div class="animate-on-scroll">
+                    <h2 class="text-3xl font-bold mb-8">Send Us a Message</h2>
+                    
+                    <form id="contact-form" class="space-y-6">
+                        <div>
+                            <label for="name" class="block text-gray-700 font-medium mb-2">Full Name *</label>
+                            <input type="text" id="name" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-deep-blue focus:border-transparent" placeholder="John Doe" required>
+                        </div>
+                        
+                        <div>
+                            <label for="email" class="block text-gray-700 font-medium mb-2">Email Address *</label>
+                            <input type="email" id="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-deep-blue focus:border-transparent" placeholder="hello@example.com" required>
+                        </div>
+                        
+                        <div>
+                            <label for="phone" class="block text-gray-700 font-medium mb-2">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-deep-blue focus:border-transparent" placeholder="+1 (555) 000-0000">
+                        </div>
+                        
+                        <div>
+                            <label for="service" class="block text-gray-700 font-medium mb-2">Service Interested In</label>
+                            <select id="service" name="service" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-deep-blue focus:border-transparent">
+                                <option value="">Select a service</option>
+                                <option value="brand-identity">Brand Identity Design</option>
+                                <option value="logo-design">Logo Design</option>
+                                <option value="graphic-design">Graphic Design</option>
+                                <option value="packaging">Packaging Design</option>
+                                <option value="website">Website Design</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="budget" class="block text-gray-700 font-medium mb-2">Project Budget</label>
+                            <select id="budget" name="budget" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-deep-blue focus:border-transparent">
+                                <option value="">Select budget range</option>
+                                <option value="1k-3k">$1,000 - $3,000</option>
+                                <option value="3k-5k">$3,000 - $5,000</option>
+                                <option value="5k-10k">$5,000 - $10,000</option>
+                                <option value="10k+">$10,000+</option>
+                                <option value="not-sure">Not sure yet</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="message" class="block text-gray-700 font-medium mb-2">Project Details *</label>
+                            <textarea id="message" name="message" rows="6" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-deep-blue focus:border-transparent" placeholder="Tell us about your project, timeline, and any specific requirements..." required></textarea>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="checkbox" id="newsletter" name="newsletter" class="h-5 w-5 text-deep-blue rounded">
+                            <label for="newsletter" class="ml-2 text-gray-600">Subscribe to our newsletter for design tips and updates</label>
+                        </div>
+                        
+                        <button type="submit" class="w-full px-4 py-4 bg-deep-blue text-white font-medium rounded-lg hover:bg-opacity-90 transition-all duration-300 hover:scale-105 shadow-lg text-lg">Send Message</button>
+                        
+                        <p class="text-gray-500 text-sm text-center">We typically respond within 24 hours during business days.</p>
+                    </form>
+                </div>
+                
+                <!-- Contact Info & Details -->
+                <div class="animate-on-scroll">
+                    <h2 class="text-3xl font-bold mb-8">Get in Touch</h2>
+                    
+                    <!-- Contact Methods -->
+                    <div class="space-y-8 mb-12">
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-deep-blue/10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                <span class="text-xl">✉️</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-2">Email Us</h3>
+                                <p class="text-gray-600 mb-2">For general inquiries and project discussions</p>
+                                <a href="mailto:hello@madabrand.com" class="text-deep-blue font-semibold hover:underline">hello@madabrand.com</a>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-gold/10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                <span class="text-xl">📱</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-2">Call Us</h3>
+                                <p class="text-gray-600 mb-2">Mon-Fri, 9AM-6PM EST</p>
+                                <a href="tel:+15551234567" class="text-deep-blue font-semibold hover:underline">+1 (555) 123-4567</a>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-deep-blue/10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                <span class="text-xl">💬</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-2">WhatsApp</h3>
+                                <p class="text-gray-600 mb-2">Quick chat for international clients</p>
+                                <a href="https://wa.me/15551234567" target="_blank" class="text-deep-blue font-semibold hover:underline">Message on WhatsApp</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Office Hours -->
+                    <div class="bg-white rounded-2xl p-8 shadow-lg mb-12">
+                        <h3 class="font-bold text-xl mb-6">Office Hours</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Monday - Friday</span>
+                                <span class="font-medium">9:00 AM - 6:00 PM</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Saturday</span>
+                                <span class="font-medium">10:00 AM - 4:00 PM</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Sunday</span>
+                                <span class="font-medium">Closed</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Social Links -->
+                    <div>
+                        <h3 class="font-bold text-xl mb-6">Follow Our Work</h3>
+                        <div class="flex space-x-6">
+                            <a href="#" class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center hover:bg-deep-blue hover:text-white transition-all" title="Instagram">
+                                <span class="text-xl">📸</span>
+                            </a>
+                            <a href="#" class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all" title="LinkedIn">
+                                <span class="text-xl">💼</span>
+                            </a>
+                            <a href="#" class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center hover:bg-pink-500 hover:text-white transition-all" title="Behance">
+                                <span class="text-xl">🎨</span>
+                            </a>
+                            <a href="#" class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all" title="Dribbble">
+                                <span class="text-xl">🏀</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- FAQ Section -->
+    <section class="py-12 lg:py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Common questions about our process and services</p>
+            </div>
+            
+            <div class="max-w-3xl mx-auto space-y-6">
+                <div class="border border-gray-200 rounded-2xl p-6 hover:border-deep-blue transition-all cursor-pointer">
+                    <h3 class="font-bold text-lg mb-3 flex justify-between items-center">
+                        What's your design process?
+                        <span class="text-deep-blue">+</span>
+                    </h3>
+                    <p class="text-gray-600 hidden">Our process includes discovery, strategy, concept development, refinement, and delivery. We work closely with you at every stage to ensure the final result exceeds expectations.</p>
+                </div>
+                
+                <div class="border border-gray-200 rounded-2xl p-6 hover:border-deep-blue transition-all cursor-pointer">
+                    <h3 class="font-bold text-lg mb-3 flex justify-between items-center">
+                        How long does a typical project take?
+                        <span class="text-deep-blue">+</span>
+                    </h3>
+                    <p class="text-gray-600 hidden">Timelines vary based on project scope. Logo design typically takes 2-3 weeks, while complete brand identity projects take 4-8 weeks. We'll provide a detailed timeline during our consultation.</p>
+                </div>
+                
+                <div class="border border-gray-200 rounded-2xl p-6 hover:border-deep-blue transition-all cursor-pointer">
+                    <h3 class="font-bold text-lg mb-3 flex justify-between items-center">
+                        What do you need from me to get started?
+                        <span class="text-deep-blue">+</span>
+                    </h3>
+                    <p class="text-gray-600 hidden">We'll need information about your business, target audience, competitors, design preferences, and project goals. We guide you through a discovery questionnaire to gather all necessary details.</p>
+                </div>
+                
+                <div class="border border-gray-200 rounded-2xl p-6 hover:border-deep-blue transition-all cursor-pointer">
+                    <h3 class="font-bold text-lg mb-3 flex justify-between items-center">
+                        Do you offer revisions?
+                        <span class="text-deep-blue">+</span>
+                    </h3>
+                    <p class="text-gray-600 hidden">Yes! We include unlimited revisions during the refinement phase to ensure you're completely satisfied with the final design.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Map & Location -->
+    <section class="py-12 lg:py-20 bg-gradient-to-r from-deep-blue/5 to-gold/5">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Our Location</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Visit our studio or schedule a virtual meeting</p>
+            </div>
+            
+            <div class="bg-white rounded-2xl overflow-hidden shadow-xl">
+                <!-- Map Placeholder -->
+                <div class="h-96 bg-gradient-to-br from-deep-blue/10 to-gold/10 flex items-center justify-center">
+                    <div class="text-center">
+                        <span class="text-6xl mb-4 block">📍</span>
+                        <p class="text-2xl font-bold">Design District</p>
+                        <p class="text-gray-600">123 Design Street, Creative City, CC 10101</p>
+                    </div>
+                </div>
+                
+                <div class="p-8">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div>
+                            <h3 class="font-bold text-lg mb-4">Studio Address</h3>
+                            <p class="text-gray-600">123 Design Street<br>
+                            Creative City, CC 10101<br>
+                            United States</p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-bold text-lg mb-4">Parking</h3>
+                            <p class="text-gray-600">Street parking available<br>
+                            Garage parking nearby<br>
+                            Accessible entrance</p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-bold text-lg mb-4">Virtual Meetings</h3>
+                            <p class="text-gray-600">Available via Zoom, Google Meet, or Teams<br>
+                            Schedule through our calendar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Final CTA -->
+    <section class="py-12 lg:py-20 bg-deep-blue text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-6">Let's Start Your Project Today</h2>
+            <p class="text-white/80 text-xl mb-8 max-w-2xl mx-auto">Contact us now for a free consultation and project quote.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="tel:+15551234567" class="inline-flex items-center justify-center px-8 py-4 bg-gold text-black font-medium rounded-lg hover:bg-opacity-90 transition-all duration-300 hover:scale-105 shadow-lg text-lg">
+                    Call Now
+                </a>
+                <a href="mailto:hello@madabrand.com" class="inline-flex items-center justify-center px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-medium rounded-lg transition-all duration-300 text-lg">
+                    Email Us
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <!-- Admin Features Panel -->
+    <div id="admin-panel" class="hidden fixed bottom-4 right-4 bg-white shadow-2xl rounded-2xl p-6 w-80 z-50">
+        <h4 class="font-bold text-lg mb-4 text-deep-blue">👑 Admin Panel</h4>
+        <div class="space-y-4">
+            <button class="w-full bg-deep-blue/10 text-deep-blue py-2 rounded-lg hover:bg-deep-blue/20 transition">
+                📊 View Analytics
+            </button>
+            <button class="w-full bg-gold/10 text-gold py-2 rounded-lg hover:bg-gold/20 transition">
+                ✏️ Edit Content
+            </button>
+            <button class="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition">
+                ⚙️ Settings
+            </button>
+            <button id="lock-admin" class="w-full bg-red-100 text-red-600 py-2 rounded-lg hover:bg-red-200 transition">
+                🔒 Lock Panel
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../scripts/main.js"></script>
+    
+    <!-- Component Loader -->
+    <script>
+        // Load navbar and footer
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load navbar - FIXED PATH
+            fetch('../styles/components/navbar.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('navbar').innerHTML = data;
+                    initAdminSystem();
+                    initMobileMenu();
+                })
+                .catch(error => {
+                    console.error('Error loading navbar:', error);
+                    document.getElementById('navbar').innerHTML = '<div class="p-4 bg-red-50 text-red-600">Error loading navigation</div>';
+                });
+            
+            // Load footer - FIXED PATH
+            fetch('../styles/components/footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('footer').innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('Error loading footer:', error);
+                    document.getElementById('footer').innerHTML = '<div class="p-4 bg-red-50 text-red-600">Error loading footer</div>';
+                });
+        });
+
+        // Initialize mobile menu
+        function initMobileMenu() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                    mobileMenu.classList.toggle('animate-slide-up');
+                });
+                
+                // Close menu when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!mobileMenu.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            }
+        }
+
+        // Initialize admin system
+        function initAdminSystem() {
+            // This will be called from main.js
+        }
+
+        // FAQ toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.border-gray-200').forEach(item => {
+                const toggle = item.querySelector('span');
+                const content = item.querySelector('p');
+                
+                if (toggle && content) {
+                    item.addEventListener('click', () => {
+                        content.classList.toggle('hidden');
+                        toggle.textContent = content.classList.contains('hidden') ? '+' : '−';
+                    });
+                }
+            });
+            
+            // WhatsApp integration
+            const whatsappBtn = document.querySelector('a[href*="wa.me"]');
+            if (whatsappBtn) {
+                whatsappBtn.addEventListener('click', (e) => {
+                    const name = document.getElementById('name')?.value || '';
+                    const service = document.getElementById('service')?.value || '';
+                    if (name && service) {
+                        const message = `Hi, I'm ${name} interested in ${service}. Can we chat?`;
+                        whatsappBtn.href = `https://wa.me/15551234567?text=${encodeURIComponent(message)}`;
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Portfolio | MadaBrand</title>
+    <link href="../dist/output.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.ico">
+    <meta name="description" content="Explore MadaBrand's portfolio of brand identity, logo design, and graphic design projects for businesses across various industries.">
+</head>
+<body class="font-body bg-off-white">
+    <!-- Navigation -->
+    <div id="navbar"></div>
+    
+    <!-- Hero -->
+    <section class="pt-32 pb-20 bg-gradient-to-r from-deep-blue/5 to-gold/5">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in">Our Portfolio</h1>
+                <p class="text-xl text-gray-600 mb-8">Showcasing our best work in brand identity, logo design, and visual storytelling.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Filter & Stats -->
+    <section class="py-12 lg:py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <!-- Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+                <div class="text-center p-6 rounded-xl bg-off-white">
+                    <p class="text-3xl font-bold text-deep-blue">150+</p>
+                    <p class="text-gray-600">Projects Completed</p>
+                </div>
+                <div class="text-center p-6 rounded-xl bg-off-white">
+                    <p class="text-3xl font-bold text-gold">45+</p>
+                    <p class="text-gray-600">Happy Clients</p>
+                </div>
+                <div class="text-center p-6 rounded-xl bg-off-white">
+                    <p class="text-3xl font-bold text-deep-blue">12</p>
+                    <p class="text-gray-600">Industries Served</p>
+                </div>
+                <div class="text-center p-6 rounded-xl bg-off-white">
+                    <p class="text-3xl font-bold text-gold">5</p>
+                    <p class="text-gray-600">Years Experience</p>
+                </div>
+            </div>
+            
+            <!-- Filter -->
+            <div class="mb-12">
+                <h2 class="text-2xl font-bold mb-6 text-center">Browse by Category</h2>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button class="portfolio-filter bg-deep-blue text-white px-6 py-3 rounded-lg font-medium transition-all hover:bg-opacity-90" data-filter="all">All Projects</button>
+                    <button class="portfolio-filter bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 transition-all" data-filter="branding">Brand Identity</button>
+                    <button class="portfolio-filter bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 transition-all" data-filter="logo">Logo Design</button>
+                    <button class="portfolio-filter bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 transition-all" data-filter="graphic">Graphic Design</button>
+                    <button class="portfolio-filter bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 transition-all" data-filter="packaging">Packaging</button>
+                </div>
+            </div>
+            
+            <!-- Portfolio Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project 1 -->
+                <div class="portfolio-item animate-on-scroll hover:scale-[1.02] hover:shadow-2xl transition-all duration-300" data-category="branding">
+                    <div class="bg-gradient-to-br from-deep-blue/20 to-gold/20 rounded-2xl h-64 mb-6 flex items-center justify-center">
+                        <div class="text-center">
+                            <span class="text-4xl mb-2 block">🏢</span>
+                            <p class="font-bold">NovaTech</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">NovaTech Brand Identity</h3>
+                                <span class="inline-block px-3 py-1 bg-deep-blue/10 text-deep-blue text-xs rounded-full">Brand Identity</span>
+                            </div>
+                            <span class="text-2xl">🚀</span>
+                        </div>
+                        <p class="text-gray-600 mb-6">Complete rebrand for a tech startup including logo, color system, typography, and brand guidelines.</p>
+                        <a href="#project-nova" class="inline-flex items-center text-deep-blue font-semibold hover:underline group">
+                            View Case Study
+                            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Project 2 -->
+                <div class="portfolio-item animate-on-scroll hover:scale-[1.02] hover:shadow-2xl transition-all duration-300" data-category="logo">
+                    <div class="bg-gradient-to-br from-gold/20 to-deep-blue/20 rounded-2xl h-64 mb-6 flex items-center justify-center">
+                        <div class="text-center">
+                            <span class="text-4xl mb-2 block">☕</span>
+                            <p class="font-bold">Brew & Co.</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">Brew & Co. Logo Design</h3>
+                                <span class="inline-block px-3 py-1 bg-gold/10 text-gold text-xs rounded-full">Logo Design</span>
+                            </div>
+                            <span class="text-2xl">✨</span>
+                        </div>
+                        <p class="text-gray-600 mb-6">Modern logo design for an artisanal coffee brand with custom typography and mark.</p>
+                        <a href="#project-brew" class="inline-flex items-center text-deep-blue font-semibold hover:underline group">
+                            View Case Study
+                            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Project 3 -->
+                <div class="portfolio-item animate-on-scroll hover:scale-[1.02] hover:shadow-2xl transition-all duration-300" data-category="packaging">
+                    <div class="bg-gradient-to-br from-black/10 to-deep-blue/20 rounded-2xl h-64 mb-6 flex items-center justify-center">
+                        <div class="text-center">
+                            <span class="text-4xl mb-2 block">🌿</span>
+                            <p class="font-bold">EcoWear</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">EcoWear Packaging</h3>
+                                <span class="inline-block px-3 py-1 bg-deep-blue/10 text-deep-blue text-xs rounded-full">Packaging</span>
+                            </div>
+                            <span class="text-2xl">🌱</span>
+                        </div>
+                        <p class="text-gray-600 mb-6">Sustainable packaging design for an eco-friendly clothing brand using recycled materials.</p>
+                        <a href="#project-eco" class="inline-flex items-center text-deep-blue font-semibold hover:underline group">
+                            View Case Study
+                            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Project 4 -->
+                <div class="portfolio-item animate-on-scroll hover:scale-[1.02] hover:shadow-2xl transition-all duration-300" data-category="branding">
+                    <div class="bg-gradient-to-br from-deep-blue/20 to-black/10 rounded-2xl h-64 mb-6 flex items-center justify-center">
+                        <div class="text-center">
+                            <span class="text-4xl mb-2 block">🏥</span>
+                            <p class="font-bold">MediCare+</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">MediCare+ Brand System</h3>
+                                <span class="inline-block px-3 py-1 bg-deep-blue/10 text-deep-blue text-xs rounded-full">Brand Identity</span>
+                            </div>
+                            <span class="text-2xl">💊</span>
+                        </div>
+                        <p class="text-gray-600 mb-6">Healthcare brand identity focusing on trust, care, and modern medical aesthetics.</p>
+                        <a href="#project-med" class="inline-flex items-center text-deep-blue font-semibold hover:underline group">
+                            View Case Study
+                            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Project 5 -->
+                <div class="portfolio-item animate-on-scroll hover:scale-[1.02] hover:shadow-2xl transition-all duration-300" data-category="graphic">
+                    <div class="bg-gradient-to-br from-gold/20 to-black/10 rounded-2xl h-64 mb-6 flex items-center justify-center">
+                        <div class="text-center">
+                            <span class="text-4xl mb-2 block">📚</span>
+                            <p class="font-bold">Edutech</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">Edutech Marketing Suite</h3>
+                                <span class="inline-block px-3 py-1 bg-gold/10 text-gold text-xs rounded-full">Graphic Design</span>
+                            </div>
+                            <span class="text-2xl">🎓</span>
+                        </div>
+                        <p class="text-gray-600 mb-6">Complete marketing collateral including brochures, presentations, and social media graphics.</p>
+                        <a href="#project-edu" class="inline-flex items-center text-deep-blue font-semibold hover:underline group">
+                            View Case Study
+                            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Project 6 -->
+                <div class="portfolio-item animate-on-scroll hover:scale-[1.02] hover:shadow-2xl transition-all duration-300" data-category="logo">
+                    <div class="bg-gradient-to-br from-black/10 to-gold/20 rounded-2xl h-64 mb-6 flex items-center justify-center">
+                        <div class="text-center">
+                            <span class="text-4xl mb-2 block">🍽️</span>
+                            <p class="font-bold">Gusto Italiano</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">Gusto Italiano Restaurant Logo</h3>
+                                <span class="inline-block px-3 py-1 bg-gold/10 text-gold text-xs rounded-full">Logo Design</span>
+                            </div>
+                            <span class="text-2xl">🇮🇹</span>
+                        </div>
+                        <p class="text-gray-600 mb-6">Elegant logo for an authentic Italian restaurant with hand-drawn typography elements.</p>
+                        <a href="#project-gusto" class="inline-flex items-center text-deep-blue font-semibold hover:underline group">
+                            View Case Study
+                            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Load More -->
+            <div class="text-center mt-12">
+                <button id="load-more" class="inline-flex items-center justify-center px-8 py-4 bg-deep-blue text-white font-medium rounded-lg hover:bg-opacity-90 transition-all duration-300 hover:scale-105 shadow-lg text-lg">
+                    Load More Projects
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Case Study Preview -->
+    <section class="py-12 lg:py-20 bg-gradient-to-r from-deep-blue/5 to-gold/5">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Featured Case Study</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Deep dive into our process and results</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-white rounded-2xl p-8 shadow-xl">
+                <div>
+                    <span class="inline-block px-4 py-2 bg-deep-blue/10 text-deep-blue rounded-full text-sm font-semibold mb-4">Case Study</span>
+                    <h3 class="text-2xl font-bold mb-6">NovaTech: Transforming a Tech Startup's Identity</h3>
+                    <p class="text-gray-600 mb-6">When NovaTech approached us, they had a generic logo and inconsistent branding that didn't reflect their innovative technology solutions.</p>
+                    
+                    <div class="grid grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <p class="text-3xl font-bold text-deep-blue">300%</p>
+                            <p class="text-gray-600">Increase in brand recognition</p>
+                        </div>
+                        <div>
+                            <p class="text-3xl font-bold text-gold">45%</p>
+                            <p class="text-gray-600">Growth in leads</p>
+                        </div>
+                    </div>
+                    
+                    <a href="#full-case-study" class="inline-flex items-center justify-center px-6 py-3 bg-deep-blue text-white font-medium rounded-lg hover:bg-opacity-90 transition-all duration-300 hover:scale-105 shadow-lg">
+                        Read Full Case Study
+                    </a>
+                </div>
+                <div>
+                    <div class="bg-gradient-to-br from-deep-blue/20 to-gold/20 rounded-2xl h-96 flex items-center justify-center">
+                        <div class="text-center">
+                            <span class="text-6xl mb-4 block">📈</span>
+                            <p class="text-2xl font-bold">Measurable Results</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Client Testimonials -->
+    <section class="py-12 lg:py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Client Testimonials</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">What our clients say about working with us</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-8 rounded-2xl bg-off-white border border-gray-200 hover:border-deep-blue transition-all hover:scale-[1.02]">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-deep-blue/10 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-xl">👤</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Sarah Chen</h4>
+                            <p class="text-gray-600 text-sm">CEO, NovaTech</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 italic mb-4">"MadaBrand transformed our company's visual identity. The new branding perfectly captures our innovative spirit."</p>
+                    <div class="text-gold">★★★★★</div>
+                </div>
+                
+                <div class="p-8 rounded-2xl bg-off-white border border-gray-200 hover:border-deep-blue transition-all hover:scale-[1.02]">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-xl">👤</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Marcus Rodriguez</h4>
+                            <p class="text-gray-600 text-sm">Founder, Brew & Co.</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 italic mb-4">"The logo design exceeded our expectations. It's become an integral part of our brand story."</p>
+                    <div class="text-gold">★★★★★</div>
+                </div>
+                
+                <div class="p-8 rounded-2xl bg-off-white border border-gray-200 hover:border-deep-blue transition-all hover:scale-[1.02]">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-deep-blue/10 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-xl">👤</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Jessica Park</h4>
+                            <p class="text-gray-600 text-sm">Marketing Director, EcoWear</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 italic mb-4">"Professional, creative, and delivered on time. Our packaging design boosted sales by 30%."</p>
+                    <div class="text-gold">★★★★★</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA -->
+    <section class="py-12 lg:py-20 bg-deep-blue text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-6">Ready for Your Brand Transformation?</h2>
+            <p class="text-white/80 text-xl mb-8 max-w-2xl mx-auto">Let's create something exceptional for your business.</p>
+            <a href="../pages/contact.html" class="inline-flex items-center justify-center px-8 py-4 bg-gold text-black font-medium rounded-lg hover:bg-opacity-90 transition-all duration-300 hover:scale-105 shadow-lg text-lg">
+                Start Your Project
+            </a>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <!-- Admin Features Panel -->
+    <div id="admin-panel" class="hidden fixed bottom-4 right-4 bg-white shadow-2xl rounded-2xl p-6 w-80 z-50">
+        <h4 class="font-bold text-lg mb-4 text-deep-blue">👑 Admin Panel</h4>
+        <div class="space-y-4">
+            <button class="w-full bg-deep-blue/10 text-deep-blue py-2 rounded-lg hover:bg-deep-blue/20 transition">
+                📊 View Analytics
+            </button>
+            <button class="w-full bg-gold/10 text-gold py-2 rounded-lg hover:bg-gold/20 transition">
+                ✏️ Edit Content
+            </button>
+            <button class="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition">
+                ⚙️ Settings
+            </button>
+            <button id="lock-admin" class="w-full bg-red-100 text-red-600 py-2 rounded-lg hover:bg-red-200 transition">
+                🔒 Lock Panel
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../scripts/main.js"></script>
+    
+    <!-- Component Loader -->
+    <script>
+        // Load navbar and footer
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load navbar - FIXED PATH
+            fetch('../styles/components/navbar.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('navbar').innerHTML = data;
+                    initAdminSystem();
+                    initMobileMenu();
+                    initPortfolioFilter();
+                })
+                .catch(error => {
+                    console.error('Error loading navbar:', error);
+                    document.getElementById('navbar').innerHTML = '<div class="p-4 bg-red-50 text-red-600">Error loading navigation</div>';
+                });
+            
+            // Load footer - FIXED PATH
+            fetch('../styles/components/footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('footer').innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('Error loading footer:', error);
+                    document.getElementById('footer').innerHTML = '<div class="p-4 bg-red-50 text-red-600">Error loading footer</div>';
+                });
+        });
+
+        // Initialize mobile menu
+        function initMobileMenu() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                    mobileMenu.classList.toggle('animate-slide-up');
+                });
+                
+                // Close menu when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!mobileMenu.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            }
+        }
+
+        // Initialize portfolio filtering
+        function initPortfolioFilter() {
+            const filterButtons = document.querySelectorAll('.portfolio-filter');
+            const portfolioItems = document.querySelectorAll('.portfolio-item');
+            
+            if (filterButtons.length > 0) {
+                filterButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        // Remove active class from all buttons
+                        filterButtons.forEach(btn => {
+                            btn.classList.remove('bg-deep-blue', 'text-white', 'hover:bg-opacity-90');
+                            btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                        });
+                        
+                        // Add active class to clicked button
+                        this.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                        this.classList.add('bg-deep-blue', 'text-white', 'hover:bg-opacity-90');
+                        
+                        const filterValue = this.getAttribute('data-filter');
+                        
+                        // Filter portfolio items
+                        portfolioItems.forEach(item => {
+                            if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+                                item.classList.remove('hidden');
+                                item.classList.add('animate-fade-in');
+                            } else {
+                                item.classList.add('hidden');
+                            }
+                        });
+                    });
+                });
+            }
+        }
+
+        // Initialize admin system
+        function initAdminSystem() {
+            // This will be called from main.js
+        }
+    </script>
+</body>
+</html>

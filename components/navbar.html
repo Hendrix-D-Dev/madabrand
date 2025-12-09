@@ -1,0 +1,73 @@
+<nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-sm border-b border-gray-100">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-6">
+        <div class="flex justify-between items-center">
+            <!-- Logo -->
+            <a href="../index.html" class="text-2xl font-bold text-deep-blue">Mada<span class="text-gold">Brand</span></a>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex space-x-8">
+                <a href="../index.html" class="text-gray-700 hover:text-deep-blue font-medium transition">Home</a>
+                <a href="../pages/about.html" class="text-gray-700 hover:text-deep-blue font-medium transition">About</a>
+                <a href="../pages/services.html" class="text-gray-700 hover:text-deep-blue font-medium transition">Services</a>
+                <a href="../pages/portfolio.html" class="text-gray-700 hover:text-deep-blue font-medium transition">Portfolio</a>
+                <a href="../pages/contact.html" class="inline-flex items-center justify-center px-6 py-3 bg-deep-blue text-white font-medium rounded-lg hover:bg-opacity-90 transition-all duration-300 hover:scale-105 shadow-lg">Get Quote</a>
+                <!-- Admin Unlock Button (Hidden by default) -->
+                <button id="admin-unlock-btn" class="text-gray-500 hover:text-deep-blue transition text-sm hidden">
+                    🔓 Admin
+                </button>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden mt-4 space-y-4">
+            <a href="../index.html" class="block text-gray-700 hover:text-deep-blue font-medium py-2">Home</a>
+            <a href="../pages/about.html" class="block text-gray-700 hover:text-deep-blue font-medium py-2">About</a>
+            <a href="../pages/services.html" class="block text-gray-700 hover:text-deep-blue font-medium py-2">Services</a>
+            <a href="../pages/portfolio.html" class="block text-gray-700 hover:text-deep-blue font-medium py-2">Portfolio</a>
+            <a href="../pages/contact.html" class="inline-flex items-center justify-center px-6 py-3 bg-deep-blue text-white font-medium rounded-lg hover:bg-opacity-90 transition-all duration-300 hover:scale-105 shadow-lg mt-2">Get Quote</a>
+            <!-- Admin Unlock Button Mobile -->
+            <button id="admin-unlock-btn-mobile" class="block text-gray-500 hover:text-deep-blue transition text-sm">
+                🔓 Admin Access
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- Admin Unlock Modal -->
+<div id="admin-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[100] flex items-center justify-center">
+    <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-bold text-deep-blue">Admin Access</h3>
+            <button id="close-admin-modal" class="text-gray-500 hover:text-black">
+                ✕
+            </button>
+        </div>
+        
+        <p class="text-gray-600 mb-6">Enter admin code to unlock special features</p>
+        
+        <div class="space-y-4">
+            <input type="password" id="admin-code" placeholder="Enter admin code" 
+                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-deep-blue focus:border-transparent">
+            
+            <div class="flex space-x-4">
+                <button id="submit-admin-code" 
+                        class="flex-1 bg-deep-blue text-white py-3 rounded-lg font-medium hover:bg-opacity-90 transition">
+                    Unlock
+                </button>
+                <button id="cancel-admin" 
+                        class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-300 transition">
+                    Cancel
+                </button>
+            </div>
+        </div>
+        
+        <p id="admin-message" class="mt-4 text-sm"></p>
+    </div>
+</div>
