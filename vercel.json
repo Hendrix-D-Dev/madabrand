@@ -30,6 +30,10 @@
       "destination": "/index.html"
     },
     {
+      "source": "/components/:component",
+      "destination": "/components/:component"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
@@ -43,6 +47,11 @@
     {
       "source": "/index",
       "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/components/:component.html",
+      "destination": "/components/:component",
       "permanent": true
     }
   ],
@@ -83,6 +92,19 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/components/(.*)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/html"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
         }
       ]
     }
