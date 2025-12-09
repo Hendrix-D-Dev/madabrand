@@ -5,14 +5,14 @@
   "main": "index.html",
   "homepage": "https://madabrand.vercel.app",
   "scripts": {
-    "dev": "npx tailwindcss -i ./styles/style.css -o ./dist/output.css --watch",
-    "build": "npx tailwindcss -i ./styles/style.css -o ./dist/output.css --minify",
+    "dev": "tailwindcss -i ./styles/style.css -o ./dist/output.css --watch",
+    "build": "tailwindcss -i ./styles/style.css -o ./dist/output.css --minify",
+    "build:vercel": "npm run build",
     "start": "live-server .",
     "predeploy": "npm run build",
     "deploy": "echo 'Deploy to Vercel via dashboard or CLI'",
-    "vercel-build": "npm run build",
     "fix-paths": "node fix-paths.js",
-    "optimize-images": "npx sharp -i ./assets/images/* -o ./assets/images/optimized/ -f webp -q 80",
+    "prebuild": "node pre-build.js",
     "test": "echo 'No tests yet'"
   },
   "keywords": [
@@ -23,15 +23,16 @@
   ],
   "author": "MadaBrand",
   "license": "MIT",
-  "devDependencies": {
+  "dependencies": {
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.38",
-    "tailwindcss": "^3.4.1",
+    "tailwindcss": "^3.4.1"
+  },
+  "devDependencies": {
     "live-server": "^1.2.2"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=8.0.0"
+    "node": "18.x"
   },
   "repository": {
     "type": "git",
