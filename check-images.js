@@ -1,54 +1,48 @@
-// check-images.js
 const fs = require('fs');
 const path = require('path');
 
-console.log('🔍 Checking image paths...\n');
+console.log('🔍 CHECKING IMAGE PATHS AND AVAILABILITY...\n');
 
-// Check if assets directory exists
-const assetsDir = path.join(__dirname, 'assets');
-if (!fs.existsSync(assetsDir)) {
-  console.log('❌ assets/ directory does not exist!');
-  console.log('Creating assets structure...');
-  
-  const dirs = ['images/portfolio', 'images/logo', 'icons'];
-  dirs.forEach(dir => {
-    const dirPath = path.join(__dirname, 'assets', dir);
-    fs.mkdirSync(dirPath, { recursive: true });
-    console.log(`✅ Created: assets/${dir}/`);
-  });
-} else {
-  console.log('✅ assets/ directory exists');
-  
-  // List all images
-  const listFiles = (dir, prefix = '') => {
-    const files = fs.readdirSync(dir);
-    files.forEach(file => {
-      const filePath = path.join(dir, file);
-      const stat = fs.statSync(filePath);
-      if (stat.isDirectory()) {
-        console.log(`${prefix}📁 ${file}/`);
-        listFiles(filePath, prefix + '  ');
-      } else if (file.match(/\.(jpg|jpeg|png|gif|ico)$/i)) {
-        console.log(`${prefix}🖼️  ${file} (${Math.round(stat.size / 1024)} KB)`);
-      }
-    });
-  };
-  
-  listFiles(assetsDir);
-}
-
-console.log('\n📋 Current image references in portfolio.html:');
-const portfolioHtml = fs.readFileSync(path.join(__dirname, 'pages/portfolio.html'), 'utf8');
-const imageRegex = /src="([^"]+\.(jpg|jpeg|png|gif))"/gi;
-let match;
-while ((match = imageRegex.exec(portfolioHtml)) !== null) {
-  console.log(`  ${match[1]}`);
-  
-  // Check if file exists
-  const imagePath = path.join(__dirname, match[1].replace(/^\//, ''));
-  if (fs.existsSync(imagePath)) {
-    console.log(`    ✅ File exists`);
+// Check directories
+const checkDir = (dirPath, dirName) => {
+  if (fs.existsSync(dirPath)) {
+    const files = fs.readdirSync(dirPath);
+    const images = files.filter(f => f.match(/\.(jpg|jpeg|png|gif|svg|ico)$/i));
+    console.log(`✅ ${dirName}: ${images.length} image files`);
+    return images.length;
   } else {
-    console.log(`    ❌ File NOT FOUND at: ${imagePath}`);
+    console.log(`❌ ${dirName}: Directory not found`);
+    return 0;
   }
+};
+
+let totalImages = 0;
+totalImages += checkDir(path.join(__dirname, 'assets/images'), 'assets/images/');
+totalImages += checkDir(path.join(__dirname, 'assets/icons'), 'assets/icons/');
+
+console.log(`\n📊 Total images found: ${totalImages}`);
+
+// Check specific important files
+console.log('\n🔑 CRITICAL FILES CHECK:');
+const criticalFiles = [
+  '/assets/images/photo_10_2025-12-10_09-49-24.jpg',
+  '/assets/images/photo_1_2025-12-10_09-45-08.jpg',
+  '/assets/icons/favicon.ico'
+];
+
+criticalFiles.forEach(file => {
+  const filePath = path.join(__dirname, file.replace(/^\//, ''));
+  if (fs.existsSync(filePath)) {
+    const stats = fs.statSync(filePath);
+    console.log(`✅ ${file} (${Math.round(stats.size / 1024)} KB)`);
+  } else {
+    console.log(`❌ ${file} - NOT FOUND`);
+  }
+});
+
+console.log('\n🎯 IMAGE CHECK COMPLETE');
+if (totalImages >= 10) {
+  console.log('✅ Good! You have enough images for the portfolio.');
+} else {
+  console.log('⚠️  Consider adding more images for a complete portfolio.');
 }

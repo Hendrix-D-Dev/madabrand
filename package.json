@@ -13,7 +13,15 @@
     "deploy": "echo 'Deploy to Vercel via dashboard or CLI'",
     "fix-paths": "node fix-paths.js",
     "move-pages": "node move-pages.js",
-    "test": "echo 'No tests yet'"
+    "update-theme": "node update-theme.js",
+    "organize-images": "node organize-images.js",
+    "check-images": "node check-images.js",
+    "prebuild": "node pre-build.js",
+    "test": "echo 'No tests yet'",
+    "theme:all": "npm run update-theme && npm run build",
+    "theme:deploy": "npm run update-theme && npm run build && echo 'Ready to deploy with updated theme'",
+    "full-setup": "npm run organize-images && npm run fix-paths && npm run update-theme && npm run build",
+    "clean-build": "npm run fix-paths && npm run update-theme && npm run build"
   },
   "keywords": [
     "branding",
