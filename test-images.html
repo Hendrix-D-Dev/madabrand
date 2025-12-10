@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Images</title>
+    <style>
+        .image-test {
+            margin: 20px;
+            padding: 10px;
+            border: 2px solid #ccc;
+        }
+        .success {
+            border-color: green;
+            background: #e8f5e8;
+        }
+        .error {
+            border-color: red;
+            background: #ffe8e8;
+        }
+        img {
+            max-width: 200px;
+            max-height: 150px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Testing Image Paths</h1>
+    
+    <div class="image-test" id="test1">
+        <h3>Test 1: Photo 1</h3>
+        <img src="/assets/images/photo_1_2025-12-10_09-45-08.jpg" 
+             alt="Test 1" 
+             onload="this.parentElement.classList.add('success')"
+             onerror="this.parentElement.classList.add('error'); console.error('Failed:', this.src)">
+        <p>Path: /assets/images/photo_1_2025-12-10_09-45-08.jpg</p>
+    </div>
+    
+    <div class="image-test" id="test2">
+        <h3>Test 2: Photo 2</h3>
+        <img src="/assets/images/photo_2_2025-12-10_09-45-08.jpg" 
+             alt="Test 2"
+             onload="this.parentElement.classList.add('success')"
+             onerror="this.parentElement.classList.add('error'); console.error('Failed:', this.src)">
+        <p>Path: /assets/images/photo_2_2025-12-10_09-45-08.jpg</p>
+    </div>
+    
+    <div class="image-test" id="test3">
+        <h3>Test 3: Logo (Photo 10)</h3>
+        <img src="/assets/images/photo_10_2025-12-10_09-49-24.jpg" 
+             alt="Test 3"
+             onload="this.parentElement.classList.add('success')"
+             onerror="this.parentElement.classList.add('error'); console.error('Failed:', this.src)">
+        <p>Path: /assets/images/photo_10_2025-12-10_09-49-24.jpg</p>
+    </div>
+    
+    <script>
+        console.log('Testing image paths...');
+        
+        // Test all images
+        const images = [
+            '/assets/images/photo_1_2025-12-10_09-45-08.jpg',
+            '/assets/images/photo_2_2025-12-10_09-45-08.jpg',
+            '/assets/images/photo_3_2025-12-10_09-45-08.jpg',
+            '/assets/images/photo_4_2025-12-10_09-45-08.jpg',
+            '/assets/images/photo_5_2025-12-10_09-49-24.jpg',
+            '/assets/images/photo_6_2025-12-10_09-49-24.jpg',
+            '/assets/images/photo_7_2025-12-10_09-49-24.jpg',
+            '/assets/images/photo_8_2025-12-10_09-49-24.jpg',
+            '/assets/images/photo_9_2025-12-10_09-49-24.jpg',
+            '/assets/images/photo_10_2025-12-10_09-49-24.jpg'
+        ];
+        
+        images.forEach(url => {
+            fetch(url)
+                .then(response => {
+                    console.log(`${response.ok ? '✅' : '❌'} ${url}: ${response.status}`);
+                })
+                .catch(err => {
+                    console.error(`❌ ${url}: ${err.message}`);
+                });
+        });
+    </script>
+</body>
+</html>
