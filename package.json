@@ -1,12 +1,16 @@
 {
   "name": "madabrand-website",
   "version": "1.0.0",
-  "description": "MadaBrand - Premium Design Studio Website",
+  "description": "MadaBrand - Premium Design Studio Website with Advanced Admin Features",
   "main": "index.html",
   "homepage": "https://madabrand.vercel.app",
   "scripts": {
-    "dev": "tailwindcss -i ./styles/style.css -o ./dist/output.css --watch",
-    "build": "node move-pages.js && tailwindcss -i ./styles/style.css -o ./dist/output.css --minify",
+    "dev": "concurrently \"npm run dev:css\" \"npm run dev:html\"",
+    "dev:css": "tailwindcss -i ./styles/style.css -o ./dist/output.css --watch",
+    "dev:html": "nodemon --watch *.html --watch pages/*.html --ext html --exec npm run process-html",
+    "build": "npm run build:full",
+    "build:full": "npm run prebuild && npm run process-html && npm run build:css",
+    "build:css": "tailwindcss -i ./styles/style.css -o ./dist/output.css --minify",
     "build:vercel": "npm run build",
     "start": "live-server .",
     "predeploy": "npm run build",
@@ -17,30 +21,58 @@
     "organize-images": "node organize-images.js",
     "check-images": "node check-images.js",
     "prebuild": "node pre-build.js",
-    "test": "echo 'No tests yet'",
-    "theme:all": "npm run update-theme && npm run build",
-    "theme:deploy": "npm run update-theme && npm run build && echo 'Ready to deploy with updated theme'",
-    "full-setup": "npm run organize-images && npm run fix-paths && npm run update-theme && npm run build",
-    "clean-build": "npm run fix-paths && npm run update-theme && npm run build"
+    "process-html": "node scripts/simple-html-processor.js",
+    "process-html:advanced": "node scripts/advanced-html-processor.js",
+    "process-html:watch": "nodemon --watch *.html --watch pages/*.html --ext html --exec npm run process-html",
+    "add-data-attributes": "node scripts/add-data-attributes.js",
+    "build:with-admin": "npm run process-html && npm run build:css",
+    "build:validate": "node scripts/build.js",
+    "build:optimized": "npm run clean && npm run full-setup && npm run build:with-admin && npm run test:build",
+    "test": "npm run test:build && npm run test:admin",
+    "test:build": "node scripts/test-build.js",
+    "test:admin": "node scripts/test-admin.js",
+    "test:html": "node scripts/test-html-attributes.js",
+    "theme:all": "npm run update-theme && npm run process-html && npm run build:css",
+    "theme:deploy": "npm run update-theme && npm run process-html && npm run build:css && echo '✅ Ready to deploy with updated theme and data attributes'",
+    "full-setup": "npm run organize-images && npm run fix-paths && npm run update-theme && npm run process-html && npm run build:css",
+    "clean-build": "npm run fix-paths && npm run update-theme && npm run process-html && npm run build:css",
+    "clean": "rm -rf dist/* && rm -rf node_modules/.cache",
+    "reset": "npm run clean && npm install && npm run full-setup",
+    "export:data": "echo 'Admin data export available from admin panel'",
+    "import:data": "echo 'Admin data import available from admin panel'",
+    "backup": "node scripts/backup-data.js",
+    "restore": "node scripts/restore-data.js",
+    "lint:html": "node scripts/lint-html.js",
+    "validate:links": "node scripts/validate-links.js",
+    "optimize:images": "node scripts/optimize-images.js",
+    "generate:sitemap": "node scripts/generate-sitemap.js",
+    "seo:check": "node scripts/seo-check.js"
   },
   "keywords": [
     "branding",
     "design",
     "portfolio",
-    "website"
+    "website",
+    "admin",
+    "cms",
+    "tailwindcss"
   ],
   "author": "MadaBrand",
   "license": "MIT",
   "dependencies": {
-    "tailwindcss": "^3.4.1",
     "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.38"
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.1"
   },
   "devDependencies": {
-    "live-server": "^1.2.2"
+    "cheerio": "^1.1.2",
+    "concurrently": "^8.2.2",
+    "live-server": "^1.2.2",
+    "nodemon": "^3.1.11"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
   },
   "repository": {
     "type": "git",
@@ -48,5 +80,26 @@
   },
   "bugs": {
     "url": "https://github.com/Hendrix-D-Dev/madabrand/issues"
-  }
+  },
+  "config": {
+    "adminCode": "MADA2024",
+    "theme": {
+      "primary": "#1e3a8a",
+      "secondary": "#3b82f6",
+      "background": "#ffffff"
+    }
+  },
+  "files": [
+    "*.html",
+    "pages/*.html",
+    "components/*.html",
+    "assets/**/*",
+    "scripts/*.js",
+    "styles/*.css",
+    "dist/*.css",
+    "package.json",
+    "tailwind.config.js",
+    "postcss.config.js",
+    "vercel.json"
+  ]
 }
