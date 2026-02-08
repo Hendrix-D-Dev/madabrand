@@ -3,281 +3,419 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Portfolio | MadaBrand</title>
+    <title>Our Portfolio | MadaBrand - Premium Design Studio Lagos</title>
     <link href="/dist/output.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="/assets/icons/favicon.ico">
-    <meta name="description" content="Explore MadaBrand's portfolio of brand identity, logo design, and graphic design projects for businesses across various industries.">
+    <meta name="description" content="Explore MadaBrand's premium portfolio of brand identity, logo design, and graphic design projects for Nigerian businesses and international clients.">
+    <meta name="keywords" content="portfolio, brand design Nigeria, logo design Lagos, graphic design services Nigeria, Nigerian design studio">
+    <meta name="author" content="MadaBrand">
 </head>
-<body class="font-body bg-off-white" data-page="portfolio">
+<body class="font-body bg-gradient-to-br from-blue-50 via-white to-blue-50">
     <!-- Navigation -->
     <div id="navbar"></div>
     
-    <!-- Hero -->
-    <section class="admin-editable pt-32 pb-20 bg-gradient-to-r from-deep-blue/5 to-gold/5">
-        <div class="container mx-auto px-4">
-            <div class="max-w-4xl mx-auto text-center">
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in">Our Portfolio</h1>
-                <p class="data-site-tagline text-xl text-gray-600 mb-8">Showcasing our best work in brand identity, logo design, and visual storytelling.</p>
+    <!-- Hero Section -->
+    <section class="pt-28 md:pt-32 pb-16 md:pb-20 relative overflow-hidden">
+        <!-- Background Elements -->
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/5 via-transparent to-blue-50/30"></div>
+        <div class="absolute top-1/4 right-10 w-64 h-64 bg-blue-200/20 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-1/3 left-10 w-96 h-96 bg-blue-300/10 rounded-full blur-3xl"></div>
+        
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="max-w-5xl mx-auto text-center">
+                <!-- Badge -->
+                <div class="inline-flex items-center bg-gradient-to-r from-blue-900 to-blue-700 text-white font-semibold px-6 py-3 rounded-full mb-6 md:mb-8 shadow-lg">
+                    <span class="mr-2">🎯</span>
+                    Premium Design Portfolio
+                </div>
+                
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-900 to-blue-700 bg-clip-text text-transparent">
+                    Design Excellence Showcase
+                </h1>
+                <p class="text-xl text-gray-700 mb-8 max-w-2xl mx-auto leading-relaxed">
+                    Explore our transformative brand identity projects for Nigerian businesses and international clients. Each design tells a unique story of innovation and strategic thinking.
+                </p>
+                
+                <!-- Quick Stats -->
+                <div class="flex flex-wrap justify-center gap-6 md:gap-10 mb-8">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-blue-900 mb-1">9+</div>
+                        <div class="text-gray-600 text-sm">Premium Projects</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-blue-900 mb-1">15+</div>
+                        <div class="text-gray-600 text-sm">Satisfied Clients</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-blue-900 mb-1">5</div>
+                        <div class="text-gray-600 text-sm">Industries Served</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-blue-900 mb-1">3+</div>
+                        <div class="text-gray-600 text-sm">Years Excellence</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Decorative Line -->
+        <div class="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-300 to-transparent"></div>
+    </section>
+    
+    <!-- Portfolio Navigation -->
+    <section class="py-8 md:py-12 bg-white/50 backdrop-blur-sm">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-2xl font-bold mb-6 text-center text-blue-900">Browse Our Work</h2>
+                <div class="flex flex-wrap justify-center gap-3 md:gap-4">
+                    <button class="portfolio-filter px-5 py-2.5 bg-gradient-to-r from-blue-900 to-blue-800 text-white font-medium rounded-lg hover:from-blue-800 hover:to-blue-700 transition-all duration-300 hover:scale-105 text-sm md:text-base" data-filter="all">
+                        All Projects
+                    </button>
+                    <button class="portfolio-filter px-5 py-2.5 bg-white text-blue-900 font-medium rounded-lg hover:bg-blue-50 transition-all duration-300 hover:scale-105 border border-blue-200 text-sm md:text-base" data-filter="branding">
+                        Brand Identity
+                    </button>
+                    <button class="portfolio-filter px-5 py-2.5 bg-white text-blue-900 font-medium rounded-lg hover:bg-blue-50 transition-all duration-300 hover:scale-105 border border-blue-200 text-sm md:text-base" data-filter="logo">
+                        Logo Design
+                    </button>
+                    <button class="portfolio-filter px-5 py-2.5 bg-white text-blue-900 font-medium rounded-lg hover:bg-blue-50 transition-all duration-300 hover:scale-105 border border-blue-200 text-sm md:text-base" data-filter="graphic">
+                        Graphic Design
+                    </button>
+                </div>
             </div>
         </div>
     </section>
     
-    <!-- Filter & Stats -->
-    <section class="admin-editable py-12 lg:py-20 bg-white">
-        <div class="container mx-auto px-4">
-            <!-- Stats -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-                <div class="text-center p-6 rounded-xl bg-off-white">
-                    <p class="text-3xl font-bold text-deep-blue">9</p>
-                    <p class="text-gray-600">Projects Completed</p>
-                </div>
-                <div class="text-center p-6 rounded-xl bg-off-white">
-                    <p class="text-3xl font-bold text-gold">30+</p>
-                    <p class="text-gray-600">Happy Clients</p>
-                </div>
-                <div class="text-center p-6 rounded-xl bg-off-white">
-                    <p class="text-3xl font-bold text-deep-blue">8</p>
-                    <p class="text-gray-600">Industries Served</p>
-                </div>
-                <div class="text-center p-6 rounded-xl bg-off-white">
-                    <p class="text-3xl font-bold text-gold">3</p>
-                    <p class="text-gray-600">Years Experience</p>
-                </div>
-            </div>
-            
-            <!-- Filter -->
-            <div class="mb-12">
-                <h2 class="text-2xl font-bold mb-6 text-center">Browse by Category</h2>
-                <div class="flex flex-wrap justify-center gap-4">
-                    <button class="portfolio-filter bg-deep-blue text-white px-6 py-3 rounded-lg font-medium transition-all hover:bg-opacity-90" data-filter="all">All Projects</button>
-                    <button class="portfolio-filter bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 transition-all" data-filter="branding">Brand Identity</button>
-                    <button class="portfolio-filter bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 transition-all" data-filter="logo">Logo Design</button>
-                    <button class="portfolio-filter bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 transition-all" data-filter="graphic">Graphic Design</button>
-                    <button class="portfolio-filter bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 transition-all" data-filter="web">Web Design</button>
-                </div>
-            </div>
-            
-            <!-- Portfolio Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Project 1 -->
-                <div class="portfolio-item animate-on-scroll hover:scale-[1.02] hover:shadow-2xl transition-all duration-300" data-category="branding" data-portfolio-item="">
-                    <div class="rounded-2xl h-64 mb-6 overflow-hidden">
+    <!-- Portfolio Grid -->
+    <section class="py-12 md:py-20 relative">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                <!-- Project 1: NuelArk Construction -->
+                <div class="portfolio-item animate-on-scroll bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-blue-100 group" data-category="branding">
+                    <div class="relative h-64 md:h-72 overflow-hidden">
                         <img src="/assets/images/photo_1_2025-12-10_09-45-08.jpg" 
-                             alt="Nexus Tech Solutions - Brand Identity" 
-                             class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 class="text-xl font-bold mb-2">Nexus Tech Solutions</h3>
-                                <span class="inline-block px-3 py-1 bg-deep-blue/10 text-deep-blue text-xs rounded-full">Brand Identity</span>
-                            </div>
-                            <span class="text-2xl">🚀</span>
+                             alt="NuelArk Construction Company Brand Identity" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="absolute top-4 left-4">
+                            <span class="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-900 text-xs rounded-full font-semibold">
+                                Brand Identity
+                            </span>
                         </div>
-                        <p class="text-gray-600 mb-6">Complete brand identity for a technology consulting firm, including logo, color palette, and business collateral.</p>
-                        <a href="#project-nexus" class="inline-flex items-center text-deep-blue font-semibold hover:underline group">
-                            View Case Study
-                            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    </div>
+                    <div class="p-6 md:p-8">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl md:text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-900 transition-colors">
+                                    NuelArk Construction
+                                </h3>
+                                <p class="text-gray-500 text-sm">Construction Industry</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-900/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-xl">🏗️</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Complete brand identity system for a premium construction company. Geometric logo with gold-and-black palette blending architectural creativity with structural precision.
+                        </p>
+                        <a href="#nuelark-case-study" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group-hover:translate-x-2 transition-all duration-300">
+                            View Project Details
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                             </svg>
                         </a>
                     </div>
                 </div>
                 
-                <!-- Project 2 -->
-                <div class="portfolio-item animate-on-scroll hover:scale-[1.02] hover:shadow-2xl transition-all duration-300" data-category="logo" data-portfolio-item="">
-                    <div class="rounded-2xl h-64 mb-6 overflow-hidden">
+                <!-- Project 2: NuelArk Materials -->
+                <div class="portfolio-item animate-on-scroll bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-blue-100 group" data-category="branding">
+                    <div class="relative h-64 md:h-72 overflow-hidden">
                         <img src="/assets/images/photo_2_2025-12-10_09-45-08.jpg" 
-                             alt="Brew & Co. Coffee - Logo Design" 
-                             class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 class="text-xl font-bold mb-2">Brew & Co. Coffee</h3>
-                                <span class="inline-block px-3 py-1 bg-gold/10 text-gold text-xs rounded-full">Logo Design</span>
-                            </div>
-                            <span class="text-2xl">☕</span>
+                             alt="NuelArk Construction Brand Collateral Materials" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="absolute top-4 left-4">
+                            <span class="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-900 text-xs rounded-full font-semibold">
+                                Brand Collateral
+                            </span>
                         </div>
-                        <p class="text-gray-600 mb-6">Modern logo and visual identity for an artisanal coffee shop with custom typography and packaging.</p>
-                        <a href="#project-brew" class="inline-flex items-center text-deep-blue font-semibold hover:underline group">
-                            View Case Study
-                            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    </div>
+                    <div class="p-6 md:p-8">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl md:text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-900 transition-colors">
+                                    NuelArk Brand System
+                                </h3>
+                                <p class="text-gray-500 text-sm">Construction Industry</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-900/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-xl">📋</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Comprehensive brand collateral including business cards, branded safety equipment, corporate stationery, and presentation materials for real-world application.
+                        </p>
+                        <a href="#nuelark-case-study" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group-hover:translate-x-2 transition-all duration-300">
+                            View Details
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                             </svg>
                         </a>
                     </div>
                 </div>
                 
-                <!-- Project 3 -->
-                <div class="portfolio-item animate-on-scroll hover:scale-[1.02] hover:shadow-2xl transition-all duration-300" data-category="graphic" data-portfolio-item="">
-                    <div class="rounded-2xl h-64 mb-6 overflow-hidden">
+                <!-- Project 3: Havenbridge Development -->
+                <div class="portfolio-item animate-on-scroll bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-blue-100 group" data-category="branding">
+                    <div class="relative h-64 md:h-72 overflow-hidden">
                         <img src="/assets/images/photo_3_2025-12-10_09-45-08.jpg" 
-                             alt="Urban Style Campaign - Graphic Design" 
-                             class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 class="text-xl font-bold mb-2">Urban Style Campaign</h3>
-                                <span class="inline-block px-3 py-1 bg-deep-blue/10 text-deep-blue text-xs rounded-full">Graphic Design</span>
-                            </div>
-                            <span class="text-2xl">👗</span>
+                             alt="Havenbridge Development Brand Identity" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="absolute top-4 left-4">
+                            <span class="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-900 text-xs rounded-full font-semibold">
+                                Brand Identity
+                            </span>
                         </div>
-                        <p class="text-gray-600 mb-6">Complete marketing campaign for a fashion brand including social media graphics, banners, and print materials.</p>
-                        <a href="#project-urban" class="inline-flex items-center text-deep-blue font-semibold hover:underline group">
+                    </div>
+                    <div class="p-6 md:p-8">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl md:text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-900 transition-colors">
+                                    Havenbridge Development
+                                </h3>
+                                <p class="text-gray-500 text-sm">Real Estate</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-900/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-xl">🏡</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Premium brand identity for a real-estate development company. Minimalist logo design with navy and gold palette reflecting quality construction and modern living.
+                        </p>
+                        <a href="#havenbridge-case-study" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group-hover:translate-x-2 transition-all duration-300">
                             View Case Study
-                            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                             </svg>
                         </a>
                     </div>
                 </div>
                 
-                <!-- Project 4 -->
-                <div class="portfolio-item animate-on-scroll hover:scale-[1.02] hover:shadow-2xl transition-all duration-300" data-category="web" data-portfolio-item="">
-                    <div class="rounded-2xl h-64 mb-6 overflow-hidden">
+                <!-- Project 4: Havenbridge Website -->
+                <div class="portfolio-item animate-on-scroll bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-blue-100 group" data-category="branding">
+                    <div class="relative h-64 md:h-72 overflow-hidden">
                         <img src="/assets/images/photo_4_2025-12-10_09-45-08.jpg" 
-                             alt="EcoStore Web Design" 
-                             class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 class="text-xl font-bold mb-2">EcoStore Web Design</h3>
-                                <span class="inline-block px-3 py-1 bg-gold/10 text-gold text-xs rounded-full">Web Design</span>
-                            </div>
-                            <span class="text-2xl">🛒</span>
+                             alt="Havenbridge Development Website Design" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="absolute top-4 left-4">
+                            <span class="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-900 text-xs rounded-full font-semibold">
+                                Website Design
+                            </span>
                         </div>
-                        <p class="text-gray-600 mb-6">Modern e-commerce website design for a sustainable products store with seamless user experience.</p>
-                        <a href="#project-ecostore" class="inline-flex items-center text-deep-blue font-semibold hover:underline group">
-                            View Case Study
-                            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    </div>
+                    <div class="p-6 md:p-8">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl md:text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-900 transition-colors">
+                                    Havenbridge Website
+                                </h3>
+                                <p class="text-gray-500 text-sm">Digital Presence</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-900/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-xl">💻</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Complete website design integrating the Havenbridge brand identity with real-estate imagery and structured layout for a cohesive online presence.
+                        </p>
+                        <a href="#havenbridge-case-study" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group-hover:translate-x-2 transition-all duration-300">
+                            View Details
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                             </svg>
                         </a>
                     </div>
                 </div>
                 
-                <!-- Project 5 -->
-                <div class="portfolio-item animate-on-scroll hover:scale-[1.02] hover:shadow-2xl transition-all duration-300" data-category="branding" data-portfolio-item="">
-                    <div class="rounded-2xl h-64 mb-6 overflow-hidden">
+                <!-- Project 5: ADIVAS Eco-Brand -->
+                <div class="portfolio-item animate-on-scroll bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-blue-100 group" data-category="branding">
+                    <div class="relative h-64 md:h-72 overflow-hidden">
                         <img src="/assets/images/photo_5_2025-12-10_09-49-24.jpg" 
-                             alt="MediCare+ Brand System" 
-                             class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 class="text-xl font-bold mb-2">MediCare+ Brand System</h3>
-                                <span class="inline-block px-3 py-1 bg-deep-blue/10 text-deep-blue text-xs rounded-full">Brand Identity</span>
-                            </div>
-                            <span class="text-2xl">🏥</span>
+                             alt="ADIVAS Eco-Conscious Brand Identity" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="absolute top-4 left-4">
+                            <span class="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-900 text-xs rounded-full font-semibold">
+                                Eco Branding
+                            </span>
                         </div>
-                        <p class="text-gray-600 mb-6">Healthcare brand identity focusing on trust, care, and modern medical aesthetics for a clinic network.</p>
-                        <a href="#project-medicare" class="inline-flex items-center text-deep-blue font-semibold hover:underline group">
+                    </div>
+                    <div class="p-6 md:p-8">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl md:text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-900 transition-colors">
+                                    ADIVAS Eco-Brand
+                                </h3>
+                                <p class="text-gray-500 text-sm">Sustainability</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-900/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-xl">🍃</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Nature-inspired brand identity for sustainable living products. Leaf symbol design with earthy color palette representing growth, harmony, and environmental consciousness.
+                        </p>
+                        <a href="#adivas-case-study" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group-hover:translate-x-2 transition-all duration-300">
                             View Case Study
-                            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                             </svg>
                         </a>
                     </div>
                 </div>
                 
-                <!-- Project 6 -->
-                <div class="portfolio-item animate-on-scroll hover:scale-[1.02] hover:shadow-2xl transition-all duration-300" data-category="logo" data-portfolio-item="">
-                    <div class="rounded-2xl h-64 mb-6 overflow-hidden">
+                <!-- Project 6: ADIVAS Applications -->
+                <div class="portfolio-item animate-on-scroll bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-blue-100 group" data-category="graphic">
+                    <div class="relative h-64 md:h-72 overflow-hidden">
                         <img src="/assets/images/photo_6_2025-12-10_09-49-24.jpg" 
-                             alt="Gusto Italiano Restaurant" 
-                             class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 class="text-xl font-bold mb-2">Gusto Italiano Restaurant</h3>
-                                <span class="inline-block px-3 py-1 bg-gold/10 text-gold text-xs rounded-full">Logo Design</span>
-                            </div>
-                            <span class="text-2xl">🍝</span>
+                             alt="ADIVAS Brand Applications" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="absolute top-4 left-4">
+                            <span class="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-900 text-xs rounded-full font-semibold">
+                                Brand Applications
+                            </span>
                         </div>
-                        <p class="text-gray-600 mb-6">Elegant logo and brand identity for an authentic Italian restaurant with hand-drawn typography elements.</p>
-                        <a href="#project-gusto" class="inline-flex items-center text-deep-blue font-semibold hover:underline group">
-                            View Case Study
-                            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    </div>
+                    <div class="p-6 md:p-8">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl md:text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-900 transition-colors">
+                                    ADIVAS Applications
+                                </h3>
+                                <p class="text-gray-500 text-sm">Product Branding</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-900/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-xl">👜</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Practical brand applications including tote bags, business cards, and marketing materials showcasing the ADIVAS identity in real-world product contexts.
+                        </p>
+                        <a href="#adivas-case-study" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group-hover:translate-x-2 transition-all duration-300">
+                            View Details
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                             </svg>
                         </a>
                     </div>
                 </div>
                 
-                <!-- Project 7 -->
-                <div class="portfolio-item animate-on-scroll hover:scale-[1.02] hover:shadow-2xl transition-all duration-300" data-category="graphic" data-portfolio-item="">
-                    <div class="rounded-2xl h-64 mb-6 overflow-hidden">
+                <!-- Project 7: Additional Work -->
+                <div class="portfolio-item animate-on-scroll bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-blue-100 group" data-category="graphic">
+                    <div class="relative h-64 md:h-72 overflow-hidden">
                         <img src="/assets/images/photo_7_2025-12-10_09-49-24.jpg" 
-                             alt="Edutech Marketing Suite" 
-                             class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 class="text-xl font-bold mb-2">Edutech Marketing Suite</h3>
-                                <span class="inline-block px-3 py-1 bg-deep-blue/10 text-deep-blue text-xs rounded-full">Graphic Design</span>
-                            </div>
-                            <span class="text-2xl">📚</span>
+                             alt="Additional Design Work" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="absolute top-4 left-4">
+                            <span class="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-900 text-xs rounded-full font-semibold">
+                                Graphic Design
+                            </span>
                         </div>
-                        <p class="text-gray-600 mb-6">Complete educational technology marketing materials including brochures, presentations, and digital ads.</p>
-                        <a href="#project-edutech" class="inline-flex items-center text-deep-blue font-semibold hover:underline group">
-                            View Case Study
-                            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    </div>
+                    <div class="p-6 md:p-8">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl md:text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-900 transition-colors">
+                                    Design Collection
+                                </h3>
+                                <p class="text-gray-500 text-sm">Various Industries</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-900/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-xl">🎨</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Curated collection of design work for various industries including technology, fashion, and lifestyle brands, showcasing versatility in style and execution.
+                        </p>
+                        <a href="#design-collection" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group-hover:translate-x-2 transition-all duration-300">
+                            View Collection
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                             </svg>
                         </a>
                     </div>
                 </div>
                 
-                <!-- Project 8 -->
-                <div class="portfolio-item animate-on-scroll hover:scale-[1.02] hover:shadow-2xl transition-all duration-300" data-category="web" data-portfolio-item="">
-                    <div class="rounded-2xl h-64 mb-6 overflow-hidden">
+                <!-- Project 8: Logo Collection -->
+                <div class="portfolio-item animate-on-scroll bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-blue-100 group" data-category="logo">
+                    <div class="relative h-64 md:h-72 overflow-hidden">
                         <img src="/assets/images/photo_8_2025-12-10_09-49-24.jpg" 
-                             alt="Travel App UI Design" 
-                             class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 class="text-xl font-bold mb-2">Wanderlust Travel App</h3>
-                                <span class="inline-block px-3 py-1 bg-gold/10 text-gold text-xs rounded-full">Web Design</span>
-                            </div>
-                            <span class="text-2xl">✈️</span>
+                             alt="Logo Design Portfolio" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="absolute top-4 left-4">
+                            <span class="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-900 text-xs rounded-full font-semibold">
+                                Logo Design
+                            </span>
                         </div>
-                        <p class="text-gray-600 mb-6">Mobile app UI/UX design for a travel planning application with intuitive booking and itinerary features.</p>
-                        <a href="#project-wanderlust" class="inline-flex items-center text-deep-blue font-semibold hover:underline group">
-                            View Case Study
-                            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    </div>
+                    <div class="p-6 md:p-8">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl md:text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-900 transition-colors">
+                                    Logo Portfolio
+                                </h3>
+                                <p class="text-gray-500 text-sm">Custom Logos</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-900/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-xl">✨</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Selection of custom logo designs created for various Nigerian and international clients, demonstrating creative versatility and strategic thinking.
+                        </p>
+                        <a href="#logo-portfolio" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group-hover:translate-x-2 transition-all duration-300">
+                            Explore Logos
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                             </svg>
                         </a>
                     </div>
                 </div>
                 
-                <!-- Project 9 -->
-                <div class="portfolio-item animate-on-scroll hover:scale-[1.02] hover:shadow-2xl transition-all duration-300" data-category="branding" data-portfolio-item="">
-                    <div class="rounded-2xl h-64 mb-6 overflow-hidden">
+                <!-- Project 9: Brand Guidelines -->
+                <div class="portfolio-item animate-on-scroll bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-blue-100 group" data-category="branding">
+                    <div class="relative h-64 md:h-72 overflow-hidden">
                         <img src="/assets/images/photo_9_2025-12-10_09-49-24.jpg" 
-                             alt="Fitness Brand Identity" 
-                             class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 class="text-xl font-bold mb-2">ActiveLife Fitness</h3>
-                                <span class="inline-block px-3 py-1 bg-deep-blue/10 text-deep-blue text-xs rounded-full">Brand Identity</span>
-                            </div>
-                            <span class="text-2xl">💪</span>
+                             alt="Brand Guidelines Documentation" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="absolute top-4 left-4">
+                            <span class="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-900 text-xs rounded-full font-semibold">
+                                Brand Systems
+                            </span>
                         </div>
-                        <p class="text-gray-600 mb-6">Complete brand identity for a fitness center including logo, color system, and marketing materials.</p>
-                        <a href="#project-activelife" class="inline-flex items-center text-deep-blue font-semibold hover:underline group">
-                            View Case Study
-                            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    </div>
+                    <div class="p-6 md:p-8">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl md:text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-900 transition-colors">
+                                    Brand Guidelines
+                                </h3>
+                                <p class="text-gray-500 text-sm">Documentation</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-900/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-xl">📘</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Comprehensive brand guideline documents ensuring consistent application across all business touchpoints, from print materials to digital platforms.
+                        </p>
+                        <a href="#brand-guidelines" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group-hover:translate-x-2 transition-all duration-300">
+                            View System
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                             </svg>
                         </a>
@@ -285,47 +423,90 @@
                 </div>
             </div>
             
-            <!-- Load More -->
-            <div class="text-center mt-12">
-                <button id="load-more" class="inline-flex items-center justify-center px-8 py-4 bg-deep-blue text-white font-medium rounded-lg hover:bg-opacity-90 transition-all duration-300 hover:scale-105 shadow-lg text-lg">
-                    Load More Projects
+            <!-- Load More Button -->
+            <div class="text-center mt-12 md:mt-16">
+                <button id="load-more" class="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-900 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-300 hover:scale-105 border-2 border-blue-900 text-lg group">
+                    <span class="mr-2">📁</span>
+                    View More Projects
+                    <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                    </svg>
                 </button>
             </div>
         </div>
     </section>
     
-    <!-- Case Study Preview -->
-    <section class="admin-editable py-12 lg:py-20 bg-gradient-to-r from-deep-blue/5 to-gold/5">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold mb-4">Featured Case Study</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Deep dive into our process and results</p>
+    <!-- Featured Case Study -->
+    <section class="py-12 md:py-20 bg-gradient-to-br from-blue-900/5 to-white relative overflow-hidden">
+        <!-- Background Elements -->
+        <div class="absolute top-10 right-10 w-40 h-40 bg-blue-200/20 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-10 left-10 w-60 h-60 bg-blue-300/10 rounded-full blur-3xl"></div>
+        
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-12 md:mb-16">
+                <div class="inline-flex items-center bg-blue-900/10 text-blue-900 font-semibold px-5 py-2 rounded-full mb-4">
+                    <span class="mr-2">🏆</span>
+                    Featured Case Study
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-blue-900">NuelArk Construction: Where Art Meets Structure</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">Transforming a construction company's brand identity to premium positioning</p>
             </div>
             
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-white rounded-2xl p-8 shadow-xl">
-                <div>
-                    <span class="inline-block px-4 py-2 bg-deep-blue/10 text-deep-blue rounded-full text-sm font-semibold mb-4">Case Study</span>
-                    <h3 class="text-2xl font-bold mb-6">Nexus Tech: Transforming Digital Presence</h3>
-                    <p class="text-gray-600 mb-6">When Nexus Tech Solutions approached us, they had an outdated brand that didn't reflect their innovative approach to technology consulting.</p>
-                    
-                    <div class="grid grid-cols-2 gap-6 mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center bg-white rounded-3xl p-6 md:p-8 shadow-2xl border border-blue-100">
+                <div class="order-2 lg:order-1">
+                    <div class="space-y-6">
                         <div>
-                            <p class="text-3xl font-bold text-deep-blue">200%</p>
-                            <p class="text-gray-600">Increase in brand recognition</p>
+                            <h3 class="text-2xl font-bold mb-4 text-gray-900">Project Overview</h3>
+                            <p class="text-gray-600 leading-relaxed">
+                                NuelArk Construction Company sought to elevate their brand from a standard construction firm to a premium industry leader. The challenge was to create a visual identity that communicates both structural excellence and artistic sensibility.
+                            </p>
                         </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                                <div class="text-2xl font-bold text-blue-900 mb-1">Complete</div>
+                                <div class="text-gray-600 text-sm">Brand System</div>
+                            </div>
+                            <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                                <div class="text-2xl font-bold text-blue-900 mb-1">12+</div>
+                                <div class="text-gray-600 text-sm">Applications</div>
+                            </div>
+                        </div>
+                        
                         <div>
-                            <p class="text-3xl font-bold text-gold">60%</p>
-                            <p class="text-gray-600">Growth in qualified leads</p>
+                            <h4 class="font-bold text-lg mb-3 text-blue-900">Key Achievements</h4>
+                            <ul class="space-y-2 text-gray-600">
+                                <li class="flex items-start">
+                                    <span class="text-blue-900 mr-2 mt-1">•</span>
+                                    <span>Geometric logo symbolizing structural precision</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-blue-900 mr-2 mt-1">•</span>
+                                    <span>Gold-and-black premium color palette</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-blue-900 mr-2 mt-1">•</span>
+                                    <span>Comprehensive brand guidelines document</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-blue-900 mr-2 mt-1">•</span>
+                                    <span>Real-world application across all touchpoints</span>
+                                </li>
+                            </ul>
                         </div>
+                        
+                        <a href="#full-case-study" class="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-900 to-blue-800 text-white font-semibold rounded-lg hover:from-blue-800 hover:to-blue-700 transition-all duration-300 hover:scale-105 shadow-lg">
+                            <span class="mr-2">📖</span>
+                            Read Full Case Study
+                        </a>
                     </div>
-                    
-                    <a href="#full-case-study" class="inline-flex items-center justify-center px-6 py-3 bg-deep-blue text-white font-medium rounded-lg hover:bg-opacity-90 transition-all duration-300 hover:scale-105 shadow-lg">
-                        Read Full Case Study
-                    </a>
                 </div>
-                <div>
-                    <div class="rounded-2xl h-96 overflow-hidden">
-                        <img src="/assets/images/photo_1_2025-12-10_09-45-08.jpg" alt="Nexus Tech Case Study" class="w-full h-full object-cover">
+                
+                <div class="order-1 lg:order-2">
+                    <div class="rounded-2xl overflow-hidden border border-blue-200 shadow-lg">
+                        <img src="/assets/images/photo_1_2025-12-10_09-45-08.jpg" 
+                             alt="NuelArk Construction Brand Identity Showcase" 
+                             class="w-full h-64 md:h-96 object-cover">
                     </div>
                 </div>
             </div>
@@ -333,120 +514,117 @@
     </section>
     
     <!-- Client Testimonials -->
-    <section class="admin-editable py-12 lg:py-20 bg-white">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold mb-4">Client Testimonials</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">What our clients say about working with us</p>
+    <section class="py-12 md:py-20 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 md:mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-blue-900">Client Experiences</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">What Nigerian business owners say about working with us</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="p-8 rounded-2xl bg-off-white border border-gray-200 hover:border-deep-blue transition-all hover:scale-[1.02]">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-blue-100 hover:border-blue-300 transition-all duration-300 hover:-translate-y-1">
                     <div class="flex items-center mb-6">
-                        <div class="w-12 h-12 bg-deep-blue/10 rounded-full flex items-center justify-center mr-4 overflow-hidden">
-                            <div class="w-full h-full bg-deep-blue/20 flex items-center justify-center">
-                                <span class="text-xl">👤</span>
-                            </div>
+                        <div class="w-14 h-14 bg-blue-900/10 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-xl font-bold text-blue-900">N</span>
                         </div>
                         <div>
-                            <h4 class="font-bold">Sarah Chen</h4>
-                            <p class="text-gray-600 text-sm">CEO, Nexus Tech Solutions</p>
+                            <h4 class="font-bold text-lg text-gray-900">Nuel Ark</h4>
+                            <p class="text-gray-600 text-sm">CEO, NuelArk Construction</p>
                         </div>
                     </div>
-                    <p class="text-gray-700 italic mb-4">"MadaBrand completely transformed our company's visual identity. The new branding perfectly captures our innovative spirit and has helped us stand out in a competitive market."</p>
-                    <div class="text-gold">★★★★★</div>
+                    <p class="text-gray-600 mb-4 italic leading-relaxed">
+                        "MadaBrand perfectly captured our vision of blending architectural creativity with structural strength. Our new branding has elevated our company's perception in the Lagos construction market."
+                    </p>
+                    <div class="text-yellow-500 flex">
+                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    </div>
                 </div>
                 
-                <div class="p-8 rounded-2xl bg-off-white border border-gray-200 hover:border-deep-blue transition-all hover:scale-[1.02]">
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-blue-100 hover:border-blue-300 transition-all duration-300 hover:-translate-y-1">
                     <div class="flex items-center mb-6">
-                        <div class="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center mr-4 overflow-hidden">
-                            <div class="w-full h-full bg-gold/20 flex items-center justify-center">
-                                <span class="text-xl">👤</span>
-                            </div>
+                        <div class="w-14 h-14 bg-blue-900/10 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-xl font-bold text-blue-900">H</span>
                         </div>
                         <div>
-                            <h4 class="font-bold">Marcus Rodriguez</h4>
-                            <p class="text-gray-600 text-sm">Founder, Brew & Co. Coffee</p>
+                            <h4 class="font-bold text-lg text-gray-900">Haven Bridge</h4>
+                            <p class="text-gray-600 text-sm">Founder, Havenbridge Development</p>
                         </div>
                     </div>
-                    <p class="text-gray-700 italic mb-4">"The logo design exceeded our expectations. It's become an integral part of our brand story and customers immediately recognize our brand now."</p>
-                    <div class="text-gold">★★★★★</div>
+                    <p class="text-gray-600 mb-4 italic leading-relaxed">
+                        "The brand identity created for our real-estate development perfectly reflects our commitment to quality and modern living. The attention to detail was exceptional."
+                    </p>
+                    <div class="text-yellow-500 flex">
+                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    </div>
                 </div>
                 
-                <div class="p-8 rounded-2xl bg-off-white border border-gray-200 hover:border-deep-blue transition-all hover:scale-[1.02]">
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-blue-100 hover:border-blue-300 transition-all duration-300 hover:-translate-y-1">
                     <div class="flex items-center mb-6">
-                        <div class="w-12 h-12 bg-deep-blue/10 rounded-full flex items-center justify-center mr-4 overflow-hidden">
-                            <div class="w-full h-full bg-deep-blue/20 flex items-center justify-center">
-                                <span class="text-xl">👤</span>
-                            </div>
+                        <div class="w-14 h-14 bg-blue-900/10 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-xl font-bold text-blue-900">A</span>
                         </div>
                         <div>
-                            <h4 class="font-bold">Jessica Park</h4>
-                            <p class="text-gray-600 text-sm">Marketing Director, Urban Style</p>
+                            <h4 class="font-bold text-lg text-gray-900">Adi Vas</h4>
+                            <p class="text-gray-600 text-sm">Creative Director, ADIVAS</p>
                         </div>
                     </div>
-                    <p class="text-gray-700 italic mb-4">"Professional, creative, and delivered on time. Our marketing campaign design boosted engagement by 40% and sales by 30%."</p>
-                    <div class="text-gold">★★★★★</div>
+                    <p class="text-gray-600 mb-4 italic leading-relaxed">
+                        "Our eco-conscious brand identity exceeded expectations. The leaf symbol perfectly captures our sustainability commitment, resonating with our Nigerian and international customers."
+                    </p>
+                    <div class="text-yellow-500 flex">
+                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
     
-    <!-- CTA -->
-    <section class="admin-editable py-12 lg:py-20 bg-deep-blue text-white">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold mb-6">Ready for Your Brand Transformation?</h2>
-            <p class="text-white/80 text-xl mb-8 max-w-2xl mx-auto">Let's create something exceptional for your business.</p>
-            <a href="/contact" class="inline-flex items-center justify-center px-8 py-4 bg-gold text-black font-medium rounded-lg hover:bg-opacity-90 transition-all duration-300 hover:scale-105 shadow-lg text-lg">
-                Start Your Project
-            </a>
+    <!-- Final CTA -->
+    <section class="py-12 md:py-20 bg-gradient-to-r from-blue-900 to-blue-800 text-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready for Your Brand Transformation?</h2>
+            <p class="text-blue-100 text-lg md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed">
+                Let's create something exceptional for your Nigerian business or international venture.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/contact" class="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-900 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-300 hover:scale-105 shadow-xl text-lg group">
+                    <span class="mr-2">🚀</span>
+                    Start Your Project
+                    <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                    </svg>
+                </a>
+                <a href="https://wa.me/2348104902357" target="_blank" class="inline-flex items-center justify-center px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-lg transition-all duration-300 hover:scale-105 text-lg border border-white/20 group">
+                    <span class="mr-2">💬</span>
+                    WhatsApp Consultation
+                </a>
+            </div>
         </div>
     </section>
     
     <!-- Footer -->
     <div id="footer"></div>
 
-    <!-- Admin Features Panel -->
-    <div id="admin-panel" class="hidden fixed bottom-4 right-4 bg-white shadow-2xl rounded-2xl p-6 w-80 z-50">
-        <h4 class="font-bold text-lg mb-4 text-deep-blue">👑 Admin Panel</h4>
-        <div class="space-y-4">
-            <button class="w-full bg-deep-blue/10 text-deep-blue py-2 rounded-lg hover:bg-deep-blue/20 transition">
-                📊 View Analytics
-            </button>
-            <button class="w-full bg-gold/10 text-gold py-2 rounded-lg hover:bg-gold/20 transition">
-                ✏️ Edit Content
-            </button>
-            <button class="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition">
-                ⚙️ Settings
-            </button>
-            <button id="lock-admin" class="w-full bg-red-100 text-red-600 py-2 rounded-lg hover:bg-red-200 transition">
-                🔒 Lock Panel
-            </button>
-        </div>
-    </div>
-
     <!-- Scripts -->
     <script src="/scripts/main.js"></script>
     
-    <!-- Component Loader -->
+    <!-- Component Loader & Portfolio Scripts -->
     <script>
         // Load navbar and footer
         document.addEventListener('DOMContentLoaded', function() {
-            // Load navbar - FIXED PATH
+            // Load navbar
             fetch('/components/navbar.html')
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('navbar').innerHTML = data;
-                    initAdminSystem();
                     initMobileMenu();
-                    initPortfolioFilter();
                 })
                 .catch(error => {
                     console.error('Error loading navbar:', error);
-                    document.getElementById('navbar').innerHTML = '<div class="p-4 bg-red-50 text-red-600">Error loading navigation</div>';
+                    document.getElementById('navbar').innerHTML = '<div class="p-4 bg-red-900/10 text-red-700 rounded-lg m-4">Navigation loading failed</div>';
                 });
             
-            // Load footer - FIXED PATH
+            // Load footer
             fetch('/components/footer.html')
                 .then(response => response.text())
                 .then(data => {
@@ -454,8 +632,14 @@
                 })
                 .catch(error => {
                     console.error('Error loading footer:', error);
-                    document.getElementById('footer').innerHTML = '<div class="p-4 bg-red-50 text-red-600">Error loading footer</div>';
+                    document.getElementById('footer').innerHTML = '<div class="p-4 bg-red-900/10 text-red-700 rounded-lg m-4">Footer loading failed</div>';
                 });
+            
+            // Initialize portfolio filtering
+            initPortfolioFilter();
+            
+            // Initialize scroll animations
+            initScrollAnimations();
         });
 
         // Initialize mobile menu
@@ -464,9 +648,9 @@
             const mobileMenu = document.getElementById('mobile-menu');
             
             if (mobileMenuBtn && mobileMenu) {
-                mobileMenuBtn.addEventListener('click', function() {
+                mobileMenuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
                     mobileMenu.classList.toggle('hidden');
-                    mobileMenu.classList.toggle('animate-slide-up');
                 });
                 
                 // Close menu when clicking outside
@@ -478,7 +662,7 @@
             }
         }
 
-        // Initialize portfolio filtering
+        // Portfolio filtering functionality
         function initPortfolioFilter() {
             const filterButtons = document.querySelectorAll('.portfolio-filter');
             const portfolioItems = document.querySelectorAll('.portfolio-item');
@@ -486,15 +670,15 @@
             if (filterButtons.length > 0) {
                 filterButtons.forEach(button => {
                     button.addEventListener('click', function() {
-                        // Remove active class from all buttons
+                        // Remove active styles from all buttons
                         filterButtons.forEach(btn => {
-                            btn.classList.remove('bg-deep-blue', 'text-white', 'hover:bg-opacity-90');
-                            btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                            btn.classList.remove('bg-gradient-to-r', 'from-blue-900', 'to-blue-800', 'text-white', 'hover:from-blue-800', 'hover:to-blue-700');
+                            btn.classList.add('bg-white', 'text-blue-900', 'border', 'border-blue-200', 'hover:bg-blue-50');
                         });
                         
-                        // Add active class to clicked button
-                        this.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
-                        this.classList.add('bg-deep-blue', 'text-white', 'hover:bg-opacity-90');
+                        // Add active styles to clicked button
+                        this.classList.remove('bg-white', 'text-blue-900', 'border', 'border-blue-200', 'hover:bg-blue-50');
+                        this.classList.add('bg-gradient-to-r', 'from-blue-900', 'to-blue-800', 'text-white', 'hover:from-blue-800', 'hover:to-blue-700');
                         
                         const filterValue = this.getAttribute('data-filter');
                         
@@ -512,15 +696,55 @@
             }
         }
 
-        // Initialize admin system
-        function initAdminSystem() {
-            // This will be called from main.js
-        }
-
         // Load More functionality
         document.getElementById('load-more')?.addEventListener('click', function() {
-            alert('In a production site, this would load more projects from a database or API.');
+            // Show notification for demonstration
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 z-50 p-4 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-lg shadow-xl border border-blue-300/30 backdrop-blur-sm';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <span class="mr-3 text-xl">📁</span>
+                    <span>More projects would load here in a production site</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
         });
+
+        // Scroll animations
+        function initScrollAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all animate-on-scroll elements
+            document.querySelectorAll('.animate-on-scroll').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        }
     </script>
 </body>
 </html>
