@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Editor | MadaBrand Admin</title>
+    <link href="/dist/output.css" rel="stylesheet">
+    <script src="/scripts/admin/admin-auth.js" defer></script>
+    <style>
+        /* Custom styles for content editor */
+        .editor-tab {
+            transition: all 0.2s ease;
+        }
+        .editor-tab.active {
+            border-bottom-color: #1e3a8a;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+        .field-group {
+            transition: all 0.2s ease;
+        }
+        .field-group:hover {
+            background-color: rgba(30, 58, 138, 0.02);
+        }
+        .character-count {
+            font-size: 0.75rem;
+            transition: color 0.2s ease;
+        }
+        .preview-mode {
+            background-color: #f9fafb;
+        }
+        .auto-save-indicator {
+            transition: all 0.3s ease;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .saving {
+            animation: pulse 1s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Admin Navigation -->
+    <nav class="bg-gradient-to-r from-blue-900 to-blue-800 text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-4">
+                    <span class="text-2xl">✏️</span>
+                    <span class="font-bold text-xl">Advanced Content Editor</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="auto-save-indicator" class="text-sm bg-white/20 px-3 py-1 rounded-full auto-save-indicator">
+                        💾 All changes saved
+                    </span>
+                    <a href="/madabrand-admin/" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition">
+                        ← Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Editor Container -->
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Tabs -->
+        <div class="bg-white rounded-t-xl shadow-md border border-blue-100 border-b-0">
+            <div class="flex flex-wrap border-b">
+                <button class="editor-tab active px-6 py-4 text-sm font-medium text-gray-700 hover:text-blue-900 border-b-2 border-transparent" data-tab="home">
+                    🏠 Home Page
+                </button>
+                <button class="editor-tab px-6 py-4 text-sm font-medium text-gray-700 hover:text-blue-900 border-b-2 border-transparent" data-tab="about">
+                    👤 About Page
+                </button>
+                <button class="editor-tab px-6 py-4 text-sm font-medium text-gray-700 hover:text-blue-900 border-b-2 border-transparent" data-tab="services">
+                    🎯 Services Page
+                </button>
+                <button class="editor-tab px-6 py-4 text-sm font-medium text-gray-700 hover:text-blue-900 border-b-2 border-transparent" data-tab="portfolio">
+                    📁 Portfolio Page
+                </button>
+                <button class="editor-tab px-6 py-4 text-sm font-medium text-gray-700 hover:text-blue-900 border-b-2 border-transparent" data-tab="contact">
+                    📞 Contact Page
+                </button>
+                <button class="editor-tab px-6 py-4 text-sm font-medium text-gray-700 hover:text-blue-900 border-b-2 border-transparent" data-tab="global">
+                    🌐 Global Settings
+                </button>
+            </div>
+        </div>
+
+        <!-- Editor Panels -->
+        <div class="bg-white rounded-b-xl shadow-md border border-blue-100 border-t-0 p-6">
+            <!-- HOME PAGE EDITOR -->
+            <div id="panel-home" class="editor-panel active space-y-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">Home Page Content</h2>
+                    <div class="flex gap-2">
+                        <button onclick="previewPage('home')" class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm">
+                            👁️ Preview
+                        </button>
+                        <button onclick="resetSection('home')" class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm">
+                            ↩️ Reset
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Hero Section -->
+                    <div class="field-group p-4 border border-blue-100 rounded-lg">
+                        <h3 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                            <span>🎯</span> Hero Section
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Badge Text</label>
+                                <input type="text" id="home-hero-badge" class="w-full px-3 py-2 border rounded-lg" value="Premium Design Studio" maxlength="50">
+                                <div class="character-count text-right mt-1">
+                                    <span id="home-hero-badge-count">0</span>/50
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Heading Line 1</label>
+                                <input type="text" id="home-hero-line1" class="w-full px-3 py-2 border rounded-lg" value="Strategic Design" maxlength="30">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Heading Line 2</label>
+                                <input type="text" id="home-hero-line2" class="w-full px-3 py-2 border rounded-lg" value="That Elevates Brands" maxlength="30">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                <textarea id="home-hero-description" rows="3" class="w-full px-3 py-2 border rounded-lg" maxlength="200">We craft premium brand identities that merge artistic creativity with strategic thinking. Transforming businesses through design that communicates excellence, innovation, and lasting impact.</textarea>
+                                <div class="character-count text-right mt-1">
+                                    <span id="home-hero-description-count">0</span>/200
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA Buttons -->
+                    <div class="field-group p-4 border border-blue-100 rounded-lg">
+                        <h3 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                            <span>🚀</span> Call-to-Action Buttons
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Primary Button Text</label>
+                                <input type="text" id="home-cta-primary" class="w-full px-3 py-2 border rounded-lg" value="Start Your Project">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Primary Button Link</label>
+                                <input type="text" id="home-cta-primary-link" class="w-full px-3 py-2 border rounded-lg" value="/contact">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Secondary Button Text</label>
+                                <input type="text" id="home-cta-secondary" class="w-full px-3 py-2 border rounded-lg" value="View Portfolio">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Secondary Button Link</label>
+                                <input type="text" id="home-cta-secondary-link" class="w-full px-3 py-2 border rounded-lg" value="/portfolio">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="field-group p-4 border border-blue-100 rounded-lg">
+                        <h3 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                            <span>📊</span> Statistics
+                        </h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Stat 1 Value</label>
+                                <input type="text" id="home-stat1-value" class="w-full px-3 py-2 border rounded-lg" value="50+">
+                                <input type="text" id="home-stat1-label" class="w-full px-3 py-2 border rounded-lg mt-2" value="Projects Completed" placeholder="Label">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Stat 2 Value</label>
+                                <input type="text" id="home-stat2-value" class="w-full px-3 py-2 border rounded-lg" value="100%">
+                                <input type="text" id="home-stat2-label" class="w-full px-3 py-2 border rounded-lg mt-2" value="Client Satisfaction">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Stat 3 Value</label>
+                                <input type="text" id="home-stat3-value" class="w-full px-3 py-2 border rounded-lg" value="15+">
+                                <input type="text" id="home-stat3-label" class="w-full px-3 py-2 border rounded-lg mt-2" value="Industries Served">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Stat 4 Value</label>
+                                <input type="text" id="home-stat4-value" class="w-full px-3 py-2 border rounded-lg" value="3+">
+                                <input type="text" id="home-stat4-label" class="w-full px-3 py-2 border rounded-lg mt-2" value="Years Experience">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial -->
+                    <div class="field-group p-4 border border-blue-100 rounded-lg">
+                        <h3 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                            <span>💬</span> Testimonial
+                        </h3>
+                        <div class="space-y-3">
+                            <textarea id="home-testimonial-text" rows="3" class="w-full px-3 py-2 border rounded-lg" maxlength="300">"MadaBrand created a brand identity that perfectly captures our vision of blending artistic design with structural excellence. The geometric logo and gold-and-black palette elevated our entire company presence."</textarea>
+                            <div class="character-count text-right">
+                                <span id="home-testimonial-count">0</span>/300
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="text" id="home-testimonial-author" class="px-3 py-2 border rounded-lg" value="Nuel Ark" placeholder="Author Name">
+                                <input type="text" id="home-testimonial-title" class="px-3 py-2 border rounded-lg" value="CEO, NuelArk Construction Company" placeholder="Author Title">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABOUT PAGE EDITOR -->
+            <div id="panel-about" class="editor-panel hidden space-y-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">About Page Content</h2>
+                    <div class="flex gap-2">
+                        <button onclick="previewPage('about')" class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm">
+                            👁️ Preview
+                        </button>
+                        <button onclick="resetSection('about')" class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm">
+                            ↩️ Reset
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Story Section -->
+                    <div class="field-group p-4 border border-blue-100 rounded-lg">
+                        <h3 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                            <span>📖</span> Our Story
+                        </h3>
+                        <div class="space-y-3">
+                            <input type="text" id="about-title" class="w-full px-3 py-2 border rounded-lg" value="From Passion to Premium Design Studio">
+                            <textarea id="about-paragraph1" rows="3" class="w-full px-3 py-2 border rounded-lg">Founded in Lagos with a vision to transform how Nigerian businesses present themselves to the world, MadaBrand has evolved from a solo passion project into a premier brand identity agency trusted by industry leaders across Africa and beyond.</textarea>
+                            <textarea id="about-paragraph2" rows="3" class="w-full px-3 py-2 border rounded-lg">Our journey has been marked by a relentless pursuit of design excellence, cultural authenticity, and client success. We believe that great design goes beyond aesthetics — it solves problems, communicates values, and creates lasting impressions that drive business growth.</textarea>
+                        </div>
+                    </div>
+
+                    <!-- Founder Quote -->
+                    <div class="field-group p-4 border border-blue-100 rounded-lg">
+                        <h3 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                            <span>💭</span> Founder's Quote
+                        </h3>
+                        <div class="space-y-3">
+                            <textarea id="about-quote" rows="3" class="w-full px-3 py-2 border rounded-lg">Every brand has a unique story waiting to be told. Our mission is to tell that story through design that resonates, connects, and endures.</textarea>
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="text" id="about-quote-author" class="px-3 py-2 border rounded-lg" value="Macaulay Madalene">
+                                <input type="text" id="about-quote-title" class="px-3 py-2 border rounded-lg" value="Founder & Creative Director">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="field-group p-4 border border-blue-100 rounded-lg">
+                        <h3 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                            <span>📊</span> Company Stats
+                        </h3>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div>
+                                <input type="text" id="about-stat1-year" class="w-full px-3 py-2 border rounded-lg" value="2018" placeholder="Year">
+                                <input type="text" id="about-stat1-label" class="w-full px-3 py-2 border rounded-lg mt-2" value="Founded">
+                            </div>
+                            <div>
+                                <input type="text" id="about-stat2-value" class="w-full px-3 py-2 border rounded-lg" value="50+">
+                                <input type="text" id="about-stat2-label" class="w-full px-3 py-2 border rounded-lg mt-2" value="Projects">
+                            </div>
+                            <div>
+                                <input type="text" id="about-stat3-value" class="w-full px-3 py-2 border rounded-lg" value="100%">
+                                <input type="text" id="about-stat3-label" class="w-full px-3 py-2 border rounded-lg mt-2" value="Satisfaction">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Team Members -->
+                    <div class="field-group p-4 border border-blue-100 rounded-lg">
+                        <h3 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                            <span>👥</span> Team Members
+                        </h3>
+                        <div id="team-members-container" class="space-y-3">
+                            <!-- Team members will be added here dynamically -->
+                        </div>
+                        <button onclick="addTeamMember()" class="mt-3 px-4 py-2 bg-blue-50 text-blue-900 rounded-lg hover:bg-blue-100 transition text-sm">
+                            + Add Team Member
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SERVICES PAGE EDITOR -->
+            <div id="panel-services" class="editor-panel hidden space-y-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">Services Page Content</h2>
+                    <div class="flex gap-2">
+                        <button onclick="previewPage('services')" class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm">
+                            👁️ Preview
+                        </button>
+                        <button onclick="resetSection('services')" class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm">
+                            ↩️ Reset
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service Cards Editor -->
+                <div id="services-container" class="space-y-4">
+                    <!-- Service 1 -->
+                    <div class="field-group p-4 border border-blue-100 rounded-lg">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-semibold text-gray-800">Complete Brand Identity</h3>
+                            <button onclick="deleteService(0)" class="text-red-600 hover:text-red-800">🗑️</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" class="service-title w-full px-3 py-2 border rounded-lg" value="Complete Brand Identity" placeholder="Service Title">
+                            <input type="text" class="service-icon w-full px-3 py-2 border rounded-lg" value="🎨" placeholder="Icon">
+                            <div class="md:col-span-2">
+                                <textarea class="service-description w-full px-3 py-2 border rounded-lg" rows="3">Full visual systems including logos, color palettes, typography, brand guidelines, and application across all touchpoints.</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Service 2 -->
+                    <div class="field-group p-4 border border-blue-100 rounded-lg">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-semibold text-gray-800">Logo & Visual Identity</h3>
+                            <button onclick="deleteService(1)" class="text-red-600 hover:text-red-800">🗑️</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" class="service-title w-full px-3 py-2 border rounded-lg" value="Logo & Visual Identity">
+                            <input type="text" class="service-icon w-full px-3 py-2 border rounded-lg" value="✨">
+                            <div class="md:col-span-2">
+                                <textarea class="service-description w-full px-3 py-2 border rounded-lg" rows="3">Strategic logo design and comprehensive visual systems that communicate your brand's unique story and values.</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Service 3 -->
+                    <div class="field-group p-4 border border-blue-100 rounded-lg">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-semibold text-gray-800">Brand Applications</h3>
+                            <button onclick="deleteService(2)" class="text-red-600 hover:text-red-800">🗑️</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" class="service-title w-full px-3 py-2 border rounded-lg" value="Brand Applications">
+                            <input type="text" class="service-icon w-full px-3 py-2 border rounded-lg" value="📱">
+                            <div class="md:col-span-2">
+                                <textarea class="service-description w-full px-3 py-2 border rounded-lg" rows="3">Real-world implementation across business cards, stationery, packaging, digital platforms, and marketing materials.</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="addService()" class="px-4 py-2 bg-blue-50 text-blue-900 rounded-lg hover:bg-blue-100 transition">
+                    + Add New Service
+                </button>
+            </div>
+
+            <!-- GLOBAL SETTINGS EDITOR -->
+            <div id="panel-global" class="editor-panel hidden space-y-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">Global Site Settings</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- SEO Settings -->
+                    <div class="field-group p-4 border border-blue-100 rounded-lg">
+                        <h3 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                            <span>🔍</span> SEO Settings
+                        </h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Site Title</label>
+                                <input type="text" id="global-site-title" class="w-full px-3 py-2 border rounded-lg" value="MadaBrand | Premium Design Studio">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Meta Description</label>
+                                <textarea id="global-meta-description" rows="3" class="w-full px-3 py-2 border rounded-lg" maxlength="160">Premium brand design, logo design, and graphic design services in Lagos, Nigeria. Creating memorable brand identities for businesses worldwide.</textarea>
+                                <div class="character-count text-right mt-1">
+                                    <span id="global-meta-count">0</span>/160
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Keywords (comma separated)</label>
+                                <input type="text" id="global-keywords" class="w-full px-3 py-2 border rounded-lg" value="brand design, logo design, graphic design, Nigeria, Lagos">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="field-group p-4 border border-blue-100 rounded-lg">
+                        <h3 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                            <span>📞</span> Contact Information
+                        </h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <input type="email" id="global-email" class="w-full px-3 py-2 border rounded-lg" value="macaulaymadalene@gmail.com">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                                <input type="text" id="global-phone" class="w-full px-3 py-2 border rounded-lg" value="08104902357">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp</label>
+                                <input type="text" id="global-whatsapp" class="w-full px-3 py-2 border rounded-lg" value="2348104902357">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                                <textarea id="global-address" rows="2" class="w-full px-3 py-2 border rounded-lg">No 6, Simeon Edun Street, Iyana Era, Lagos, Nigeria</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Media Links -->
+                    <div class="field-group p-4 border border-blue-100 rounded-lg md:col-span-2">
+                        <h3 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                            <span>🌐</span> Social Media Links
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Instagram</label>
+                                <input type="text" id="social-instagram" class="w-full px-3 py-2 border rounded-lg" placeholder="https://instagram.com/...">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">LinkedIn</label>
+                                <input type="text" id="social-linkedin" class="w-full px-3 py-2 border rounded-lg" placeholder="https://linkedin.com/...">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Behance</label>
+                                <input type="text" id="social-behance" class="w-full px-3 py-2 border rounded-lg" placeholder="https://behance.net/...">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Dribbble</label>
+                                <input type="text" id="social-dribbble" class="w-full px-3 py-2 border rounded-lg" placeholder="https://dribbble.com/...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Theme Settings -->
+                    <div class="field-group p-4 border border-blue-100 rounded-lg md:col-span-2">
+                        <h3 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                            <span>🎨</span> Theme Colors
+                        </h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Primary Color</label>
+                                <input type="color" id="theme-primary" class="w-full h-10 border rounded-lg" value="#1e3a8a">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Secondary Color</label>
+                                <input type="color" id="theme-secondary" class="w-full h-10 border rounded-lg" value="#3b82f6">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Background Color</label>
+                                <input type="color" id="theme-background" class="w-full h-10 border rounded-lg" value="#ffffff">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Text Color</label>
+                                <input type="color" id="theme-text" class="w-full h-10 border rounded-lg" value="#1f2937">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="sticky bottom-4 mt-6 flex justify-end">
+                <button onclick="saveAllContent()" class="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-300 hover:scale-105 shadow-lg flex items-center gap-2">
+                    <span>💾</span>
+                    <span>Save All Changes</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="preview-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-900">Preview Mode</h3>
+                <button onclick="closePreview()" class="text-gray-400 hover:text-gray-600 text-2xl">×</button>
+            </div>
+            <div class="p-6" id="preview-content">
+                <!-- Preview content will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-save functionality
+        let autoSaveTimer;
+        const autoSaveIndicator = document.getElementById('auto-save-indicator');
+        
+        function triggerAutoSave() {
+            autoSaveIndicator.textContent = '⏳ Saving changes...';
+            autoSaveIndicator.classList.add('saving');
+            
+            clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(() => {
+                saveAllContent(true);
+            }, 2000);
+        }
+
+        // Add input listeners for auto-save
+        document.querySelectorAll('input, textarea, select').forEach(element => {
+            element.addEventListener('input', triggerAutoSave);
+        });
+
+        // Tab switching
+        document.querySelectorAll('.editor-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.editor-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                const tabName = this.dataset.tab;
+                document.querySelectorAll('.editor-panel').forEach(panel => panel.classList.add('hidden'));
+                document.getElementById(`panel-${tabName}`).classList.remove('hidden');
+            });
+        });
+
+        // Character counters
+        function updateCharCount(elementId, countId) {
+            const element = document.getElementById(elementId);
+            const countSpan = document.getElementById(countId);
+            if (element && countSpan) {
+                countSpan.textContent = element.value.length;
+                element.addEventListener('input', function() {
+                    countSpan.textContent = this.value.length;
+                });
+            }
+        }
+
+        updateCharCount('home-hero-description', 'home-hero-description-count');
+        updateCharCount('home-hero-badge', 'home-hero-badge-count');
+        updateCharCount('home-testimonial-text', 'home-testimonial-count');
+        updateCharCount('global-meta-description', 'global-meta-count');
+
+        // Team members management
+        let teamMemberCount = 3;
+        
+        function addTeamMember() {
+            teamMemberCount++;
+            const container = document.getElementById('team-members-container');
+            const memberDiv = document.createElement('div');
+            memberDiv.className = 'grid grid-cols-1 md:grid-cols-3 gap-3 p-3 bg-gray-50 rounded-lg';
+            memberDiv.innerHTML = `
+                <input type="text" class="team-name px-3 py-2 border rounded-lg" placeholder="Name" value="New Team Member">
+                <input type="text" class="team-role px-3 py-2 border rounded-lg" placeholder="Role" value="Designer">
+                <div class="flex gap-2">
+                    <input type="text" class="team-image flex-1 px-3 py-2 border rounded-lg" placeholder="Image URL" value="/assets/images/placeholder.jpg">
+                    <button onclick="this.closest('.grid').remove()" class="px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100">🗑️</button>
+                </div>
+            `;
+            container.appendChild(memberDiv);
+        }
+
+        // Services management
+        function addService() {
+            const container = document.getElementById('services-container');
+            const serviceDiv = document.createElement('div');
+            serviceDiv.className = 'field-group p-4 border border-blue-100 rounded-lg';
+            serviceDiv.innerHTML = `
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="font-semibold text-gray-800">New Service</h3>
+                    <button onclick="this.closest('.field-group').remove()" class="text-red-600 hover:text-red-800">🗑️</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input type="text" class="service-title w-full px-3 py-2 border rounded-lg" value="New Service" placeholder="Service Title">
+                    <input type="text" class="service-icon w-full px-3 py-2 border rounded-lg" value="✨" placeholder="Icon">
+                    <div class="md:col-span-2">
+                        <textarea class="service-description w-full px-3 py-2 border rounded-lg" rows="3" placeholder="Service description..."></textarea>
+                    </div>
+                </div>
+            `;
+            container.appendChild(serviceDiv);
+        }
+
+        function deleteService(index) {
+            if (confirm('Delete this service?')) {
+                const services = document.querySelectorAll('#services-container .field-group');
+                if (services[index]) {
+                    services[index].remove();
+                }
+            }
+        }
+
+        // Save all content
+        function saveAllContent(isAutoSave = false) {
+            const contentData = {
+                home: {
+                    hero: {
+                        badge: document.getElementById('home-hero-badge')?.value || '',
+                        line1: document.getElementById('home-hero-line1')?.value || '',
+                        line2: document.getElementById('home-hero-line2')?.value || '',
+                        description: document.getElementById('home-hero-description')?.value || ''
+                    },
+                    cta: {
+                        primary: document.getElementById('home-cta-primary')?.value || '',
+                        primaryLink: document.getElementById('home-cta-primary-link')?.value || '',
+                        secondary: document.getElementById('home-cta-secondary')?.value || '',
+                        secondaryLink: document.getElementById('home-cta-secondary-link')?.value || ''
+                    },
+                    stats: [
+                        { value: document.getElementById('home-stat1-value')?.value || '', label: document.getElementById('home-stat1-label')?.value || '' },
+                        { value: document.getElementById('home-stat2-value')?.value || '', label: document.getElementById('home-stat2-label')?.value || '' },
+                        { value: document.getElementById('home-stat3-value')?.value || '', label: document.getElementById('home-stat3-label')?.value || '' },
+                        { value: document.getElementById('home-stat4-value')?.value || '', label: document.getElementById('home-stat4-label')?.value || '' }
+                    ],
+                    testimonial: {
+                        text: document.getElementById('home-testimonial-text')?.value || '',
+                        author: document.getElementById('home-testimonial-author')?.value || '',
+                        title: document.getElementById('home-testimonial-title')?.value || ''
+                    }
+                },
+                about: {
+                    title: document.getElementById('about-title')?.value || '',
+                    paragraph1: document.getElementById('about-paragraph1')?.value || '',
+                    paragraph2: document.getElementById('about-paragraph2')?.value || '',
+                    quote: {
+                        text: document.getElementById('about-quote')?.value || '',
+                        author: document.getElementById('about-quote-author')?.value || '',
+                        title: document.getElementById('about-quote-title')?.value || ''
+                    },
+                    stats: [
+                        { value: document.getElementById('about-stat1-year')?.value || '', label: document.getElementById('about-stat1-label')?.value || '' },
+                        { value: document.getElementById('about-stat2-value')?.value || '', label: document.getElementById('about-stat2-label')?.value || '' },
+                        { value: document.getElementById('about-stat3-value')?.value || '', label: document.getElementById('about-stat3-label')?.value || '' }
+                    ]
+                },
+                global: {
+                    siteTitle: document.getElementById('global-site-title')?.value || '',
+                    metaDescription: document.getElementById('global-meta-description')?.value || '',
+                    keywords: document.getElementById('global-keywords')?.value || '',
+                    email: document.getElementById('global-email')?.value || '',
+                    phone: document.getElementById('global-phone')?.value || '',
+                    whatsapp: document.getElementById('global-whatsapp')?.value || '',
+                    address: document.getElementById('global-address')?.value || '',
+                    social: {
+                        instagram: document.getElementById('social-instagram')?.value || '',
+                        linkedin: document.getElementById('social-linkedin')?.value || '',
+                        behance: document.getElementById('social-behance')?.value || '',
+                        dribbble: document.getElementById('social-dribbble')?.value || ''
+                    },
+                    theme: {
+                        primary: document.getElementById('theme-primary')?.value || '#1e3a8a',
+                        secondary: document.getElementById('theme-secondary')?.value || '#3b82f6',
+                        background: document.getElementById('theme-background')?.value || '#ffffff',
+                        text: document.getElementById('theme-text')?.value || '#1f2937'
+                    }
+                },
+                lastUpdated: new Date().toISOString()
+            };
+
+            // Save to localStorage
+            localStorage.setItem('madabrandContent', JSON.stringify(contentData));
+            
+            // Also save individual settings for backward compatibility
+            localStorage.setItem('madabrandSiteTitle', contentData.global.siteTitle);
+            localStorage.setItem('madabrandMetaDescription', contentData.global.metaDescription);
+            localStorage.setItem('madabrandEmail', contentData.global.email);
+            localStorage.setItem('madabrandPhone', contentData.global.phone);
+            
+            // Update indicator
+            autoSaveIndicator.textContent = '💾 All changes saved';
+            autoSaveIndicator.classList.remove('saving');
+            
+            if (!isAutoSave) {
+                alert('✅ All content saved successfully!');
+            }
+        }
+
+        // Load saved content
+        function loadSavedContent() {
+            const saved = localStorage.getItem('madabrandContent');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    
+                    // Load home page data
+                    if (data.home) {
+                        document.getElementById('home-hero-badge').value = data.home.hero?.badge || '';
+                        document.getElementById('home-hero-line1').value = data.home.hero?.line1 || '';
+                        document.getElementById('home-hero-line2').value = data.home.hero?.line2 || '';
+                        document.getElementById('home-hero-description').value = data.home.hero?.description || '';
+                        
+                        document.getElementById('home-cta-primary').value = data.home.cta?.primary || '';
+                        document.getElementById('home-cta-primary-link').value = data.home.cta?.primaryLink || '';
+                        document.getElementById('home-cta-secondary').value = data.home.cta?.secondary || '';
+                        document.getElementById('home-cta-secondary-link').value = data.home.cta?.secondaryLink || '';
+                        
+                        if (data.home.stats) {
+                            document.getElementById('home-stat1-value').value = data.home.stats[0]?.value || '';
+                            document.getElementById('home-stat1-label').value = data.home.stats[0]?.label || '';
+                            document.getElementById('home-stat2-value').value = data.home.stats[1]?.value || '';
+                            document.getElementById('home-stat2-label').value = data.home.stats[1]?.label || '';
+                            document.getElementById('home-stat3-value').value = data.home.stats[2]?.value || '';
+                            document.getElementById('home-stat3-label').value = data.home.stats[2]?.label || '';
+                            document.getElementById('home-stat4-value').value = data.home.stats[3]?.value || '';
+                            document.getElementById('home-stat4-label').value = data.home.stats[3]?.label || '';
+                        }
+                        
+                        if (data.home.testimonial) {
+                            document.getElementById('home-testimonial-text').value = data.home.testimonial.text || '';
+                            document.getElementById('home-testimonial-author').value = data.home.testimonial.author || '';
+                            document.getElementById('home-testimonial-title').value = data.home.testimonial.title || '';
+                        }
+                    }
+                    
+                    // Load about page data
+                    if (data.about) {
+                        document.getElementById('about-title').value = data.about.title || '';
+                        document.getElementById('about-paragraph1').value = data.about.paragraph1 || '';
+                        document.getElementById('about-paragraph2').value = data.about.paragraph2 || '';
+                        
+                        if (data.about.quote) {
+                            document.getElementById('about-quote').value = data.about.quote.text || '';
+                            document.getElementById('about-quote-author').value = data.about.quote.author || '';
+                            document.getElementById('about-quote-title').value = data.about.quote.title || '';
+                        }
+                        
+                        if (data.about.stats) {
+                            document.getElementById('about-stat1-year').value = data.about.stats[0]?.value || '';
+                            document.getElementById('about-stat1-label').value = data.about.stats[0]?.label || '';
+                            document.getElementById('about-stat2-value').value = data.about.stats[1]?.value || '';
+                            document.getElementById('about-stat2-label').value = data.about.stats[1]?.label || '';
+                            document.getElementById('about-stat3-value').value = data.about.stats[2]?.value || '';
+                            document.getElementById('about-stat3-label').value = data.about.stats[2]?.label || '';
+                        }
+                    }
+                    
+                    // Load global settings
+                    if (data.global) {
+                        document.getElementById('global-site-title').value = data.global.siteTitle || '';
+                        document.getElementById('global-meta-description').value = data.global.metaDescription || '';
+                        document.getElementById('global-keywords').value = data.global.keywords || '';
+                        document.getElementById('global-email').value = data.global.email || '';
+                        document.getElementById('global-phone').value = data.global.phone || '';
+                        document.getElementById('global-whatsapp').value = data.global.whatsapp || '';
+                        document.getElementById('global-address').value = data.global.address || '';
+                        
+                        if (data.global.social) {
+                            document.getElementById('social-instagram').value = data.global.social.instagram || '';
+                            document.getElementById('social-linkedin').value = data.global.social.linkedin || '';
+                            document.getElementById('social-behance').value = data.global.social.behance || '';
+                            document.getElementById('social-dribbble').value = data.global.social.dribbble || '';
+                        }
+                        
+                        if (data.global.theme) {
+                            document.getElementById('theme-primary').value = data.global.theme.primary || '#1e3a8a';
+                            document.getElementById('theme-secondary').value = data.global.theme.secondary || '#3b82f6';
+                            document.getElementById('theme-background').value = data.global.theme.background || '#ffffff';
+                            document.getElementById('theme-text').value = data.global.theme.text || '#1f2937';
+                        }
+                    }
+                    
+                    // Update character counts
+                    ['home-hero-description', 'home-hero-badge', 'home-testimonial-text', 'global-meta-description'].forEach(id => {
+                        const element = document.getElementById(id);
+                        if (element) {
+                            const event = new Event('input');
+                            element.dispatchEvent(event);
+                        }
+                    });
+                    
+                } catch (e) {
+                    console.error('Error loading saved content:', e);
+                }
+            }
+        }
+
+        // Preview functionality
+        function previewPage(page) {
+            const modal = document.getElementById('preview-modal');
+            const previewContent = document.getElementById('preview-content');
+            
+            let html = '<div class="prose max-w-none">';
+            
+            if (page === 'home') {
+                html += `
+                    <h1 class="text-3xl font-bold text-blue-900">Home Page Preview</h1>
+                    <div class="mt-4 p-4 border rounded-lg">
+                        <p><strong>Badge:</strong> ${document.getElementById('home-hero-badge').value}</p>
+                        <p><strong>Heading:</strong> ${document.getElementById('home-hero-line1').value} ${document.getElementById('home-hero-line2').value}</p>
+                        <p><strong>Description:</strong> ${document.getElementById('home-hero-description').value}</p>
+                        <p><strong>Primary CTA:</strong> ${document.getElementById('home-cta-primary').value}</p>
+                        <p><strong>Secondary CTA:</strong> ${document.getElementById('home-cta-secondary').value}</p>
+                    </div>
+                `;
+            } else if (page === 'about') {
+                html += `
+                    <h1 class="text-3xl font-bold text-blue-900">About Page Preview</h1>
+                    <div class="mt-4 p-4 border rounded-lg">
+                        <p><strong>Title:</strong> ${document.getElementById('about-title').value}</p>
+                        <p><strong>Story:</strong> ${document.getElementById('about-paragraph1').value}</p>
+                        <p><strong>Quote:</strong> "${document.getElementById('about-quote').value}"</p>
+                        <p><strong>-</strong> ${document.getElementById('about-quote-author').value}</p>
+                    </div>
+                `;
+            } else if (page === 'services') {
+                html += `
+                    <h1 class="text-3xl font-bold text-blue-900">Services Page Preview</h1>
+                    <div class="mt-4 space-y-4">
+                `;
+                document.querySelectorAll('#services-container .field-group').forEach(service => {
+                    const title = service.querySelector('.service-title').value;
+                    const icon = service.querySelector('.service-icon').value;
+                    const desc = service.querySelector('.service-description').value;
+                    html += `
+                        <div class="p-4 border rounded-lg">
+                            <p><strong>${icon} ${title}</strong></p>
+                            <p class="text-gray-600">${desc}</p>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            } else if (page === 'global') {
+                html += `
+                    <h1 class="text-3xl font-bold text-blue-900">Global Settings Preview</h1>
+                    <div class="mt-4 p-4 border rounded-lg">
+                        <p><strong>Site Title:</strong> ${document.getElementById('global-site-title').value}</p>
+                        <p><strong>Meta Description:</strong> ${document.getElementById('global-meta-description').value}</p>
+                        <p><strong>Email:</strong> ${document.getElementById('global-email').value}</p>
+                        <p><strong>Phone:</strong> ${document.getElementById('global-phone').value}</p>
+                    </div>
+                `;
+            }
+            
+            html += '</div>';
+            previewContent.innerHTML = html;
+            modal.classList.remove('hidden');
+        }
+
+        function closePreview() {
+            document.getElementById('preview-modal').classList.add('hidden');
+        }
+
+        function resetSection(page) {
+            if (confirm(`Reset ${page} page content to default?`)) {
+                localStorage.removeItem('madabrandContent');
+                location.reload();
+            }
+        }
+
+        // Check authentication
+        if (!sessionStorage.getItem('adminAuth') && !localStorage.getItem('adminRemember')) {
+            window.location.href = '/madabrand-admin/login';
+        }
+
+        // Load saved content on page load
+        document.addEventListener('DOMContentLoaded', loadSavedContent);
+    </script>
+</body>
+</html>

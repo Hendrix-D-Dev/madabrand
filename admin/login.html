@@ -97,7 +97,7 @@
                 }
                 
                 // Redirect to admin dashboard
-                window.location.href = '/admin/';
+                window.location.href = '/madabrand-admin/';
             } else {
                 // Show error
                 const input = document.getElementById('passcode');
@@ -131,7 +131,7 @@
         
         // Check if already authenticated
         if (sessionStorage.getItem('adminAuth') === 'true' || localStorage.getItem('adminRemember') === 'true') {
-            window.location.href = '/admin/';
+            window.location.href = '/madabrand-admin/';
         }
     </script>
 </body>
