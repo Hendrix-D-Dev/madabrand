@@ -1,0 +1,64 @@
+{
+  "projects": [
+    {
+      "id": "proj-001",
+      "title": "NuelArk Construction Company",
+      "category": "branding",
+      "client": "Nuel Ark",
+      "industry": "Construction",
+      "description": "Complete brand identity system for a premium construction company. Geometric logo with gold-and-black palette blending architectural creativity with structural precision.",
+      "images": ["/assets/images/photo_1_2025-12-10_09-45-08.jpg", "/assets/images/photo_2_2025-12-10_09-45-08.jpg"],
+      "featured": true,
+      "dateAdded": "2025-12-10",
+      "order": 0
+    },
+    {
+      "id": "proj-002",
+      "title": "Havenbridge Development",
+      "category": "branding",
+      "client": "Haven Bridge",
+      "industry": "Real Estate",
+      "description": "Premium brand identity for a real-estate development company. Minimalist logo design with navy and gold palette reflecting quality construction and modern living.",
+      "images": ["/assets/images/photo_3_2025-12-10_09-45-08.jpg", "/assets/images/photo_4_2025-12-10_09-45-08.jpg"],
+      "featured": true,
+      "dateAdded": "2025-12-10",
+      "order": 1
+    },
+    {
+      "id": "proj-003",
+      "title": "ADIVAS Eco-Brand",
+      "category": "branding",
+      "client": "Adi Vas",
+      "industry": "Sustainability",
+      "description": "Nature-inspired brand identity for sustainable living products. Leaf symbol design with earthy color palette representing growth, harmony, and environmental consciousness.",
+      "images": ["/assets/images/photo_5_2025-12-10_09-49-24.jpg", "/assets/images/photo_6_2025-12-10_09-49-24.jpg"],
+      "featured": true,
+      "dateAdded": "2025-12-10",
+      "order": 2
+    },
+    {
+      "id": "proj-004",
+      "title": "Logo Collection",
+      "category": "logo",
+      "client": "Various",
+      "industry": "Multiple",
+      "description": "Selection of custom logo designs created for various Nigerian and international clients, demonstrating creative versatility and strategic thinking.",
+      "images": ["/assets/images/photo_8_2025-12-10_09-49-24.jpg"],
+      "featured": false,
+      "dateAdded": "2025-12-10",
+      "order": 3
+    },
+    {
+      "id": "proj-005",
+      "title": "Brand Guidelines System",
+      "category": "branding",
+      "client": "Multiple",
+      "industry": "Documentation",
+      "description": "Comprehensive brand guideline documents ensuring consistent application across all business touchpoints, from print materials to digital platforms.",
+      "images": ["/assets/images/photo_9_2025-12-10_09-49-24.jpg"],
+      "featured": false,
+      "dateAdded": "2025-12-10",
+      "order": 4
+    }
+  ]
+}
