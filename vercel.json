@@ -38,6 +38,14 @@
       "destination": "/admin/:path*"
     },
     {
+      "source": "/admin",
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "/admin/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
@@ -61,6 +69,16 @@
     {
       "source": "/pages/contact.html",
       "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/madabrand-admin",
+      "destination": "/madabrand-admin/",
+      "permanent": true
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin/",
       "permanent": true
     }
   ],
