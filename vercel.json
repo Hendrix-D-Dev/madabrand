@@ -30,6 +30,14 @@
       "destination": "/components/:component.html"
     },
     {
+      "source": "/madabrand-admin",
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/madabrand-admin/:path*",
+      "destination": "/admin/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
@@ -75,6 +83,23 @@
         {
           "key": "Referrer-Policy",
           "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    },
+    {
+      "source": "/admin/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
+        },
+        {
+          "key": "Pragma",
+          "value": "no-cache"
+        },
+        {
+          "key": "Expires",
+          "value": "0"
         }
       ]
     }

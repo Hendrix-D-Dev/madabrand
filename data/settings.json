@@ -1,0 +1,29 @@
+{
+  "admin": {
+    "passcode": "MADA2024",
+    "sessionTimeout": 30,
+    "lastLogin": "2025-02-14T10:30:00.000Z",
+    "allowedIPs": []
+  },
+  "site": {
+    "title": "MadaBrand",
+    "tagline": "Premium Design Studio",
+    "description": "Premium brand design, logo design, and graphic design services in Lagos, Nigeria",
+    "keywords": "brand design, logo design, graphic design, Nigeria, Lagos",
+    "author": "MadaBrand"
+  },
+  "theme": {
+    "primaryColor": "#1e3a8a",
+    "secondaryColor": "#3b82f6",
+    "backgroundColor": "#ffffff",
+    "textColor": "#1f2937",
+    "accentColor": "#1e40af",
+    "fontFamily": "Inter, Lato, sans-serif"
+  },
+  "backup": {
+    "autoBackup": true,
+    "backupFrequency": "daily",
+    "lastBackup": "2025-02-14T03:00:00.000Z",
+    "maxBackups": 30
+  }
+}
