@@ -751,20 +751,83 @@
             }, 3000);
         }
 
-        // Save all changes to live site
-        async function saveAllChanges() {
-            showToast('Publishing changes to live site...', 'info');
-            
-            // In production, this would:
-            // 1. Upload images to /assets/images/
-            // 2. Update portfolio.html with new projects
-            // 3. Trigger rebuild on Vercel
-            // 4. Clear cache
-            
-            setTimeout(() => {
-                showToast('Changes published successfully!', 'success');
-            }, 2000);
+       // Save all changes to live site
+async function saveAllChanges() {
+    showToast('Publishing changes to live site...', 'info');
+    
+    try {
+        // Save all projects to API
+        for (const project of projects) {
+            if (project.id) {
+                await AdminAPI.updateProject(project.id, project);
+            } else {
+                await AdminAPI.addProject(project);
+            }
         }
+        
+        showToast('✅ Changes published! Site will update in 1-2 minutes.', 'success');
+    } catch (error) {
+        console.error('Publish error:', error);
+        showToast('❌ Failed to publish changes. Check API connection.', 'error');
+    }
+}
+
+// Update the form submission handler
+document.getElementById('project-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const newProject = {
+        id: Date.now(),
+        title: document.getElementById('project-title').value,
+        category: document.getElementById('project-category').value,
+        client: document.getElementById('project-client').value,
+        industry: document.getElementById('project-industry').value,
+        description: document.getElementById('project-description').value,
+        images: uploadedImages.map(img => img.preview),
+        featured: document.getElementById('project-featured').checked
+    };
+    
+    try {
+        // Save to API
+        await AdminAPI.addProject(newProject);
+        
+        // Update local array
+        projects.push(newProject);
+        
+        showToast('Project published successfully!', 'success');
+        resetForm();
+        renderProjects();
+        updateStats();
+    } catch (error) {
+        console.error('Save error:', error);
+        showToast('Failed to publish. Saved locally only.', 'warning');
+        
+        // Fallback to localStorage
+        projects.push(newProject);
+        localStorage.setItem('madabrandPortfolio', JSON.stringify(projects));
+        resetForm();
+        renderProjects();
+        updateStats();
+    }
+});
+
+// Update delete function
+async function deleteProject(id) {
+    if (confirm('Delete this project? This action cannot be undone.')) {
+        try {
+            await AdminAPI.deleteProject(id);
+            projects = projects.filter(p => p.id !== id);
+            showToast('Project deleted and site updated', 'success');
+        } catch (error) {
+            // Fallback
+            projects = projects.filter(p => p.id !== id);
+            localStorage.setItem('madabrandPortfolio', JSON.stringify(projects));
+            showToast('Deleted locally only', 'warning');
+        }
+        renderProjects();
+        updateStats();
+    }
+}
 
         // Reset form
         function resetForm() {
