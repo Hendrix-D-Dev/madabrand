@@ -214,6 +214,11 @@
             animation: borderFlow 3s ease infinite;
             opacity: 0.5;
         }
+
+        /* FAQ rotate animation */
+        .rotate-180 {
+            transform: rotate(180deg);
+        }
     </style>
 </head>
 <body class="font-body bg-blue-950 text-white overflow-x-hidden">
@@ -592,7 +597,7 @@
         </div>
     </section>
 
-    <!-- FAQ Section - Enhanced with new revision answer -->
+    <!-- FAQ Section - Updated with new revision answer -->
     <section class="relative py-12 lg:py-20 overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-b from-blue-900 via-blue-950 to-blue-900"></div>
         <div class="absolute inset-0 opacity-20 pattern-dots"></div>
@@ -610,65 +615,73 @@
             <div class="max-w-4xl mx-auto space-y-5">
                 <!-- FAQ Item 1 -->
                 <div class="faq-card glass-card rounded-2xl border border-cyan-500/30">
-                    <button class="w-full p-8 text-left group">
+                    <button class="faq-button w-full p-8 text-left group" data-faq="1">
                         <h3 class="font-bold text-2xl flex justify-between items-center text-white group-hover:text-cyan-300 transition-colors">
                             What's your design process like?
-                            <span class="text-cyan-400 text-3xl group-hover:rotate-180 transition-transform duration-500">+</span>
+                            <span class="faq-icon text-cyan-400 text-3xl transition-transform duration-500">+</span>
                         </h3>
-                        <p class="text-blue-100/80 mt-4 hidden text-lg leading-relaxed">
+                    </button>
+                    <div class="faq-content hidden px-8 pb-8">
+                        <p class="text-blue-100/80 text-lg leading-relaxed">
                             Our process includes discovery, strategy, concept development, refinement, and delivery. We work closely with you at every stage to ensure the final result exceeds expectations. Each project begins with a comprehensive consultation to understand your vision, followed by strategic planning, creative execution, and final delivery with full support.
                         </p>
-                    </button>
+                    </div>
                 </div>
                 
                 <!-- FAQ Item 2 -->
                 <div class="faq-card glass-card rounded-2xl border border-blue-400/30">
-                    <button class="w-full p-8 text-left group">
+                    <button class="faq-button w-full p-8 text-left group" data-faq="2">
                         <h3 class="font-bold text-2xl flex justify-between items-center text-white group-hover:text-blue-300 transition-colors">
                             How long does a typical project take?
-                            <span class="text-blue-400 text-3xl group-hover:rotate-180 transition-transform duration-500">+</span>
+                            <span class="faq-icon text-blue-400 text-3xl transition-transform duration-500">+</span>
                         </h3>
-                        <p class="text-blue-100/80 mt-4 hidden text-lg leading-relaxed">
+                    </button>
+                    <div class="faq-content hidden px-8 pb-8">
+                        <p class="text-blue-100/80 text-lg leading-relaxed">
                             Timelines vary based on project scope. Logo design typically takes 1-2 weeks, while complete brand identity projects take 3-5 weeks. We'll provide a detailed timeline during our consultation to ensure alignment with your goals.
                         </p>
-                    </button>
+                    </div>
                 </div>
                 
                 <!-- FAQ Item 3 -->
                 <div class="faq-card glass-card rounded-2xl border border-green-400/30">
-                    <button class="w-full p-8 text-left group">
+                    <button class="faq-button w-full p-8 text-left group" data-faq="3">
                         <h3 class="font-bold text-2xl flex justify-between items-center text-white group-hover:text-green-300 transition-colors">
                             Do you accept payments in Naira?
-                            <span class="text-green-400 text-3xl group-hover:rotate-180 transition-transform duration-500">+</span>
+                            <span class="faq-icon text-green-400 text-3xl transition-transform duration-500">+</span>
                         </h3>
-                        <p class="text-blue-100/80 mt-4 hidden text-lg leading-relaxed">
+                    </button>
+                    <div class="faq-content hidden px-8 pb-8">
+                        <p class="text-blue-100/80 text-lg leading-relaxed">
                             Yes! We accept payments in both Nigerian Naira (₦) and US Dollars ($). For local clients, we prefer bank transfers in Naira. International clients can pay via wire transfer or PayPal.
                         </p>
-                    </button>
+                    </div>
                 </div>
                 
-                <!-- FAQ Item 4 - Updated with new revision information -->
+                <!-- FAQ Item 4 - Updated with new revision answer -->
                 <div class="faq-card glass-card rounded-2xl border border-amber-400/30">
-                    <button class="w-full p-8 text-left group">
+                    <button class="faq-button w-full p-8 text-left group" data-faq="4">
                         <h3 class="font-bold text-2xl flex justify-between items-center text-white group-hover:text-amber-300 transition-colors">
                             Do you offer revisions?
-                            <span class="text-amber-400 text-3xl group-hover:rotate-180 transition-transform duration-500">+</span>
+                            <span class="faq-icon text-amber-400 text-3xl transition-transform duration-500">+</span>
                         </h3>
-                        <div class="mt-4 hidden">
-                            <p class="text-blue-100/80 text-lg leading-relaxed mb-4">
-                                Yes. Each package includes up to <span class="text-amber-300 font-bold text-xl">2–3 revision rounds</span> during the design phase to ensure the final result aligns with your vision. 
+                    </button>
+                    <div class="faq-content hidden px-8 pb-8">
+                        <div class="space-y-4">
+                            <p class="text-blue-100/80 text-lg leading-relaxed">
+                                Yes. Each package includes up to <span class="text-amber-300 font-bold text-xl">2–3 revision rounds</span> during the design phase to ensure the final result aligns with your vision.
                             </p>
                             <div class="p-6 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-xl border border-amber-400/30">
                                 <p class="text-white text-lg leading-relaxed">
                                     <span class="text-amber-300 font-bold">Additional revisions</span> can be requested at an agreed fee. Our goal is to create a brand identity that you love and that effectively communicates your message.
                                 </p>
                             </div>
-                            <div class="mt-4 flex items-center text-sm text-blue-200/70">
-                                <span class="mr-2 text-amber-400">💡</span>
-                                We're committed to your complete satisfaction
+                            <div class="flex items-center text-sm text-blue-200/70">
+                                <span class="mr-2 text-amber-400 text-xl">💡</span>
+                                <span>We're committed to your complete satisfaction and will work with you until you're happy with the result.</span>
                             </div>
                         </div>
-                    </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -946,38 +959,41 @@
 
         // FAQ toggle functionality
         function initFAQ() {
-            document.querySelectorAll('.faq-card').forEach(faqItem => {
-                const toggleBtn = faqItem.querySelector('button');
-                const content = faqItem.querySelector('p, div');
-                const icon = faqItem.querySelector('span.text-cyan-400, span.text-blue-400, span.text-green-400, span.text-amber-400');
-                
-                if (toggleBtn && content && icon) {
-                    toggleBtn.addEventListener('click', () => {
-                        const isHidden = content.classList.contains('hidden');
-                        
-                        // Close other FAQs
-                        document.querySelectorAll('.faq-card p, .faq-card div').forEach(item => {
-                            if (item !== content) {
-                                item.classList.add('hidden');
-                            }
-                        });
-                        document.querySelectorAll('.faq-card span.text-cyan-400, .faq-card span.text-blue-400, .faq-card span.text-green-400, .faq-card span.text-amber-400').forEach(otherIcon => {
-                            if (otherIcon !== icon) {
+            document.querySelectorAll('.faq-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const faqCard = this.closest('.faq-card');
+                    const content = faqCard.querySelector('.faq-content');
+                    const icon = this.querySelector('.faq-icon');
+                    
+                    // Close other FAQs
+                    document.querySelectorAll('.faq-card').forEach(card => {
+                        if (card !== faqCard) {
+                            const otherContent = card.querySelector('.faq-content');
+                            const otherIcon = card.querySelector('.faq-icon');
+                            otherContent.classList.add('hidden');
+                            if (otherIcon) {
                                 otherIcon.textContent = '+';
+                                otherIcon.classList.remove('rotate-180');
                             }
-                        });
-                        
-                        // Toggle current
-                        content.classList.toggle('hidden');
-                        icon.textContent = content.classList.contains('hidden') ? '+' : '−';
-                        
-                        // Add highlight effect
-                        faqItem.classList.add('border-cyan-400');
-                        setTimeout(() => {
-                            faqItem.classList.remove('border-cyan-400');
-                        }, 300);
+                        }
                     });
-                }
+                    
+                    // Toggle current
+                    content.classList.toggle('hidden');
+                    if (content.classList.contains('hidden')) {
+                        icon.textContent = '+';
+                        icon.classList.remove('rotate-180');
+                    } else {
+                        icon.textContent = '−';
+                        icon.classList.add('rotate-180');
+                    }
+                    
+                    // Add highlight effect
+                    faqCard.classList.add('border-cyan-400');
+                    setTimeout(() => {
+                        faqCard.classList.remove('border-cyan-400');
+                    }, 300);
+                });
             });
         }
 
