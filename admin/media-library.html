@@ -5,217 +5,319 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Media Library | MadaBrand Admin</title>
     <link href="/dist/output.css" rel="stylesheet">
-    <script src="/scripts/admin/admin-auth.js" defer></script>
+    
+    <!-- Three.js and Vanta.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
+    
     <style>
-        .media-card {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0f172a;
+            overflow-x: hidden;
+        }
+
+        #vanta-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.8;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(30, 58, 138, 0.1);
+            box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
         }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 40px -12px rgba(30, 58, 138, 0.3);
+            border-color: rgba(30, 58, 138, 0.3);
+        }
+
+        .media-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            background: white;
+        }
+
         .media-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(0, 51, 102, 0.1), 0 10px 10px -5px rgba(0, 51, 102, 0.04);
+            box-shadow: 0 20px 25px -5px rgba(30, 58, 138, 0.2);
         }
+
         .media-card.selected {
             border: 2px solid #1e3a8a;
             transform: scale(1.02);
+            box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.2);
         }
+
         .upload-area {
             border: 2px dashed #cbd5e1;
+            background: #f8fafc;
             transition: all 0.3s ease;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
-        .upload-area:hover, .upload-area.dragover {
+
+        .upload-area::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(30, 58, 138, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .upload-area:hover,
+        .upload-area.dragover {
             border-color: #1e3a8a;
-            background-color: rgba(30, 58, 138, 0.05);
+            background: rgba(30, 58, 138, 0.05);
+            transform: scale(1.02);
         }
+
         .image-preview {
             object-fit: cover;
             width: 100%;
             height: 100%;
-            transition: transform 0.3s ease;
+            transition: transform 0.5s ease;
         }
+
+        .media-card:hover .image-preview {
+            transform: scale(1.1);
+        }
+
+        .main-content {
+            margin-left: 288px;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+            transition: width 0.3s ease;
+        }
+
         .folder-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 1rem;
         }
-        .animate-pulse-slow {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
     </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Admin Navigation -->
-    <nav class="bg-gradient-to-r from-blue-900 to-blue-800 text-white shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-4">
-                <div class="flex items-center space-x-4">
-                    <span class="text-2xl">🖼️</span>
-                    <span class="font-bold text-xl">Media Library</span>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <span id="storage-indicator" class="text-sm bg-white/20 px-3 py-1 rounded-full">
-                        📊 0 MB / 100 MB
-                    </span>
-                    <a href="/madabrand-admin/" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition">
-                        ← Dashboard
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Container -->
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Upload Area -->
-        <div class="bg-white rounded-xl shadow-md border border-blue-100 p-6 mb-8">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <span>📤</span>
-                Upload Images
-            </h2>
-            
-            <!-- Upload Drop Zone -->
-            <div id="upload-area" class="upload-area rounded-xl p-8 text-center cursor-pointer">
-                <input type="file" id="file-input" multiple accept="image/*" class="hidden">
-                <div class="space-y-4">
-                    <div class="text-5xl text-gray-400">📸</div>
+<body>
+    <!-- Vanta Background -->
+    <div id="vanta-bg"></div>
+    
+    <!-- Admin Layout -->
+    <div class="flex">
+        <!-- Navigation Sidebar -->
+        <div id="nav-container" class="fixed left-0 top-0 h-full z-20"></div>
+        
+        <!-- Main Content -->
+        <main class="main-content flex-1">
+            <!-- Top Bar -->
+            <div class="glass-card rounded-2xl p-4 mb-8 sticky top-4 z-10">
+                <div class="flex justify-between items-center">
                     <div>
-                        <p class="text-gray-700 font-medium">Drag & drop images here or click to browse</p>
-                        <p class="text-sm text-gray-500 mt-1">Supports: JPG, PNG, GIF, WebP (Max 5MB each)</p>
+                        <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent">Media Library</h1>
+                        <p class="text-gray-600 mt-1">Manage your images and media files</p>
                     </div>
-                    <button onclick="document.getElementById('file-input').click()" class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition">
-                        Choose Files
-                    </button>
+                    <div class="flex items-center space-x-4">
+                        <span id="storage-indicator" class="px-4 py-2 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-xl text-sm font-medium animate-pulse">
+                            📊 0 MB / 100 MB
+                        </span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Upload Progress -->
-            <div id="upload-progress" class="hidden mt-4 space-y-2">
-                <div class="flex justify-between text-sm">
-                    <span>Uploading...</span>
-                    <span id="upload-percent">0%</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div id="upload-bar" class="bg-blue-900 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Media Toolbar -->
-        <div class="bg-white rounded-xl shadow-md border border-blue-100 p-4 mb-6">
-            <div class="flex flex-wrap items-center justify-between gap-4">
-                <div class="flex items-center gap-4">
-                    <button onclick="selectAll()" class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm">
-                        Select All
-                    </button>
-                    <button onclick="deselectAll()" class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm">
-                        Deselect
-                    </button>
-                    <button onclick="deleteSelected()" class="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition text-sm">
-                        🗑️ Delete Selected (<span id="selected-count">0</span>)
-                    </button>
-                </div>
-                <div class="flex items-center gap-4">
-                    <select id="filter-type" onchange="filterMedia()" class="px-3 py-1.5 border rounded-lg text-sm">
-                        <option value="all">All Images</option>
-                        <option value="jpg">JPG</option>
-                        <option value="png">PNG</option>
-                        <option value="gif">GIF</option>
-                        <option value="webp">WebP</option>
-                    </select>
-                    <input type="text" id="search-media" placeholder="Search images..." 
-                           class="px-3 py-1.5 border rounded-lg text-sm w-64"
-                           oninput="searchMedia()">
-                </div>
-            </div>
-        </div>
-
-        <!-- Media Grid -->
-        <div class="bg-white rounded-xl shadow-md border border-blue-100 p-6">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <span>🖼️</span>
-                    All Images
+            <!-- Upload Area -->
+            <div class="glass-card rounded-2xl p-6 mb-8">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <span class="w-1 h-6 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
+                    Upload Images
                 </h2>
-                <div class="flex items-center gap-2">
-                    <button onclick="changeView('grid')" class="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition" title="Grid View">
-                        ⊞
-                    </button>
-                    <button onclick="changeView('list')" class="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition" title="List View">
-                        ☰
-                    </button>
+                
+                <!-- Upload Drop Zone -->
+                <div id="upload-area" class="upload-area rounded-2xl p-8 text-center cursor-pointer">
+                    <input type="file" id="file-input" multiple accept="image/*" class="hidden">
+                    <div class="space-y-4 relative z-10">
+                        <div class="text-6xl text-blue-900 animate-bounce">📸</div>
+                        <div>
+                            <p class="text-gray-700 font-medium text-lg">Drag & drop images here or click to browse</p>
+                            <p class="text-sm text-gray-500 mt-1">Supports: JPG, PNG, GIF, WebP (Max 5MB each)</p>
+                        </div>
+                        <button onclick="document.getElementById('file-input').click()" class="px-6 py-3 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-xl hover:scale-105 transition-all duration-300 shadow-lg">
+                            Choose Files
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Upload Progress -->
+                <div id="upload-progress" class="hidden mt-6">
+                    <div class="flex justify-between text-sm mb-2">
+                        <span class="text-gray-600">Uploading...</span>
+                        <span id="upload-percent" class="font-semibold text-blue-900">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-3">
+                        <div id="upload-bar" class="progress-bar h-3 rounded-full" style="width: 0%"></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Media Items Container -->
-            <div id="media-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                <!-- Media items will be loaded here -->
-                <div class="text-center py-12 col-span-full">
-                    <p class="text-gray-500">Loading media library...</p>
+            <!-- Media Toolbar -->
+            <div class="glass-card rounded-2xl p-4 mb-6">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <button onclick="selectAll()" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all hover:scale-105 text-sm font-medium">
+                            Select All
+                        </button>
+                        <button onclick="deselectAll()" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all hover:scale-105 text-sm font-medium">
+                            Deselect
+                        </button>
+                        <button onclick="deleteSelected()" class="px-4 py-2 bg-red-100 text-red-700 rounded-xl hover:bg-red-200 transition-all hover:scale-105 text-sm font-medium">
+                            🗑️ Delete Selected (<span id="selected-count">0</span>)
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <select id="filter-type" onchange="filterMedia()" class="px-4 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-900">
+                            <option value="all">All Images</option>
+                            <option value="jpg">JPG</option>
+                            <option value="png">PNG</option>
+                            <option value="gif">GIF</option>
+                            <option value="webp">WebP</option>
+                        </select>
+                        <div class="relative">
+                            <input type="text" id="search-media" placeholder="Search images..." 
+                                   class="pl-10 pr-4 py-2 border border-gray-200 rounded-xl text-sm w-64 focus:ring-2 focus:ring-blue-900"
+                                   oninput="searchMedia()">
+                            <svg class="w-4 h-4 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <button onclick="changeView('grid')" class="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition" title="Grid View">
+                            ⊞
+                        </button>
+                        <button onclick="changeView('list')" class="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition" title="List View">
+                            ☰
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Empty State -->
-            <div id="empty-state" class="hidden text-center py-12">
-                <div class="text-6xl mb-4">📷</div>
-                <h3 class="text-xl font-medium text-gray-700 mb-2">No images yet</h3>
-                <p class="text-gray-500 mb-4">Upload your first image to get started</p>
-                <button onclick="document.getElementById('file-input').click()" class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition">
-                    Upload Now
-                </button>
-            </div>
+            <!-- Media Grid -->
+            <div class="glass-card rounded-2xl p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                        <span class="w-1 h-5 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
+                        All Images
+                    </h2>
+                </div>
 
-            <!-- Load More -->
-            <div id="load-more-container" class="hidden text-center mt-8">
-                <button onclick="loadMore()" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
-                    Load More Images
-                </button>
+                <!-- Media Items Container -->
+                <div id="media-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    <!-- Media items will be loaded here -->
+                    <div class="text-center py-12 col-span-full">
+                        <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-900 border-t-transparent"></div>
+                        <p class="text-gray-500 mt-2">Loading media library...</p>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="empty-state" class="hidden text-center py-12">
+                    <div class="text-6xl mb-4 animate-bounce">📷</div>
+                    <h3 class="text-xl font-medium text-gray-700 mb-2">No images yet</h3>
+                    <p class="text-gray-500 mb-6">Upload your first image to get started</p>
+                    <button onclick="document.getElementById('file-input').click()" class="px-6 py-3 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-xl hover:scale-105 transition-all duration-300 shadow-lg">
+                        Upload Now
+                    </button>
+                </div>
+
+                <!-- Load More -->
+                <div id="load-more-container" class="hidden text-center mt-8">
+                    <button onclick="loadMore()" class="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all hover:scale-105">
+                        Load More Images
+                    </button>
+                </div>
             </div>
-        </div>
+        </main>
     </div>
 
     <!-- Image Preview Modal -->
-    <div id="preview-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
-                <h3 class="text-xl font-bold text-gray-900">Image Preview</h3>
-                <button onclick="closePreviewModal()" class="text-gray-400 hover:text-gray-600 text-2xl">×</button>
+    <div id="preview-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto transform scale-95 transition-all duration-300" id="modal-content">
+            <div class="sticky top-0 bg-gradient-to-r from-blue-900 to-blue-800 text-white px-6 py-4 flex justify-between items-center">
+                <h3 class="text-xl font-bold">Image Preview</h3>
+                <button onclick="closePreviewModal()" class="text-white/80 hover:text-white text-2xl transition-transform hover:scale-110">×</button>
             </div>
             <div class="p-6">
-                <div id="preview-image-container" class="mb-6">
-                    <img id="preview-image" src="" alt="Preview" class="max-w-full max-h-96 mx-auto rounded-lg">
+                <div id="preview-image-container" class="mb-6 rounded-xl overflow-hidden shadow-lg">
+                    <img id="preview-image" src="" alt="Preview" class="w-full h-auto">
                 </div>
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
                         <div class="flex gap-2">
                             <input type="text" id="preview-url" readonly class="flex-1 px-3 py-2 bg-gray-50 border rounded-lg font-mono text-sm">
-                            <button onclick="copyToClipboard()" class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition">
+                            <button onclick="copyToClipboard()" class="px-4 py-2 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-lg hover:scale-105 transition-all">
                                 Copy
                             </button>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-4 text-sm">
-                        <div class="p-3 bg-gray-50 rounded-lg">
+                        <div class="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg">
                             <span class="font-medium">Filename:</span> <span id="preview-filename"></span>
                         </div>
-                        <div class="p-3 bg-gray-50 rounded-lg">
+                        <div class="p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
                             <span class="font-medium">Size:</span> <span id="preview-size"></span>
                         </div>
-                        <div class="p-3 bg-gray-50 rounded-lg">
+                        <div class="p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg">
                             <span class="font-medium">Dimensions:</span> <span id="preview-dimensions"></span>
                         </div>
-                        <div class="p-3 bg-gray-50 rounded-lg">
+                        <div class="p-3 bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg">
                             <span class="font-medium">Type:</span> <span id="preview-type"></span>
                         </div>
                     </div>
                     <div class="flex justify-end gap-3 pt-4 border-t">
-                        <button onclick="downloadImage()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                        <button onclick="downloadImage()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 hover:scale-105 transition-all">
                             ⬇️ Download
                         </button>
-                        <button onclick="deleteFromPreview()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                        <button onclick="deleteFromPreview()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 hover:scale-105 transition-all">
                             🗑️ Delete
                         </button>
                     </div>
@@ -225,6 +327,8 @@
     </div>
 
     <script>
+        const API_BASE = '/api';
+        
         // Media Library State
         let mediaItems = [];
         let selectedItems = new Set();
@@ -233,111 +337,137 @@
         const itemsPerPage = 24;
         let filteredItems = [];
 
-        // Load media items from localStorage
-        function loadMediaItems() {
-            const saved = localStorage.getItem('madabrandMedia');
-            if (saved) {
-                try {
+        // Check authentication
+        if (!sessionStorage.getItem('adminAuth') && !localStorage.getItem('adminRemember')) {
+            window.location.href = '/admin/login.html';
+        }
+
+        // Load navigation
+        fetch('/admin/components/nav.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('nav-container').innerHTML = data;
+                
+                // Initialize Vanta
+                VANTA.WAVES({
+                    el: "#vanta-bg",
+                    color: 0x1e3a8a,
+                    waveHeight: 20,
+                    shininess: 30,
+                    waveSpeed: 1,
+                    zoom: 0.8
+                });
+            });
+
+        // Load media items from API
+        async function loadMediaItems() {
+            try {
+                const response = await fetch(`${API_BASE}/media`, {
+                    headers: { 'Authorization': 'Bearer MADA2024' }
+                });
+                const data = await response.json();
+                mediaItems = data.files || [];
+            } catch (error) {
+                console.error('Error loading media:', error);
+                // Fallback to localStorage
+                const saved = localStorage.getItem('madabrandMedia');
+                if (saved) {
                     mediaItems = JSON.parse(saved);
-                } catch (e) {
-                    console.error('Error loading media:', e);
-                    mediaItems = [];
+                } else {
+                    // Initialize with placeholder images
+                    mediaItems = [
+                        {
+                            id: 'img-1',
+                            name: 'photo_1_2025-12-10_09-45-08.jpg',
+                            url: '/assets/images/photo_1_2025-12-10_09-45-08.jpg',
+                            type: 'image/jpeg',
+                            size: 245760,
+                            dimensions: { width: 1200, height: 800 },
+                            uploaded: '2025-12-10T09:45:08.000Z'
+                        },
+                        {
+                            id: 'img-2',
+                            name: 'photo_2_2025-12-10_09-45-08.jpg',
+                            url: '/assets/images/photo_2_2025-12-10_09-45-08.jpg',
+                            type: 'image/jpeg',
+                            size: 189440,
+                            dimensions: { width: 1200, height: 800 },
+                            uploaded: '2025-12-10T09:45:08.000Z'
+                        },
+                        {
+                            id: 'img-3',
+                            name: 'photo_3_2025-12-10_09-45-08.jpg',
+                            url: '/assets/images/photo_3_2025-12-10_09-45-08.jpg',
+                            type: 'image/jpeg',
+                            size: 210944,
+                            dimensions: { width: 1200, height: 800 },
+                            uploaded: '2025-12-10T09:45:08.000Z'
+                        },
+                        {
+                            id: 'img-4',
+                            name: 'photo_4_2025-12-10_09-45-08.jpg',
+                            url: '/assets/images/photo_4_2025-12-10_09-45-08.jpg',
+                            type: 'image/jpeg',
+                            size: 198656,
+                            dimensions: { width: 1200, height: 800 },
+                            uploaded: '2025-12-10T09:45:08.000Z'
+                        },
+                        {
+                            id: 'img-5',
+                            name: 'photo_5_2025-12-10_09-49-24.jpg',
+                            url: '/assets/images/photo_5_2025-12-10_09-49-24.jpg',
+                            type: 'image/jpeg',
+                            size: 225280,
+                            dimensions: { width: 1200, height: 800 },
+                            uploaded: '2025-12-10T09:49:24.000Z'
+                        },
+                        {
+                            id: 'img-6',
+                            name: 'photo_6_2025-12-10_09-49-24.jpg',
+                            url: '/assets/images/photo_6_2025-12-10_09-49-24.jpg',
+                            type: 'image/jpeg',
+                            size: 241664,
+                            dimensions: { width: 1200, height: 800 },
+                            uploaded: '2025-12-10T09:49:24.000Z'
+                        },
+                        {
+                            id: 'img-7',
+                            name: 'photo_7_2025-12-10_09-49-24.jpg',
+                            url: '/assets/images/photo_7_2025-12-10_09-49-24.jpg',
+                            type: 'image/jpeg',
+                            size: 233472,
+                            dimensions: { width: 1200, height: 800 },
+                            uploaded: '2025-12-10T09:49:24.000Z'
+                        },
+                        {
+                            id: 'img-8',
+                            name: 'photo_8_2025-12-10_09-49-24.jpg',
+                            url: '/assets/images/photo_8_2025-12-10_09-49-24.jpg',
+                            type: 'image/jpeg',
+                            size: 200704,
+                            dimensions: { width: 1200, height: 800 },
+                            uploaded: '2025-12-10T09:49:24.000Z'
+                        },
+                        {
+                            id: 'img-9',
+                            name: 'photo_9_2025-12-10_09-49-24.jpg',
+                            url: '/assets/images/photo_9_2025-12-10_09-49-24.jpg',
+                            type: 'image/jpeg',
+                            size: 217088,
+                            dimensions: { width: 1200, height: 800 },
+                            uploaded: '2025-12-10T09:49:24.000Z'
+                        },
+                        {
+                            id: 'img-10',
+                            name: 'photo_10_2025-12-10_09-49-24.jpg',
+                            url: '/assets/images/photo_10_2025-12-10_09-49-24.jpg',
+                            type: 'image/jpeg',
+                            size: 253952,
+                            dimensions: { width: 1200, height: 800 },
+                            uploaded: '2025-12-10T09:49:24.000Z'
+                        }
+                    ];
                 }
-            } else {
-                // Initialize with placeholder/default images
-                mediaItems = [
-                    {
-                        id: 'img-1',
-                        name: 'photo_1_2025-12-10_09-45-08.jpg',
-                        url: '/assets/images/photo_1_2025-12-10_09-45-08.jpg',
-                        type: 'image/jpeg',
-                        size: 245760, // 240KB
-                        dimensions: { width: 1200, height: 800 },
-                        uploaded: '2025-12-10T09:45:08.000Z'
-                    },
-                    {
-                        id: 'img-2',
-                        name: 'photo_2_2025-12-10_09-45-08.jpg',
-                        url: '/assets/images/photo_2_2025-12-10_09-45-08.jpg',
-                        type: 'image/jpeg',
-                        size: 189440, // 185KB
-                        dimensions: { width: 1200, height: 800 },
-                        uploaded: '2025-12-10T09:45:08.000Z'
-                    },
-                    {
-                        id: 'img-3',
-                        name: 'photo_3_2025-12-10_09-45-08.jpg',
-                        url: '/assets/images/photo_3_2025-12-10_09-45-08.jpg',
-                        type: 'image/jpeg',
-                        size: 210944, // 206KB
-                        dimensions: { width: 1200, height: 800 },
-                        uploaded: '2025-12-10T09:45:08.000Z'
-                    },
-                    {
-                        id: 'img-4',
-                        name: 'photo_4_2025-12-10_09-45-08.jpg',
-                        url: '/assets/images/photo_4_2025-12-10_09-45-08.jpg',
-                        type: 'image/jpeg',
-                        size: 198656, // 194KB
-                        dimensions: { width: 1200, height: 800 },
-                        uploaded: '2025-12-10T09:45:08.000Z'
-                    },
-                    {
-                        id: 'img-5',
-                        name: 'photo_5_2025-12-10_09-49-24.jpg',
-                        url: '/assets/images/photo_5_2025-12-10_09-49-24.jpg',
-                        type: 'image/jpeg',
-                        size: 225280, // 220KB
-                        dimensions: { width: 1200, height: 800 },
-                        uploaded: '2025-12-10T09:49:24.000Z'
-                    },
-                    {
-                        id: 'img-6',
-                        name: 'photo_6_2025-12-10_09-49-24.jpg',
-                        url: '/assets/images/photo_6_2025-12-10_09-49-24.jpg',
-                        type: 'image/jpeg',
-                        size: 241664, // 236KB
-                        dimensions: { width: 1200, height: 800 },
-                        uploaded: '2025-12-10T09:49:24.000Z'
-                    },
-                    {
-                        id: 'img-7',
-                        name: 'photo_7_2025-12-10_09-49-24.jpg',
-                        url: '/assets/images/photo_7_2025-12-10_09-49-24.jpg',
-                        type: 'image/jpeg',
-                        size: 233472, // 228KB
-                        dimensions: { width: 1200, height: 800 },
-                        uploaded: '2025-12-10T09:49:24.000Z'
-                    },
-                    {
-                        id: 'img-8',
-                        name: 'photo_8_2025-12-10_09-49-24.jpg',
-                        url: '/assets/images/photo_8_2025-12-10_09-49-24.jpg',
-                        type: 'image/jpeg',
-                        size: 200704, // 196KB
-                        dimensions: { width: 1200, height: 800 },
-                        uploaded: '2025-12-10T09:49:24.000Z'
-                    },
-                    {
-                        id: 'img-9',
-                        name: 'photo_9_2025-12-10_09-49-24.jpg',
-                        url: '/assets/images/photo_9_2025-12-10_09-49-24.jpg',
-                        type: 'image/jpeg',
-                        size: 217088, // 212KB
-                        dimensions: { width: 1200, height: 800 },
-                        uploaded: '2025-12-10T09:49:24.000Z'
-                    },
-                    {
-                        id: 'img-10',
-                        name: 'photo_10_2025-12-10_09-49-24.jpg',
-                        url: '/assets/images/photo_10_2025-12-10_09-49-24.jpg',
-                        type: 'image/jpeg',
-                        size: 253952, // 248KB
-                        dimensions: { width: 1200, height: 800 },
-                        uploaded: '2025-12-10T09:49:24.000Z'
-                    }
-                ];
-                localStorage.setItem('madabrandMedia', JSON.stringify(mediaItems));
             }
             
             updateStorageIndicator();
@@ -382,24 +512,24 @@
             
             if (currentView === 'grid') {
                 grid.innerHTML = itemsToShow.map(item => `
-                    <div class="media-card relative group bg-white rounded-lg border ${selectedItems.has(item.id) ? 'selected border-blue-900' : 'border-gray-200'}" data-id="${item.id}">
-                        <div class="aspect-square overflow-hidden rounded-t-lg">
+                    <div class="media-card relative group bg-white rounded-xl border ${selectedItems.has(item.id) ? 'selected border-blue-900' : 'border-gray-200'}" data-id="${item.id}">
+                        <div class="aspect-square overflow-hidden rounded-t-xl">
                             <img src="${item.url}" alt="${item.name}" class="image-preview" onclick="previewImage('${item.id}')">
                         </div>
-                        <div class="p-2">
-                            <div class="flex items-center justify-between">
-                                <input type="checkbox" class="media-checkbox rounded border-gray-300 text-blue-900" 
+                        <div class="p-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <input type="checkbox" class="media-checkbox rounded border-gray-300 text-blue-900 focus:ring-blue-900" 
                                        ${selectedItems.has(item.id) ? 'checked' : ''}
                                        onchange="toggleSelect('${item.id}')">
-                                <span class="text-xs text-gray-500">${formatFileSize(item.size)}</span>
+                                <span class="text-xs font-medium px-2 py-1 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-full">${formatFileSize(item.size)}</span>
                             </div>
-                            <p class="text-xs text-gray-700 truncate mt-1" title="${item.name}">${item.name}</p>
+                            <p class="text-xs text-gray-700 truncate font-medium" title="${item.name}">${item.name}</p>
                         </div>
-                        <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition flex gap-1">
-                            <button onclick="previewImage('${item.id}')" class="p-1 bg-white rounded shadow hover:bg-gray-100" title="Preview">
+                        <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all duration-300 flex gap-1">
+                            <button onclick="previewImage('${item.id}')" class="p-2 bg-white rounded-lg shadow-lg hover:bg-blue-50 transition-all hover:scale-110" title="Preview">
                                 👁️
                             </button>
-                            <button onclick="deleteImage('${item.id}')" class="p-1 bg-white rounded shadow hover:bg-red-100" title="Delete">
+                            <button onclick="deleteImage('${item.id}')" class="p-2 bg-white rounded-lg shadow-lg hover:bg-red-50 transition-all hover:scale-110" title="Delete">
                                 🗑️
                             </button>
                         </div>
@@ -408,24 +538,24 @@
             } else {
                 // List view
                 grid.innerHTML = itemsToShow.map(item => `
-                    <div class="media-card p-3 border rounded-lg flex items-center gap-4 ${selectedItems.has(item.id) ? 'selected border-blue-900' : 'border-gray-200'}" data-id="${item.id}">
+                    <div class="media-card p-4 border rounded-xl flex items-center gap-4 ${selectedItems.has(item.id) ? 'selected border-blue-900' : 'border-gray-200'}" data-id="${item.id}">
                         <input type="checkbox" class="media-checkbox rounded border-gray-300 text-blue-900" 
                                ${selectedItems.has(item.id) ? 'checked' : ''}
                                onchange="toggleSelect('${item.id}')">
-                        <img src="${item.url}" alt="${item.name}" class="w-16 h-16 object-cover rounded" onclick="previewImage('${item.id}')">
+                        <img src="${item.url}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg cursor-pointer hover:scale-110 transition-transform" onclick="previewImage('${item.id}')">
                         <div class="flex-1">
                             <p class="font-medium text-gray-900">${item.name}</p>
-                            <div class="flex gap-4 text-sm text-gray-500">
+                            <div class="flex gap-4 text-sm text-gray-500 mt-1">
                                 <span>${formatFileSize(item.size)}</span>
-                                <span>${item.dimensions.width} x ${item.dimensions.height}</span>
-                                <span>${item.type.split('/')[1].toUpperCase()}</span>
+                                <span>${item.dimensions?.width || '?'} x ${item.dimensions?.height || '?'}</span>
+                                <span class="px-2 py-0.5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-full">${item.type?.split('/')[1]?.toUpperCase() || 'IMG'}</span>
                             </div>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="previewImage('${item.id}')" class="p-2 hover:bg-gray-100 rounded" title="Preview">
+                            <button onclick="previewImage('${item.id}')" class="p-2 hover:bg-blue-50 rounded-lg transition-all hover:scale-110" title="Preview">
                                 👁️
                             </button>
-                            <button onclick="deleteImage('${item.id}')" class="p-2 hover:bg-red-100 rounded text-red-600" title="Delete">
+                            <button onclick="deleteImage('${item.id}')" class="p-2 hover:bg-red-50 rounded-lg transition-all hover:scale-110 text-red-600" title="Delete">
                                 🗑️
                             </button>
                         </div>
@@ -450,7 +580,7 @@
             
             return items.filter(item => {
                 const matchesSearch = item.name.toLowerCase().includes(searchTerm);
-                const matchesType = filterType === 'all' || item.type.includes(filterType);
+                const matchesType = filterType === 'all' || item.type?.includes(filterType);
                 return matchesSearch && matchesType;
             });
         }
@@ -512,28 +642,73 @@
         }
 
         // Delete selected
-        function deleteSelected() {
+        async function deleteSelected() {
             if (selectedItems.size === 0) return;
             
             if (confirm(`Delete ${selectedItems.size} selected image(s)?`)) {
-                mediaItems = mediaItems.filter(item => !selectedItems.has(item.id));
-                localStorage.setItem('madabrandMedia', JSON.stringify(mediaItems));
-                selectedItems.clear();
-                updateStorageIndicator();
-                renderMediaGrid();
-                showNotification(`Deleted ${selectedItems.size} images`, 'success');
+                try {
+                    // Delete from API
+                    for (const id of selectedItems) {
+                        await fetch(`${API_BASE}/media?id=${id}`, {
+                            method: 'DELETE',
+                            headers: { 'Authorization': 'Bearer MADA2024' }
+                        });
+                    }
+                    
+                    // Update local array
+                    mediaItems = mediaItems.filter(item => !selectedItems.has(item.id));
+                    selectedItems.clear();
+                    
+                    // Trigger rebuild
+                    await fetch(`${API_BASE}/rebuild`, {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer MADA2024' }
+                    });
+                    
+                    showNotification(`Deleted ${selectedItems.size} images`, 'success');
+                    updateStorageIndicator();
+                    renderMediaGrid();
+                } catch (error) {
+                    // Fallback to localStorage
+                    mediaItems = mediaItems.filter(item => !selectedItems.has(item.id));
+                    localStorage.setItem('madabrandMedia', JSON.stringify(mediaItems));
+                    selectedItems.clear();
+                    updateStorageIndicator();
+                    renderMediaGrid();
+                    showNotification('Deleted locally only', 'warning');
+                }
             }
         }
 
         // Delete single image
-        function deleteImage(id) {
+        async function deleteImage(id) {
             if (confirm('Delete this image?')) {
-                mediaItems = mediaItems.filter(item => item.id !== id);
-                selectedItems.delete(id);
-                localStorage.setItem('madabrandMedia', JSON.stringify(mediaItems));
-                updateStorageIndicator();
-                renderMediaGrid();
-                showNotification('Image deleted', 'success');
+                try {
+                    await fetch(`${API_BASE}/media?id=${id}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': 'Bearer MADA2024' }
+                    });
+                    
+                    mediaItems = mediaItems.filter(item => item.id !== id);
+                    selectedItems.delete(id);
+                    
+                    await fetch(`${API_BASE}/rebuild`, {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer MADA2024' }
+                    });
+                    
+                    showNotification('Image deleted', 'success');
+                    updateStorageIndicator();
+                    renderMediaGrid();
+                } catch (error) {
+                    // Fallback
+                    mediaItems = mediaItems.filter(item => item.id !== id);
+                    selectedItems.delete(id);
+                    localStorage.setItem('madabrandMedia', JSON.stringify(mediaItems));
+                    showNotification('Deleted locally only', 'warning');
+                    updateStorageIndicator();
+                    renderMediaGrid();
+                }
             }
         }
 
@@ -546,15 +721,23 @@
             document.getElementById('preview-url').value = item.url;
             document.getElementById('preview-filename').textContent = item.name;
             document.getElementById('preview-size').textContent = formatFileSize(item.size);
-            document.getElementById('preview-dimensions').textContent = `${item.dimensions.width} x ${item.dimensions.height}`;
-            document.getElementById('preview-type').textContent = item.type.split('/')[1].toUpperCase();
+            document.getElementById('preview-dimensions').textContent = item.dimensions ? `${item.dimensions.width} x ${item.dimensions.height}` : 'Unknown';
+            document.getElementById('preview-type').textContent = item.type?.split('/')[1]?.toUpperCase() || 'IMG';
             
             document.getElementById('preview-modal').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('modal-content').classList.remove('scale-95');
+                document.getElementById('modal-content').classList.add('scale-100');
+            }, 10);
         }
 
         // Close preview modal
         function closePreviewModal() {
-            document.getElementById('preview-modal').classList.add('hidden');
+            document.getElementById('modal-content').classList.remove('scale-100');
+            document.getElementById('modal-content').classList.add('scale-95');
+            setTimeout(() => {
+                document.getElementById('preview-modal').classList.add('hidden');
+            }, 300);
         }
 
         // Copy URL to clipboard
@@ -594,16 +777,16 @@
         
         uploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
-            uploadArea.classList.add('dragover');
+            uploadArea.classList.add('dragover', 'border-blue-900', 'bg-blue-50');
         });
         
         uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
+            uploadArea.classList.remove('dragover', 'border-blue-900', 'bg-blue-50');
         });
         
         uploadArea.addEventListener('drop', (e) => {
             e.preventDefault();
-            uploadArea.classList.remove('dragover');
+            uploadArea.classList.remove('dragover', 'border-blue-900', 'bg-blue-50');
             const files = e.dataTransfer.files;
             handleFiles(files);
         });
@@ -613,7 +796,7 @@
             handleFiles(files);
         }
 
-        function handleFiles(files) {
+        async function handleFiles(files) {
             const progressContainer = document.getElementById('upload-progress');
             const progressBar = document.getElementById('upload-bar');
             const progressPercent = document.getElementById('upload-percent');
@@ -621,86 +804,118 @@
             progressContainer.classList.remove('hidden');
             
             let completed = 0;
+            const uploadedFiles = [];
             
-            Array.from(files).forEach((file, index) => {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                
                 // Check file type
                 if (!file.type.startsWith('image/')) {
                     showNotification(`${file.name} is not an image`, 'error');
                     completed++;
-                    return;
+                    continue;
                 }
                 
                 // Check file size (5MB max)
                 if (file.size > 5 * 1024 * 1024) {
                     showNotification(`${file.name} exceeds 5MB`, 'error');
                     completed++;
-                    return;
+                    continue;
                 }
                 
-                const reader = new FileReader();
+                // Create form data for upload
+                const formData = new FormData();
+                formData.append('file', file);
                 
-                reader.onload = function(e) {
-                    // Create image to get dimensions
-                    const img = new Image();
-                    img.onload = function() {
-                        const newImage = {
-                            id: 'img-' + Date.now() + '-' + index,
-                            name: file.name,
-                            url: e.target.result,
-                            type: file.type,
-                            size: file.size,
-                            dimensions: {
-                                width: img.width,
-                                height: img.height
-                            },
-                            uploaded: new Date().toISOString()
+                try {
+                    const response = await fetch(`${API_BASE}/media`, {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer MADA2024' },
+                        body: formData
+                    });
+                    
+                    if (response.ok) {
+                        const newImage = await response.json();
+                        uploadedFiles.push(newImage);
+                    }
+                } catch (error) {
+                    // Fallback to local upload
+                    const reader = new FileReader();
+                    await new Promise((resolve) => {
+                        reader.onload = function(e) {
+                            const img = new Image();
+                            img.onload = function() {
+                                const newImage = {
+                                    id: 'img-' + Date.now() + '-' + i,
+                                    name: file.name,
+                                    url: e.target.result,
+                                    type: file.type,
+                                    size: file.size,
+                                    dimensions: {
+                                        width: img.width,
+                                        height: img.height
+                                    },
+                                    uploaded: new Date().toISOString()
+                                };
+                                uploadedFiles.push(newImage);
+                                resolve();
+                            };
+                            img.src = e.target.result;
                         };
-                        
-                        mediaItems.push(newImage);
-                        
-                        completed++;
-                        const percent = (completed / files.length) * 100;
-                        progressBar.style.width = percent + '%';
-                        progressPercent.textContent = Math.round(percent) + '%';
-                        
-                        if (completed === files.length) {
-                            // Save to localStorage
-                            localStorage.setItem('madabrandMedia', JSON.stringify(mediaItems));
-                            
-                            // Reset
-                            setTimeout(() => {
-                                progressContainer.classList.add('hidden');
-                                progressBar.style.width = '0%';
-                                progressPercent.textContent = '0%';
-                                
-                                updateStorageIndicator();
-                                renderMediaGrid();
-                                showNotification(`Uploaded ${files.length} image(s)`, 'success');
-                            }, 500);
-                            
-                            // Clear file input
-                            document.getElementById('file-input').value = '';
-                        }
-                    };
-                    img.src = e.target.result;
-                };
+                        reader.readAsDataURL(file);
+                    });
+                }
                 
-                reader.readAsDataURL(file);
-            });
+                completed++;
+                const percent = (completed / files.length) * 100;
+                progressBar.style.width = percent + '%';
+                progressPercent.textContent = Math.round(percent) + '%';
+            }
+            
+            // Add all uploaded files
+            mediaItems.push(...uploadedFiles);
+            
+            // Save to localStorage as backup
+            localStorage.setItem('madabrandMedia', JSON.stringify(mediaItems));
+            
+            // Trigger rebuild
+            try {
+                await fetch(`${API_BASE}/rebuild`, {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer MADA2024' }
+                });
+            } catch (error) {
+                console.log('Rebuild failed, changes saved locally');
+            }
+            
+            // Reset progress
+            setTimeout(() => {
+                progressContainer.classList.add('hidden');
+                progressBar.style.width = '0%';
+                progressPercent.textContent = '0%';
+                
+                updateStorageIndicator();
+                renderMediaGrid();
+                showNotification(`Uploaded ${uploadedFiles.length} image(s)`, 'success');
+            }, 500);
+            
+            // Clear file input
+            document.getElementById('file-input').value = '';
         }
 
         // Show notification
         function showNotification(message, type = 'info') {
             const notification = document.createElement('div');
-            notification.className = `fixed top-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 ${
+            notification.className = `fixed top-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-500 animate-slide-in ${
                 type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' :
                 type === 'error' ? 'bg-red-100 text-red-800 border border-red-200' :
+                type === 'warning' ? 'bg-yellow-100 text-yellow-800 border border-yellow-200' :
                 'bg-blue-100 text-blue-800 border border-blue-200'
             }`;
             notification.innerHTML = `
                 <div class="flex items-center gap-3">
-                    <span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
-                    <span>${message}</span>
+                    <span class="text-xl">${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}</span>
+                    <span class="font-medium">${message}</span>
                 </div>
             `;
             
@@ -708,13 +923,9 @@
             
             setTimeout(() => {
                 notification.style.transform = 'translateX(100%)';
+                notification.style.opacity = '0';
                 setTimeout(() => notification.remove(), 300);
             }, 3000);
-        }
-
-        // Check authentication
-        if (!sessionStorage.getItem('adminAuth') && !localStorage.getItem('adminRemember')) {
-            window.location.href = '/madabrand-admin/login';
         }
 
         // Load media on page load

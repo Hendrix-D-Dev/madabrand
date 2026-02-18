@@ -5,14 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings | MadaBrand Admin</title>
     <link href="/dist/output.css" rel="stylesheet">
-    <script src="/scripts/admin/admin-auth.js" defer></script>
+    
+    <!-- Three.js and Vanta.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
+    
     <style>
-        .settings-section {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0f172a;
+            overflow-x: hidden;
+        }
+
+        #vanta-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.8;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(30, 58, 138, 0.1);
+            box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
         }
-        .settings-section:hover {
-            box-shadow: 0 10px 25px -5px rgba(0, 51, 102, 0.1);
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 40px -12px rgba(30, 58, 138, 0.3);
+            border-color: rgba(30, 58, 138, 0.3);
         }
+
+        .settings-section {
+            transition: all 0.3s ease;
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .settings-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.2);
+            border-color: #1e3a8a;
+        }
+
         .toggle-switch {
             position: relative;
             width: 60px;
@@ -22,9 +72,11 @@
             transition: all 0.3s ease;
             cursor: pointer;
         }
+
         .toggle-switch.active {
-            background-color: #1e3a8a;
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
         }
+
         .toggle-switch::after {
             content: '';
             position: absolute;
@@ -37,615 +89,726 @@
             transition: all 0.3s ease;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
+
         .toggle-switch.active::after {
             left: 32px;
         }
+
         .api-key-input {
             font-family: monospace;
             letter-spacing: 2px;
         }
+
+        .main-content {
+            margin-left: 288px;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        .settings-tab {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .settings-tab::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .settings-tab:hover::before,
+        .settings-tab.active::before {
+            transform: scaleX(1);
+        }
+
+        .settings-tab.active {
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        .toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid;
+        }
+
+        .toast.success { border-color: #10b981; }
+        .toast.error { border-color: #ef4444; }
+        .toast.warning { border-color: #f59e0b; }
+        .toast.info { border-color: #3b82f6; }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
     </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Admin Navigation -->
-    <nav class="bg-gradient-to-r from-blue-900 to-blue-800 text-white shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-4">
-                <div class="flex items-center space-x-4">
-                    <span class="text-2xl">⚙️</span>
-                    <span class="font-bold text-xl">Settings</span>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <span id="settings-status" class="text-sm bg-white/20 px-3 py-1 rounded-full">
-                        ⚡ All settings saved
-                    </span>
-                    <a href="/madabrand-admin/" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition">
-                        ← Dashboard
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Container -->
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Settings Tabs -->
-        <div class="bg-white rounded-xl shadow-md border border-blue-100 mb-6">
-            <div class="flex flex-wrap border-b">
-                <button class="settings-tab active px-6 py-4 text-sm font-medium text-blue-900 border-b-2 border-blue-900" data-tab="general">
-                    ⚙️ General
-                </button>
-                <button class="settings-tab px-6 py-4 text-sm font-medium text-gray-700 hover:text-blue-900 border-b-2 border-transparent" data-tab="security">
-                    🔐 Security
-                </button>
-                <button class="settings-tab px-6 py-4 text-sm font-medium text-gray-700 hover:text-blue-900 border-b-2 border-transparent" data-tab="backup">
-                    💾 Backup
-                </button>
-                <button class="settings-tab px-6 py-4 text-sm font-medium text-gray-700 hover:text-blue-900 border-b-2 border-transparent" data-tab="integrations">
-                    🔌 Integrations
-                </button>
-                <button class="settings-tab px-6 py-4 text-sm font-medium text-gray-700 hover:text-blue-900 border-b-2 border-transparent" data-tab="advanced">
-                    🚀 Advanced
-                </button>
-            </div>
-        </div>
-
-        <!-- Settings Panels -->
-        <div class="bg-white rounded-xl shadow-md border border-blue-100 p-6">
-            <!-- GENERAL SETTINGS -->
-            <div id="panel-general" class="settings-panel space-y-6">
-                <h2 class="text-xl font-bold text-gray-900 mb-6">General Settings</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Site Settings -->
-                    <div class="settings-section p-6 border border-blue-100 rounded-lg">
-                        <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                            <span>🌐</span>
-                            Site Configuration
-                        </h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Site URL</label>
-                                <input type="text" id="site-url" class="w-full px-3 py-2 border rounded-lg bg-gray-50" 
-                                       value="https://madabrand-e6hw.vercel.app" readonly>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Site Name</label>
-                                <input type="text" id="site-name" class="w-full px-3 py-2 border rounded-lg" value="MadaBrand">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Admin Email</label>
-                                <input type="email" id="admin-email" class="w-full px-3 py-2 border rounded-lg" value="macaulaymadalene@gmail.com">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Timezone</label>
-                                <select id="timezone" class="w-full px-3 py-2 border rounded-lg">
-                                    <option value="Africa/Lagos" selected>Africa/Lagos (WAT)</option>
-                                    <option value="Africa/Accra">Africa/Accra (GMT)</option>
-                                    <option value="Africa/Nairobi">Africa/Nairobi (EAT)</option>
-                                    <option value="Europe/London">Europe/London (GMT/BST)</option>
-                                    <option value="America/New_York">America/New_York (EST/EDT)</option>
-                                </select>
-                            </div>
-                        </div>
+<body>
+    <!-- Vanta Background -->
+    <div id="vanta-bg"></div>
+    
+    <!-- Admin Layout -->
+    <div class="flex">
+        <!-- Navigation Sidebar -->
+        <div id="nav-container" class="fixed left-0 top-0 h-full z-20"></div>
+        
+        <!-- Main Content -->
+        <main class="main-content flex-1">
+            <!-- Top Bar -->
+            <div class="glass-card rounded-2xl p-4 mb-8 sticky top-4 z-10">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent">Settings</h1>
+                        <p class="text-gray-600 mt-1">Configure your site settings</p>
                     </div>
-
-                    <!-- Localization -->
-                    <div class="settings-section p-6 border border-blue-100 rounded-lg">
-                        <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                            <span>💰</span>
-                            Currency & Localization
-                        </h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Primary Currency</label>
-                                <select id="currency" class="w-full px-3 py-2 border rounded-lg">
-                                    <option value="NGN" selected>Nigerian Naira (₦)</option>
-                                    <option value="USD">US Dollar ($)</option>
-                                    <option value="EUR">Euro (€)</option>
-                                    <option value="GBP">British Pound (£)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Date Format</label>
-                                <select id="date-format" class="w-full px-3 py-2 border rounded-lg">
-                                    <option value="DD/MM/YYYY" selected>DD/MM/YYYY (Nigeria)</option>
-                                    <option value="MM/DD/YYYY">MM/DD/YYYY (US)</option>
-                                    <option value="YYYY-MM-DD">YYYY-MM-DD (ISO)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Language</label>
-                                <select id="language" class="w-full px-3 py-2 border rounded-lg">
-                                    <option value="en" selected>English</option>
-                                    <option value="yo">Yoruba</option>
-                                    <option value="ha">Hausa</option>
-                                    <option value="ig">Igbo</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Display Settings -->
-                    <div class="settings-section p-6 border border-blue-100 rounded-lg md:col-span-2">
-                        <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                            <span>🎨</span>
-                            Display Settings
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Items per page</label>
-                                <select id="items-per-page" class="w-full px-3 py-2 border rounded-lg">
-                                    <option value="12">12 items</option>
-                                    <option value="24" selected>24 items</option>
-                                    <option value="48">48 items</option>
-                                    <option value="96">96 items</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Default View</label>
-                                <select id="default-view" class="w-full px-3 py-2 border rounded-lg">
-                                    <option value="grid" selected>Grid View</option>
-                                    <option value="list">List View</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Theme Mode</label>
-                                <select id="theme-mode" class="w-full px-3 py-2 border rounded-lg">
-                                    <option value="light" selected>Light Mode</option>
-                                    <option value="dark">Dark Mode</option>
-                                    <option value="auto">Auto (System)</option>
-                                </select>
-                            </div>
-                        </div>
+                    <div class="flex items-center space-x-4">
+                        <span id="settings-status" class="px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl text-sm font-medium animate-pulse">
+                            ⚡ All settings saved
+                        </span>
                     </div>
                 </div>
             </div>
 
-            <!-- SECURITY SETTINGS -->
-            <div id="panel-security" class="settings-panel hidden space-y-6">
-                <h2 class="text-xl font-bold text-gray-900 mb-6">Security Settings</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Admin Passcode -->
-                    <div class="settings-section p-6 border border-blue-100 rounded-lg">
-                        <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                            <span>🔐</span>
-                            Admin Passcode
-                        </h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Current Passcode</label>
-                                <input type="password" id="current-passcode" class="w-full px-3 py-2 border rounded-lg" value="MADA2024" readonly>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">New Passcode</label>
-                                <input type="password" id="new-passcode" class="w-full px-3 py-2 border rounded-lg" placeholder="Enter new passcode">
-                                <p class="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Confirm New Passcode</label>
-                                <input type="password" id="confirm-passcode" class="w-full px-3 py-2 border rounded-lg" placeholder="Confirm new passcode">
-                            </div>
-                            <button onclick="changePasscode()" class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition">
-                                Update Passcode
-                            </button>
-                        </div>
-                    </div>
+            <!-- Settings Tabs -->
+            <div class="glass-card rounded-2xl p-2 mb-6">
+                <div class="flex flex-wrap">
+                    <button class="settings-tab active px-6 py-3 text-sm font-medium text-blue-900" data-tab="general">
+                        ⚙️ General
+                    </button>
+                    <button class="settings-tab px-6 py-3 text-sm font-medium text-gray-700 hover:text-blue-900 transition" data-tab="security">
+                        🔐 Security
+                    </button>
+                    <button class="settings-tab px-6 py-3 text-sm font-medium text-gray-700 hover:text-blue-900 transition" data-tab="backup">
+                        💾 Backup
+                    </button>
+                    <button class="settings-tab px-6 py-3 text-sm font-medium text-gray-700 hover:text-blue-900 transition" data-tab="integrations">
+                        🔌 Integrations
+                    </button>
+                    <button class="settings-tab px-6 py-3 text-sm font-medium text-gray-700 hover:text-blue-900 transition" data-tab="advanced">
+                        🚀 Advanced
+                    </button>
+                </div>
+            </div>
 
-                    <!-- Session Settings -->
-                    <div class="settings-section p-6 border border-blue-100 rounded-lg">
-                        <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                            <span>⏱️</span>
-                            Session Settings
-                        </h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Session Timeout (minutes)</label>
-                                <input type="number" id="session-timeout" class="w-full px-3 py-2 border rounded-lg" value="30" min="5" max="480">
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm text-gray-700">Remember Me Option</span>
-                                <div class="toggle-switch active" onclick="toggleSetting('remember-me')" id="remember-me-toggle"></div>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm text-gray-700">Auto-lock on inactivity</span>
-                                <div class="toggle-switch active" onclick="toggleSetting('auto-lock')" id="auto-lock-toggle"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- IP Restrictions -->
-                    <div class="settings-section p-6 border border-blue-100 rounded-lg md:col-span-2">
-                        <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                            <span>🌍</span>
-                            IP Restrictions
-                        </h3>
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm text-gray-700">Restrict admin access to specific IPs</span>
-                                <div class="toggle-switch" onclick="toggleSetting('ip-restriction')" id="ip-restriction-toggle"></div>
-                            </div>
-                            <div id="ip-list" class="hidden space-y-3">
-                                <div class="flex gap-2">
-                                    <input type="text" class="flex-1 px-3 py-2 border rounded-lg" placeholder="e.g., 192.168.1.1">
-                                    <button class="px-3 py-2 bg-green-600 text-white rounded-lg">Add</button>
+            <!-- Settings Panels -->
+            <div class="glass-card rounded-2xl p-8">
+                <!-- GENERAL SETTINGS -->
+                <div id="panel-general" class="settings-panel space-y-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                        <span class="w-1 h-6 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
+                        General Settings
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Site Settings -->
+                        <div class="settings-section">
+                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <span class="text-blue-900">🌐</span>
+                                Site Configuration
+                            </h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Site URL</label>
+                                    <input type="text" id="site-url" class="w-full px-3 py-2 border rounded-lg bg-gray-50" 
+                                           value="https://madabrand.vercel.app" readonly>
                                 </div>
-                                <div class="space-y-2">
-                                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
-                                        <span class="text-sm font-mono">197.210.76.121</span>
-                                        <button class="text-red-600 hover:text-red-800">Remove</button>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Site Name</label>
+                                    <input type="text" id="site-name" class="modern-input" value="MadaBrand">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Admin Email</label>
+                                    <input type="email" id="admin-email" class="modern-input" value="macaulaymadalene@gmail.com">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Timezone</label>
+                                    <select id="timezone" class="modern-select">
+                                        <option value="Africa/Lagos" selected>Africa/Lagos (WAT)</option>
+                                        <option value="Africa/Accra">Africa/Accra (GMT)</option>
+                                        <option value="Africa/Nairobi">Africa/Nairobi (EAT)</option>
+                                        <option value="Europe/London">Europe/London (GMT/BST)</option>
+                                        <option value="America/New_York">America/New_York (EST/EDT)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Localization -->
+                        <div class="settings-section">
+                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <span class="text-purple-900">💰</span>
+                                Currency & Localization
+                            </h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Primary Currency</label>
+                                    <select id="currency" class="modern-select">
+                                        <option value="NGN" selected>Nigerian Naira (₦)</option>
+                                        <option value="USD">US Dollar ($)</option>
+                                        <option value="EUR">Euro (€)</option>
+                                        <option value="GBP">British Pound (£)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Date Format</label>
+                                    <select id="date-format" class="modern-select">
+                                        <option value="DD/MM/YYYY" selected>DD/MM/YYYY (Nigeria)</option>
+                                        <option value="MM/DD/YYYY">MM/DD/YYYY (US)</option>
+                                        <option value="YYYY-MM-DD">YYYY-MM-DD (ISO)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                                    <select id="language" class="modern-select">
+                                        <option value="en" selected>English</option>
+                                        <option value="yo">Yoruba</option>
+                                        <option value="ha">Hausa</option>
+                                        <option value="ig">Igbo</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Display Settings -->
+                        <div class="settings-section md:col-span-2">
+                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <span class="text-green-900">🎨</span>
+                                Display Settings
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Items per page</label>
+                                    <select id="items-per-page" class="modern-select">
+                                        <option value="12">12 items</option>
+                                        <option value="24" selected>24 items</option>
+                                        <option value="48">48 items</option>
+                                        <option value="96">96 items</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Default View</label>
+                                    <select id="default-view" class="modern-select">
+                                        <option value="grid" selected>Grid View</option>
+                                        <option value="list">List View</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Theme Mode</label>
+                                    <select id="theme-mode" class="modern-select">
+                                        <option value="light" selected>Light Mode</option>
+                                        <option value="dark">Dark Mode</option>
+                                        <option value="auto">Auto (System)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECURITY SETTINGS -->
+                <div id="panel-security" class="settings-panel hidden space-y-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                        <span class="w-1 h-6 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
+                        Security Settings
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Admin Passcode -->
+                        <div class="settings-section">
+                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <span class="text-red-900">🔐</span>
+                                Admin Passcode
+                            </h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Current Passcode</label>
+                                    <input type="password" id="current-passcode" class="w-full px-3 py-2 border rounded-lg bg-gray-50" value="MADA2024" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">New Passcode</label>
+                                    <input type="password" id="new-passcode" class="modern-input" placeholder="Enter new passcode">
+                                    <p class="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Confirm New Passcode</label>
+                                    <input type="password" id="confirm-passcode" class="modern-input" placeholder="Confirm new passcode">
+                                </div>
+                                <button onclick="changePasscode()" class="px-4 py-2 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-lg hover:scale-105 transition-all">
+                                    Update Passcode
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Session Settings -->
+                        <div class="settings-section">
+                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <span class="text-yellow-600">⏱️</span>
+                                Session Settings
+                            </h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Session Timeout (minutes)</label>
+                                    <input type="number" id="session-timeout" class="modern-input" value="30" min="5" max="480">
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-700">Remember Me Option</span>
+                                    <div class="toggle-switch active" onclick="toggleSetting('remember-me')" id="remember-me-toggle"></div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-700">Auto-lock on inactivity</span>
+                                    <div class="toggle-switch active" onclick="toggleSetting('auto-lock')" id="auto-lock-toggle"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- IP Restrictions -->
+                        <div class="settings-section md:col-span-2">
+                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <span class="text-indigo-900">🌍</span>
+                                IP Restrictions
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-700">Restrict admin access to specific IPs</span>
+                                    <div class="toggle-switch" onclick="toggleSetting('ip-restriction')" id="ip-restriction-toggle"></div>
+                                </div>
+                                <div id="ip-list" class="hidden space-y-3">
+                                    <div class="flex gap-2">
+                                        <input type="text" class="flex-1 modern-input" placeholder="e.g., 192.168.1.1">
+                                        <button class="px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:scale-105 transition-all">Add</button>
                                     </div>
-                                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
-                                        <span class="text-sm font-mono">102.89.32.45</span>
-                                        <button class="text-red-600 hover:text-red-800">Remove</button>
+                                    <div class="space-y-2">
+                                        <div class="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-white rounded-lg">
+                                            <span class="text-sm font-mono">197.210.76.121</span>
+                                            <button class="text-red-600 hover:text-red-800 hover:scale-110 transition">Remove</button>
+                                        </div>
+                                        <div class="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-white rounded-lg">
+                                            <span class="text-sm font-mono">102.89.32.45</span>
+                                            <button class="text-red-600 hover:text-red-800 hover:scale-110 transition">Remove</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Activity Log -->
+                        <div class="settings-section md:col-span-2">
+                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <span class="text-blue-900">📊</span>
+                                Recent Activity Log
+                            </h3>
+                            <div class="space-y-3 max-h-60 overflow-y-auto">
+                                <div class="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-white rounded-lg">
+                                    <div>
+                                        <p class="text-sm font-medium">Admin Login</p>
+                                        <p class="text-xs text-gray-500">IP: 197.210.76.121 • Lagos, Nigeria</p>
+                                    </div>
+                                    <span class="text-xs text-gray-500">2 minutes ago</span>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-white rounded-lg">
+                                    <div>
+                                        <p class="text-sm font-medium">Portfolio Updated</p>
+                                        <p class="text-xs text-gray-500">Added new project "NuelArk Construction"</p>
+                                    </div>
+                                    <span class="text-xs text-gray-500">1 hour ago</span>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-white rounded-lg">
+                                    <div>
+                                        <p class="text-sm font-medium">Settings Changed</p>
+                                        <p class="text-xs text-gray-500">Theme colors updated</p>
+                                    </div>
+                                    <span class="text-xs text-gray-500">3 hours ago</span>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-white rounded-lg">
+                                    <div>
+                                        <p class="text-sm font-medium">Failed Login Attempt</p>
+                                        <p class="text-xs text-gray-500">IP: 45.67.89.123 • Unknown location</p>
+                                    </div>
+                                    <span class="text-xs text-red-600">5 hours ago</span>
+                                </div>
+                            </div>
+                            <button class="mt-4 text-sm text-blue-900 hover:underline">View Full Log →</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BACKUP SETTINGS -->
+                <div id="panel-backup" class="settings-panel hidden space-y-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                        <span class="w-1 h-6 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
+                        Backup & Restore
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Backup Settings -->
+                        <div class="settings-section">
+                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <span class="text-green-900">💾</span>
+                                Backup Configuration
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-700">Auto Backup</span>
+                                    <div class="toggle-switch active" onclick="toggleSetting('auto-backup')" id="auto-backup-toggle"></div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Backup Frequency</label>
+                                    <select id="backup-frequency" class="modern-select">
+                                        <option value="hourly">Hourly</option>
+                                        <option value="daily" selected>Daily</option>
+                                        <option value="weekly">Weekly</option>
+                                        <option value="monthly">Monthly</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Max Backups to Keep</label>
+                                    <input type="number" id="max-backups" class="modern-input" value="30" min="5" max="100">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Backup Status -->
+                        <div class="settings-section">
+                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <span class="text-blue-900">📊</span>
+                                Backup Status
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg">
+                                    <p class="text-sm font-medium text-green-800">Last Backup: Today, 3:00 AM</p>
+                                    <p class="text-xs text-green-600 mt-1">Size: 2.4 MB • 10 files</p>
+                                </div>
+                                <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg">
+                                    <p class="text-sm font-medium text-blue-800">Next Backup: Tomorrow, 3:00 AM</p>
+                                    <p class="text-xs text-blue-600 mt-1">Auto-backup enabled (daily)</p>
+                                </div>
+                                <div class="flex gap-3">
+                                    <button onclick="createBackup()" class="flex-1 px-4 py-2 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-lg hover:scale-105 transition-all">
+                                        Backup Now
+                                    </button>
+                                    <button onclick="restoreBackup()" class="flex-1 px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:scale-105 transition-all">
+                                        Restore
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Backup History -->
+                        <div class="settings-section md:col-span-2">
+                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <span class="text-purple-900">📚</span>
+                                Backup History
+                            </h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-white rounded-lg hover:scale-102 transition-transform">
+                                    <div>
+                                        <p class="text-sm font-medium">madabrand-backup-2025-02-14.json</p>
+                                        <p class="text-xs text-gray-500 mt-1">Size: 1.2 MB • Portfolio, Content, Settings</p>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button class="p-2 hover:bg-blue-50 rounded-lg transition-all hover:scale-110" title="Download">
+                                            ⬇️
+                                        </button>
+                                        <button class="p-2 hover:bg-green-50 rounded-lg transition-all hover:scale-110" title="Restore">
+                                            ↩️
+                                        </button>
+                                        <button class="p-2 hover:bg-red-50 rounded-lg transition-all hover:scale-110" title="Delete">
+                                            🗑️
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-white rounded-lg hover:scale-102 transition-transform">
+                                    <div>
+                                        <p class="text-sm font-medium">madabrand-backup-2025-02-13.json</p>
+                                        <p class="text-xs text-gray-500 mt-1">Size: 1.1 MB • Portfolio, Content, Settings</p>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button class="p-2 hover:bg-blue-50 rounded-lg transition-all hover:scale-110">⬇️</button>
+                                        <button class="p-2 hover:bg-green-50 rounded-lg transition-all hover:scale-110">↩️</button>
+                                        <button class="p-2 hover:bg-red-50 rounded-lg transition-all hover:scale-110">🗑️</button>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-white rounded-lg hover:scale-102 transition-transform">
+                                    <div>
+                                        <p class="text-sm font-medium">madabrand-backup-2025-02-12.json</p>
+                                        <p class="text-xs text-gray-500 mt-1">Size: 1.1 MB • Portfolio, Content, Settings</p>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button class="p-2 hover:bg-blue-50 rounded-lg transition-all hover:scale-110">⬇️</button>
+                                        <button class="p-2 hover:bg-green-50 rounded-lg transition-all hover:scale-110">↩️</button>
+                                        <button class="p-2 hover:bg-red-50 rounded-lg transition-all hover:scale-110">🗑️</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Activity Log -->
-                    <div class="settings-section p-6 border border-blue-100 rounded-lg md:col-span-2">
-                        <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                            <span>📊</span>
-                            Recent Activity Log
-                        </h3>
-                        <div class="space-y-3 max-h-60 overflow-y-auto">
-                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
-                                <div>
-                                    <p class="text-sm font-medium">Admin Login</p>
-                                    <p class="text-xs text-gray-500">IP: 197.210.76.121 • Lagos, Nigeria</p>
-                                </div>
-                                <span class="text-xs text-gray-500">2 minutes ago</span>
+                <!-- INTEGRATIONS SETTINGS -->
+                <div id="panel-integrations" class="settings-panel hidden space-y-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                        <span class="w-1 h-6 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
+                        Integrations
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Google Analytics -->
+                        <div class="settings-section">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-semibold text-gray-800 flex items-center gap-2">
+                                    <span class="text-blue-900">📊</span>
+                                    Google Analytics
+                                </h3>
+                                <div class="toggle-switch" onclick="toggleSetting('ga')" id="ga-toggle"></div>
                             </div>
-                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
-                                <div>
-                                    <p class="text-sm font-medium">Portfolio Updated</p>
-                                    <p class="text-xs text-gray-500">Added new project "NuelArk Construction"</p>
-                                </div>
-                                <span class="text-xs text-gray-500">1 hour ago</span>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
-                                <div>
-                                    <p class="text-sm font-medium">Settings Changed</p>
-                                    <p class="text-xs text-gray-500">Theme colors updated</p>
-                                </div>
-                                <span class="text-xs text-gray-500">3 hours ago</span>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
-                                <div>
-                                    <p class="text-sm font-medium">Failed Login Attempt</p>
-                                    <p class="text-xs text-gray-500">IP: 45.67.89.123 • Unknown location</p>
-                                </div>
-                                <span class="text-xs text-gray-500 text-red-600">5 hours ago</span>
+                            <div id="ga-settings" class="hidden space-y-3">
+                                <input type="text" class="modern-input" placeholder="GA-XXXXXXX" value="G-ABCDEF12345">
+                                <p class="text-xs text-gray-500">Track visitor analytics and conversions</p>
                             </div>
                         </div>
-                        <button class="mt-4 text-sm text-blue-900 hover:underline">View Full Log →</button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- BACKUP SETTINGS -->
-            <div id="panel-backup" class="settings-panel hidden space-y-6">
-                <h2 class="text-xl font-bold text-gray-900 mb-6">Backup & Restore</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Backup Settings -->
-                    <div class="settings-section p-6 border border-blue-100 rounded-lg">
-                        <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                            <span>💾</span>
-                            Backup Configuration
-                        </h3>
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm text-gray-700">Auto Backup</span>
-                                <div class="toggle-switch active" onclick="toggleSetting('auto-backup')" id="auto-backup-toggle"></div>
+                        <!-- Facebook Pixel -->
+                        <div class="settings-section">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-semibold text-gray-800 flex items-center gap-2">
+                                    <span class="text-indigo-900">📱</span>
+                                    Facebook Pixel
+                                </h3>
+                                <div class="toggle-switch" onclick="toggleSetting('fb-pixel')" id="fb-pixel-toggle"></div>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Backup Frequency</label>
-                                <select id="backup-frequency" class="w-full px-3 py-2 border rounded-lg">
-                                    <option value="hourly">Hourly</option>
-                                    <option value="daily" selected>Daily</option>
-                                    <option value="weekly">Weekly</option>
-                                    <option value="monthly">Monthly</option>
+                            <div id="fb-pixel-settings" class="hidden space-y-3">
+                                <input type="text" class="modern-input" placeholder="XXXXXXXXXXXXXXX">
+                                <p class="text-xs text-gray-500">Track conversions and retarget visitors</p>
+                            </div>
+                        </div>
+
+                        <!-- WhatsApp Business -->
+                        <div class="settings-section">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-semibold text-gray-800 flex items-center gap-2">
+                                    <span class="text-green-900">💬</span>
+                                    WhatsApp Business
+                                </h3>
+                                <div class="toggle-switch active" onclick="toggleSetting('whatsapp')" id="whatsapp-toggle"></div>
+                            </div>
+                            <div id="whatsapp-settings" class="space-y-3">
+                                <input type="text" class="modern-input" value="2348104902357" placeholder="Phone number">
+                                <textarea class="modern-input" rows="2" placeholder="Default message">Hello MadaBrand! I'm interested in your design services.</textarea>
+                            </div>
+                        </div>
+
+                        <!-- Email Service -->
+                        <div class="settings-section">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-semibold text-gray-800 flex items-center gap-2">
+                                    <span class="text-red-900">✉️</span>
+                                    Email Service
+                                </h3>
+                                <div class="toggle-switch active" onclick="toggleSetting('email')" id="email-toggle"></div>
+                            </div>
+                            <div id="email-settings" class="space-y-3">
+                                <select class="modern-select">
+                                    <option value="smtp">SMTP</option>
+                                    <option value="sendgrid">SendGrid</option>
+                                    <option value="mailgun">Mailgun</option>
                                 </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Max Backups to Keep</label>
-                                <input type="number" id="max-backups" class="w-full px-3 py-2 border rounded-lg" value="30" min="5" max="100">
+                                <input type="text" class="modern-input" placeholder="SMTP Host" value="smtp.gmail.com">
+                                <input type="text" class="modern-input" placeholder="SMTP Port" value="587">
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Backup Status -->
-                    <div class="settings-section p-6 border border-blue-100 rounded-lg">
-                        <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                            <span>📊</span>
-                            Backup Status
-                        </h3>
-                        <div class="space-y-4">
-                            <div class="p-4 bg-green-50 rounded-lg">
-                                <p class="text-sm font-medium text-green-800">Last Backup: Today, 3:00 AM</p>
-                                <p class="text-xs text-green-600 mt-1">Size: 2.4 MB • 10 files</p>
-                            </div>
-                            <div class="p-4 bg-blue-50 rounded-lg">
-                                <p class="text-sm font-medium text-blue-800">Next Backup: Tomorrow, 3:00 AM</p>
-                                <p class="text-xs text-blue-600 mt-1">Auto-backup enabled (daily)</p>
-                            </div>
-                            <div class="flex gap-3">
-                                <button onclick="createBackup()" class="flex-1 px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition">
-                                    Backup Now
-                                </button>
-                                <button onclick="restoreBackup()" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-                                    Restore
-                                </button>
+                <!-- ADVANCED SETTINGS -->
+                <div id="panel-advanced" class="settings-panel hidden space-y-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                        <span class="w-1 h-6 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
+                        Advanced Settings
+                    </h2>
+                    
+                    <div class="space-y-6">
+                        <!-- API Keys -->
+                        <div class="settings-section">
+                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <span class="text-red-900">🔑</span>
+                                API Keys
+                            </h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Admin API Key</label>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="api-key" class="api-key-input flex-1 px-3 py-2 border rounded-lg bg-gray-50" 
+                                               value="mada_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" readonly>
+                                        <button onclick="regenerateApiKey()" class="px-4 py-2 bg-gradient-to-r from-yellow-600 to-yellow-700 text-white rounded-lg hover:scale-105 transition-all">
+                                            Regenerate
+                                        </button>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">Use this key for external API access</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Webhook URL</label>
+                                    <input type="text" class="w-full px-3 py-2 border rounded-lg bg-gray-50" 
+                                           value="https://madabrand.vercel.app/api/webhook" readonly>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Backup History -->
-                    <div class="settings-section p-6 border border-blue-100 rounded-lg md:col-span-2">
-                        <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                            <span>📚</span>
-                            Backup History
-                        </h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                        <!-- Cache Settings -->
+                        <div class="settings-section">
+                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <span class="text-blue-900">⚡</span>
+                                Cache & Performance
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <p class="text-sm font-medium">madabrand-backup-2025-02-14.json</p>
-                                    <p class="text-xs text-gray-500">Size: 1.2 MB • Portfolio, Content, Settings</p>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Cache Duration (seconds)</label>
+                                    <input type="number" class="modern-input" value="3600">
                                 </div>
-                                <div class="flex gap-2">
-                                    <button class="text-blue-600 hover:text-blue-800" title="Download">
-                                        ⬇️
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Minify Assets</label>
+                                    <select class="modern-select">
+                                        <option value="true" selected>Enabled</option>
+                                        <option value="false">Disabled</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <button class="w-full px-4 py-2 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-lg hover:scale-105 transition-all">
+                                        Clear Cache
                                     </button>
-                                    <button class="text-green-600 hover:text-green-800" title="Restore">
-                                        ↩️
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-800" title="Delete">
-                                        🗑️
+                                </div>
+                                <div>
+                                    <button class="w-full px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:scale-105 transition-all">
+                                        Optimize Images
                                     </button>
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                        </div>
+
+                        <!-- Maintenance Mode -->
+                        <div class="settings-section">
+                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <span class="text-yellow-600">🔧</span>
+                                Maintenance Mode
+                            </h3>
+                            <div class="flex items-center justify-between mb-4">
                                 <div>
-                                    <p class="text-sm font-medium">madabrand-backup-2025-02-13.json</p>
-                                    <p class="text-xs text-gray-500">Size: 1.1 MB • Portfolio, Content, Settings</p>
+                                    <p class="text-sm text-gray-700">Enable maintenance mode</p>
+                                    <p class="text-xs text-gray-500">Visitors will see a maintenance page</p>
                                 </div>
-                                <div class="flex gap-2">
-                                    <button class="text-blue-600 hover:text-blue-800">⬇️</button>
-                                    <button class="text-green-600 hover:text-green-800">↩️</button>
-                                    <button class="text-red-600 hover:text-red-800">🗑️</button>
-                                </div>
+                                <div class="toggle-switch" onclick="toggleSetting('maintenance')" id="maintenance-toggle"></div>
                             </div>
-                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
-                                <div>
-                                    <p class="text-sm font-medium">madabrand-backup-2025-02-12.json</p>
-                                    <p class="text-xs text-gray-500">Size: 1.1 MB • Portfolio, Content, Settings</p>
+                            <div id="maintenance-settings" class="hidden space-y-3">
+                                <textarea class="modern-input" rows="3" placeholder="Maintenance message">Site under maintenance. Back soon!</textarea>
+                                <input type="text" class="modern-input" placeholder="Estimated completion time" value="2 hours">
+                            </div>
+                        </div>
+
+                        <!-- Danger Zone -->
+                        <div class="settings-section border-2 border-red-200 bg-gradient-to-r from-red-50 to-rose-50">
+                            <h3 class="font-semibold text-red-800 mb-4 flex items-center gap-2">
+                                <span class="text-red-600">⚠️</span>
+                                Danger Zone
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm font-medium text-red-800">Reset All Settings</p>
+                                        <p class="text-xs text-red-600">Restore all settings to default values</p>
+                                    </div>
+                                    <button onclick="resetAllSettings()" class="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:scale-105 transition-all">
+                                        Reset All
+                                    </button>
                                 </div>
-                                <div class="flex gap-2">
-                                    <button class="text-blue-600 hover:text-blue-800">⬇️</button>
-                                    <button class="text-green-600 hover:text-green-800">↩️</button>
-                                    <button class="text-red-600 hover:text-red-800">🗑️</button>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm font-medium text-red-800">Clear All Data</p>
+                                        <p class="text-xs text-red-600">Delete all portfolio items and content</p>
+                                    </div>
+                                    <button onclick="clearAllData()" class="px-4 py-2 bg-gradient-to-r from-red-700 to-red-800 text-white rounded-lg hover:scale-105 transition-all">
+                                        Clear Data
+                                    </button>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm font-medium text-red-800">Export System Logs</p>
+                                        <p class="text-xs text-red-600">Download debug information</p>
+                                    </div>
+                                    <button onclick="exportLogs()" class="px-4 py-2 bg-gradient-to-r from-gray-700 to-gray-800 text-white rounded-lg hover:scale-105 transition-all">
+                                        Export Logs
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- INTEGRATIONS SETTINGS -->
-            <div id="panel-integrations" class="settings-panel hidden space-y-6">
-                <h2 class="text-xl font-bold text-gray-900 mb-6">Integrations</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Google Analytics -->
-                    <div class="settings-section p-6 border border-blue-100 rounded-lg">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-semibold text-gray-800 flex items-center gap-2">
-                                <span>📊</span>
-                                Google Analytics
-                            </h3>
-                            <div class="toggle-switch" onclick="toggleSetting('ga')" id="ga-toggle"></div>
-                        </div>
-                        <div id="ga-settings" class="hidden space-y-3">
-                            <input type="text" class="w-full px-3 py-2 border rounded-lg" placeholder="GA-XXXXXXX" value="G-ABCDEF12345">
-                            <p class="text-xs text-gray-500">Track visitor analytics and conversions</p>
-                        </div>
-                    </div>
-
-                    <!-- Facebook Pixel -->
-                    <div class="settings-section p-6 border border-blue-100 rounded-lg">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-semibold text-gray-800 flex items-center gap-2">
-                                <span>📱</span>
-                                Facebook Pixel
-                            </h3>
-                            <div class="toggle-switch" onclick="toggleSetting('fb-pixel')" id="fb-pixel-toggle"></div>
-                        </div>
-                        <div id="fb-pixel-settings" class="hidden space-y-3">
-                            <input type="text" class="w-full px-3 py-2 border rounded-lg" placeholder="XXXXXXXXXXXXXXX">
-                            <p class="text-xs text-gray-500">Track conversions and retarget visitors</p>
-                        </div>
-                    </div>
-
-                    <!-- WhatsApp Business -->
-                    <div class="settings-section p-6 border border-blue-100 rounded-lg">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-semibold text-gray-800 flex items-center gap-2">
-                                <span>💬</span>
-                                WhatsApp Business
-                            </h3>
-                            <div class="toggle-switch active" onclick="toggleSetting('whatsapp')" id="whatsapp-toggle"></div>
-                        </div>
-                        <div id="whatsapp-settings" class="space-y-3">
-                            <input type="text" class="w-full px-3 py-2 border rounded-lg" value="2348104902357" placeholder="Phone number">
-                            <textarea class="w-full px-3 py-2 border rounded-lg" rows="2" placeholder="Default message">Hello MadaBrand! I'm interested in your design services.</textarea>
-                        </div>
-                    </div>
-
-                    <!-- Email Service -->
-                    <div class="settings-section p-6 border border-blue-100 rounded-lg">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-semibold text-gray-800 flex items-center gap-2">
-                                <span>✉️</span>
-                                Email Service
-                            </h3>
-                            <div class="toggle-switch active" onclick="toggleSetting('email')" id="email-toggle"></div>
-                        </div>
-                        <div id="email-settings" class="space-y-3">
-                            <select class="w-full px-3 py-2 border rounded-lg">
-                                <option value="smtp">SMTP</option>
-                                <option value="sendgrid">SendGrid</option>
-                                <option value="mailgun">Mailgun</option>
-                            </select>
-                            <input type="text" class="w-full px-3 py-2 border rounded-lg" placeholder="SMTP Host" value="smtp.gmail.com">
-                            <input type="text" class="w-full px-3 py-2 border rounded-lg" placeholder="SMTP Port" value="587">
-                        </div>
-                    </div>
+                <!-- Save Button -->
+                <div class="sticky bottom-4 mt-8 flex justify-end">
+                    <button onclick="saveAllSettings()" class="px-8 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold rounded-xl hover:scale-105 transition-all duration-300 shadow-lg flex items-center gap-2">
+                        <span>💾</span>
+                        <span>Save All Settings</span>
+                    </button>
                 </div>
             </div>
-
-            <!-- ADVANCED SETTINGS -->
-            <div id="panel-advanced" class="settings-panel hidden space-y-6">
-                <h2 class="text-xl font-bold text-gray-900 mb-6">Advanced Settings</h2>
-                
-                <div class="space-y-6">
-                    <!-- API Keys -->
-                    <div class="settings-section p-6 border border-blue-100 rounded-lg">
-                        <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                            <span>🔑</span>
-                            API Keys
-                        </h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Admin API Key</label>
-                                <div class="flex gap-2">
-                                    <input type="text" id="api-key" class="api-key-input flex-1 px-3 py-2 border rounded-lg bg-gray-50" 
-                                           value="mada_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" readonly>
-                                    <button onclick="regenerateApiKey()" class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition">
-                                        Regenerate
-                                    </button>
-                                </div>
-                                <p class="text-xs text-gray-500 mt-1">Use this key for external API access</p>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Webhook URL</label>
-                                <input type="text" class="w-full px-3 py-2 border rounded-lg bg-gray-50" 
-                                       value="https://madabrand-e6hw.vercel.app/api/webhook" readonly>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Cache Settings -->
-                    <div class="settings-section p-6 border border-blue-100 rounded-lg">
-                        <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                            <span>⚡</span>
-                            Cache & Performance
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Cache Duration (seconds)</label>
-                                <input type="number" class="w-full px-3 py-2 border rounded-lg" value="3600">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Minify Assets</label>
-                                <select class="w-full px-3 py-2 border rounded-lg">
-                                    <option value="true" selected>Enabled</option>
-                                    <option value="false">Disabled</option>
-                                </select>
-                            </div>
-                            <div>
-                                <button class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition">
-                                    Clear Cache
-                                </button>
-                            </div>
-                            <div>
-                                <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-                                    Optimize Images
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Maintenance Mode -->
-                    <div class="settings-section p-6 border border-blue-100 rounded-lg">
-                        <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                            <span>🔧</span>
-                            Maintenance Mode
-                        </h3>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <p class="text-sm text-gray-700">Enable maintenance mode</p>
-                                <p class="text-xs text-gray-500">Visitors will see a maintenance page</p>
-                            </div>
-                            <div class="toggle-switch" onclick="toggleSetting('maintenance')" id="maintenance-toggle"></div>
-                        </div>
-                        <div id="maintenance-settings" class="hidden space-y-3">
-                            <textarea class="w-full px-3 py-2 border rounded-lg" rows="3" placeholder="Maintenance message">Site under maintenance. Back soon!</textarea>
-                            <input type="text" class="w-full px-3 py-2 border rounded-lg" placeholder="Estimated completion time" value="2 hours">
-                        </div>
-                    </div>
-
-                    <!-- Danger Zone -->
-                    <div class="settings-section p-6 border border-red-200 rounded-lg bg-red-50">
-                        <h3 class="font-semibold text-red-800 mb-4 flex items-center gap-2">
-                            <span>⚠️</span>
-                            Danger Zone
-                        </h3>
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-sm font-medium text-red-800">Reset All Settings</p>
-                                    <p class="text-xs text-red-600">Restore all settings to default values</p>
-                                </div>
-                                <button onclick="resetAllSettings()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
-                                    Reset All
-                                </button>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-sm font-medium text-red-800">Clear All Data</p>
-                                    <p class="text-xs text-red-600">Delete all portfolio items and content</p>
-                                </div>
-                                <button onclick="clearAllData()" class="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-800 transition">
-                                    Clear Data
-                                </button>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-sm font-medium text-red-800">Export System Logs</p>
-                                    <p class="text-xs text-red-600">Download debug information</p>
-                                </div>
-                                <button onclick="exportLogs()" class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition">
-                                    Export Logs
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Save Button -->
-            <div class="sticky bottom-4 mt-8 flex justify-end">
-                <button onclick="saveAllSettings()" class="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-300 hover:scale-105 shadow-lg flex items-center gap-2">
-                    <span>💾</span>
-                    <span>Save All Settings</span>
-                </button>
-            </div>
-        </div>
+        </main>
     </div>
 
     <script>
+        const API_BASE = '/api';
+        
+        // Check authentication
+        if (!sessionStorage.getItem('adminAuth') && !localStorage.getItem('adminRemember')) {
+            window.location.href = '/admin/login.html';
+        }
+
+        // Load navigation
+        fetch('/admin/components/nav.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('nav-container').innerHTML = data;
+                
+                // Initialize Vanta
+                VANTA.GLOBE({
+                    el: "#vanta-bg",
+                    color: 0x1e3a8a,
+                    backgroundColor: 0x0f172a,
+                    size: 0.8,
+                    waves: true
+                });
+            });
+
         // Tab switching
         document.querySelectorAll('.settings-tab').forEach(tab => {
             tab.addEventListener('click', function() {
                 document.querySelectorAll('.settings-tab').forEach(t => {
-                    t.classList.remove('active', 'text-blue-900', 'border-blue-900');
-                    t.classList.add('text-gray-700', 'border-transparent');
+                    t.classList.remove('active', 'text-blue-900');
+                    t.classList.add('text-gray-700');
                 });
-                this.classList.add('active', 'text-blue-900', 'border-blue-900');
+                this.classList.add('active', 'text-blue-900');
                 
                 const tabName = this.dataset.tab;
                 document.querySelectorAll('.settings-panel').forEach(panel => panel.classList.add('hidden'));
@@ -671,56 +834,130 @@
             updateStatus('Settings updated');
         }
 
+        // Load settings from API
+        async function loadSettings() {
+            try {
+                const response = await fetch(`${API_BASE}/settings`, {
+                    headers: { 'Authorization': 'Bearer MADA2024' }
+                });
+                const data = await response.json();
+                
+                // Populate form fields
+                if (data.site) {
+                    document.getElementById('site-name').value = data.site.title || 'MadaBrand';
+                    document.getElementById('admin-email').value = data.site.adminEmail || 'macaulaymadalene@gmail.com';
+                    document.getElementById('timezone').value = data.site.timezone || 'Africa/Lagos';
+                }
+                
+                if (data.integrations) {
+                    document.getElementById('whatsapp-settings')?.querySelector('input')?.value = data.integrations.whatsapp || '2348104902357';
+                }
+                
+            } catch (error) {
+                console.error('Error loading settings:', error);
+                loadLocalSettings();
+            }
+        }
+
+        // Load local settings as fallback
+        function loadLocalSettings() {
+            const saved = localStorage.getItem('madabrandSettings');
+            if (saved) {
+                try {
+                    const settings = JSON.parse(saved);
+                    for (const [key, value] of Object.entries(settings)) {
+                        const element = document.getElementById(key);
+                        if (element) element.value = value;
+                    }
+                } catch (e) {
+                    console.error('Error loading settings:', e);
+                }
+            }
+        }
+
         // Change passcode
-        function changePasscode() {
+        async function changePasscode() {
             const current = document.getElementById('current-passcode').value;
             const newPass = document.getElementById('new-passcode').value;
             const confirm = document.getElementById('confirm-passcode').value;
             
             if (newPass.length < 6) {
-                alert('Passcode must be at least 6 characters');
+                showToast('Passcode must be at least 6 characters', 'error');
                 return;
             }
             
             if (newPass !== confirm) {
-                alert('New passcodes do not match');
+                showToast('New passcodes do not match', 'error');
                 return;
             }
             
-            // In production, save to server
-            localStorage.setItem('adminPasscode', newPass);
-            alert('✅ Passcode updated successfully!');
-            
-            document.getElementById('new-passcode').value = '';
-            document.getElementById('confirm-passcode').value = '';
+            try {
+                const response = await fetch(`${API_BASE}/settings`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer MADA2024',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        admin: { passcode: newPass }
+                    })
+                });
+                
+                if (response.ok) {
+                    showToast('✅ Passcode updated successfully!', 'success');
+                    document.getElementById('new-passcode').value = '';
+                    document.getElementById('confirm-passcode').value = '';
+                } else {
+                    throw new Error('API Error');
+                }
+            } catch (error) {
+                showToast('Failed to update passcode', 'error');
+            }
         }
 
         // Backup functions
-        function createBackup() {
-            const data = {
-                settings: {
-                    siteName: document.getElementById('site-name')?.value || 'MadaBrand',
-                    adminEmail: document.getElementById('admin-email')?.value || '',
-                    timezone: document.getElementById('timezone')?.value || 'Africa/Lagos',
-                    currency: document.getElementById('currency')?.value || 'NGN'
-                },
-                portfolio: JSON.parse(localStorage.getItem('madabrandPortfolio') || '[]'),
-                content: JSON.parse(localStorage.getItem('madabrandContent') || '{}'),
-                media: JSON.parse(localStorage.getItem('madabrandMedia') || '[]'),
-                timestamp: new Date().toISOString()
-            };
+        async function createBackup() {
+            showToast('Creating backup...', 'info');
             
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `madabrand-backup-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            updateStatus('Backup created successfully!');
+            try {
+                const settingsRes = await fetch(`${API_BASE}/settings`, {
+                    headers: { 'Authorization': 'Bearer MADA2024' }
+                });
+                const settings = await settingsRes.json();
+                
+                const portfolioRes = await fetch(`${API_BASE}/portfolio`, {
+                    headers: { 'Authorization': 'Bearer MADA2024' }
+                });
+                const portfolio = await portfolioRes.json();
+                
+                const mediaRes = await fetch(`${API_BASE}/media`, {
+                    headers: { 'Authorization': 'Bearer MADA2024' }
+                });
+                const media = await mediaRes.json();
+                
+                const data = {
+                    settings,
+                    portfolio,
+                    media,
+                    timestamp: new Date().toISOString(),
+                    version: '1.0'
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `madabrand-backup-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                updateStatus('Backup created successfully!');
+                showToast('Backup created successfully!', 'success');
+            } catch (error) {
+                showToast('Error creating backup', 'error');
+            }
         }
 
         function restoreBackup() {
@@ -728,24 +965,50 @@
             input.type = 'file';
             input.accept = '.json';
             
-            input.onchange = function(e) {
+            input.onchange = async function(e) {
                 const file = e.target.files[0];
                 const reader = new FileReader();
                 
-                reader.onload = function(e) {
+                reader.onload = async function(e) {
                     try {
                         const data = JSON.parse(e.target.result);
                         
                         if (confirm('Restore will replace current data. Continue?')) {
-                            if (data.portfolio) localStorage.setItem('madabrandPortfolio', JSON.stringify(data.portfolio));
-                            if (data.content) localStorage.setItem('madabrandContent', JSON.stringify(data.content));
-                            if (data.media) localStorage.setItem('madabrandMedia', JSON.stringify(data.media));
+                            // Restore via API
+                            if (data.settings) {
+                                await fetch(`${API_BASE}/settings`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Authorization': 'Bearer MADA2024',
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify(data.settings)
+                                });
+                            }
                             
-                            updateStatus('Data restored! Page will refresh...');
+                            if (data.portfolio?.projects) {
+                                for (const project of data.portfolio.projects) {
+                                    await fetch(`${API_BASE}/portfolio`, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Authorization': 'Bearer MADA2024',
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify(project)
+                                    });
+                                }
+                            }
+                            
+                            await fetch(`${API_BASE}/rebuild`, {
+                                method: 'POST',
+                                headers: { 'Authorization': 'Bearer MADA2024' }
+                            });
+                            
+                            showToast('Data restored! Refreshing...', 'success');
                             setTimeout(() => location.reload(), 1500);
                         }
                     } catch (error) {
-                        alert('Invalid backup file');
+                        showToast('Invalid backup file', 'error');
                     }
                 };
                 
@@ -765,27 +1028,73 @@
                 }
                 document.getElementById('api-key').value = key;
                 updateStatus('New API key generated');
+                showToast('New API key generated', 'success');
             }
         }
 
         // Danger zone functions
-        function resetAllSettings() {
+        async function resetAllSettings() {
             if (confirm('⚠️ Reset all settings to default? This cannot be undone.')) {
-                localStorage.removeItem('madabrandTheme');
-                localStorage.removeItem('madabrandContent');
-                localStorage.removeItem('madabrandSettings');
-                updateStatus('Settings reset! Refreshing...');
-                setTimeout(() => location.reload(), 1500);
+                try {
+                    const defaultSettings = {
+                        site: {
+                            title: 'MadaBrand',
+                            adminEmail: 'macaulaymadalene@gmail.com',
+                            timezone: 'Africa/Lagos'
+                        },
+                        theme: {
+                            primaryColor: '#1e3a8a',
+                            secondaryColor: '#3b82f6',
+                            backgroundColor: '#ffffff',
+                            textColor: '#1f2937'
+                        }
+                    };
+                    
+                    await fetch(`${API_BASE}/settings`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Bearer MADA2024',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(defaultSettings)
+                    });
+                    
+                    await fetch(`${API_BASE}/rebuild`, {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer MADA2024' }
+                    });
+                    
+                    showToast('Settings reset! Refreshing...', 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } catch (error) {
+                    showToast('Failed to reset settings', 'error');
+                }
             }
         }
 
-        function clearAllData() {
+        async function clearAllData() {
             if (confirm('⚠️ Delete ALL portfolio items and content? This cannot be undone.')) {
-                localStorage.removeItem('madabrandPortfolio');
-                localStorage.removeItem('madabrandContent');
-                localStorage.removeItem('madabrandMedia');
-                updateStatus('All data cleared! Refreshing...');
-                setTimeout(() => location.reload(), 1500);
+                try {
+                    await fetch(`${API_BASE}/portfolio`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': 'Bearer MADA2024' }
+                    });
+                    
+                    await fetch(`${API_BASE}/media`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': 'Bearer MADA2024' }
+                    });
+                    
+                    await fetch(`${API_BASE}/rebuild`, {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer MADA2024' }
+                    });
+                    
+                    showToast('All data cleared! Refreshing...', 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } catch (error) {
+                    showToast('Failed to clear data', 'error');
+                }
             }
         }
 
@@ -804,63 +1113,86 @@
             a.download = `madabrand-logs-${new Date().toISOString().split('T')[0]}.json`;
             a.click();
             URL.revokeObjectURL(url);
+            
+            showToast('Logs exported', 'success');
         }
 
         // Save all settings
-        function saveAllSettings() {
+        async function saveAllSettings() {
             const settings = {
-                siteName: document.getElementById('site-name')?.value,
-                adminEmail: document.getElementById('admin-email')?.value,
-                timezone: document.getElementById('timezone')?.value,
-                currency: document.getElementById('currency')?.value,
-                dateFormat: document.getElementById('date-format')?.value,
-                language: document.getElementById('language')?.value,
-                itemsPerPage: document.getElementById('items-per-page')?.value,
-                defaultView: document.getElementById('default-view')?.value,
-                themeMode: document.getElementById('theme-mode')?.value,
-                sessionTimeout: document.getElementById('session-timeout')?.value,
-                backupFrequency: document.getElementById('backup-frequency')?.value,
-                maxBackups: document.getElementById('max-backups')?.value
+                site: {
+                    title: document.getElementById('site-name')?.value,
+                    adminEmail: document.getElementById('admin-email')?.value,
+                    timezone: document.getElementById('timezone')?.value
+                },
+                display: {
+                    itemsPerPage: document.getElementById('items-per-page')?.value,
+                    defaultView: document.getElementById('default-view')?.value,
+                    themeMode: document.getElementById('theme-mode')?.value
+                },
+                integrations: {
+                    whatsapp: document.querySelector('#whatsapp-settings input')?.value,
+                    googleAnalytics: document.querySelector('#ga-settings input')?.value,
+                    facebookPixel: document.querySelector('#fb-pixel-settings input')?.value
+                }
             };
             
-            localStorage.setItem('madabrandSettings', JSON.stringify(settings));
-            updateStatus('✅ All settings saved!');
+            try {
+                const response = await fetch(`${API_BASE}/settings`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer MADA2024',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(settings)
+                });
+                
+                if (response.ok) {
+                    await fetch(`${API_BASE}/rebuild`, {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer MADA2024' }
+                    });
+                    
+                    updateStatus('✅ All settings saved!');
+                    showToast('Settings saved successfully!', 'success');
+                } else {
+                    throw new Error('API Error');
+                }
+            } catch (error) {
+                // Fallback to localStorage
+                localStorage.setItem('madabrandSettings', JSON.stringify(settings));
+                updateStatus('✅ Settings saved locally');
+                showToast('Settings saved locally', 'success');
+            }
         }
 
         // Update status indicator
         function updateStatus(message) {
             const status = document.getElementById('settings-status');
             status.textContent = `✨ ${message}`;
-            status.classList.add('bg-green-500', 'text-white');
+            status.classList.add('bg-green-600');
             
             setTimeout(() => {
                 status.textContent = '⚡ All settings saved';
-                status.classList.remove('bg-green-500', 'text-white');
-                status.classList.add('bg-white/20');
+                status.classList.remove('bg-green-600');
             }, 3000);
         }
 
-        // Load saved settings
-        function loadSettings() {
-            const saved = localStorage.getItem('madabrandSettings');
-            if (saved) {
-                try {
-                    const settings = JSON.parse(saved);
-                    
-                    // Apply to form fields
-                    for (const [key, value] of Object.entries(settings)) {
-                        const element = document.getElementById(key);
-                        if (element) element.value = value;
-                    }
-                } catch (e) {
-                    console.error('Error loading settings:', e);
-                }
-            }
-        }
-
-        // Check authentication
-        if (!sessionStorage.getItem('adminAuth') && !localStorage.getItem('adminRemember')) {
-            window.location.href = '/madabrand-admin/login';
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <span class="text-xl">${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}</span>
+                <span class="font-medium">${message}</span>
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.transform = 'translateX(100%)';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
         }
 
         // Load settings on page load

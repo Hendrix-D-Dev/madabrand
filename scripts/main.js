@@ -3,8 +3,100 @@ const ADMIN_CODE = "MADA2024"; // Change this to your secret code
 let currentTheme = null;
 let portfolioItems = [];
 
+// API Base URL - adjust for production
+const API_BASE = '/api';
+
+// Helper for authenticated API calls
+async function apiCall(endpoint, method = 'GET', data = null) {
+    const options = {
+        method,
+        headers: {
+            'Authorization': `Bearer ${ADMIN_CODE}`,
+            'Content-Type': 'application/json'
+        }
+    };
+    
+    if (data) {
+        options.body = JSON.stringify(data);
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE}${endpoint}`, options);
+        if (!response.ok) {
+            throw new Error(`API Error: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('API Call failed:', error);
+        showNotification('Failed to connect to server', 'error');
+        return null;
+    }
+}
+
+// Load data from server on startup
+async function loadServerData() {
+    try {
+        // Load settings
+        const settings = await apiCall('/settings');
+        if (settings) {
+            if (settings.theme) {
+                currentTheme = settings.theme;
+                applyTheme();
+            }
+            if (settings.site) {
+                document.title = settings.site.title + ' | Premium Design Studio';
+                const titleElements = document.querySelectorAll('[data-site-title]');
+                titleElements.forEach(el => el.textContent = settings.site.title);
+                
+                const taglineElements = document.querySelectorAll('[data-site-tagline]');
+                taglineElements.forEach(el => el.textContent = settings.site.tagline);
+            }
+        }
+        
+        // Load portfolio
+        const portfolio = await apiCall('/portfolio');
+        if (portfolio && portfolio.projects) {
+            portfolioItems = portfolio.projects;
+        }
+        
+        // Load content
+        const content = await apiCall('/content');
+        if (content) {
+            updatePageContent(content);
+        }
+        
+    } catch (error) {
+        console.error('Failed to load server data:', error);
+    }
+}
+
+// Update page content from API
+function updatePageContent(content) {
+    // Update contact info if on contact page
+    if (window.location.pathname.includes('contact')) {
+        if (content.global?.email) {
+            const emailLinks = document.querySelectorAll('a[href^="mailto:"]');
+            emailLinks.forEach(link => {
+                link.href = `mailto:${content.global.email}`;
+                link.textContent = content.global.email;
+            });
+        }
+        
+        if (content.global?.phone) {
+            const phoneLinks = document.querySelectorAll('a[href^="tel:"]');
+            phoneLinks.forEach(link => {
+                link.href = `tel:${content.global.phone}`;
+                link.textContent = content.global.phone;
+            });
+        }
+    }
+}
+
 // Mobile menu toggle
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    // Load server data first
+    await loadServerData();
+    
     // Mobile Menu
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
@@ -26,12 +118,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Form validation for contact page
     const contactForm = document.getElementById('contact-form');
     if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
+        contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             if (validateForm()) {
-                // In production, replace with actual form submission
-                alert('Thank you for your message! We\'ll get back to you soon.');
-                contactForm.reset();
+                // Submit to API or email service
+                const formData = new FormData(this);
+                const data = Object.fromEntries(formData);
+                
+                try {
+                    // Here you could send to your API or a service like Formspree
+                    showNotification('Thank you for your message! We\'ll get back to you soon.', 'success');
+                    contactForm.reset();
+                } catch (error) {
+                    showNotification('Failed to send message. Please try again.', 'error');
+                }
             }
         });
     }
@@ -84,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Load saved data
+    // Load saved data (fallback)
     loadSavedData();
     
     // Initialize admin system
@@ -218,13 +318,13 @@ function initAdminSystem() {
     
     // Submit admin code
     if (submitAdminCode && adminCodeInput) {
-        submitAdminCode.addEventListener('click', function() {
+        submitAdminCode.addEventListener('click', async function() {
             const enteredCode = adminCodeInput.value.trim();
             
             if (enteredCode === ADMIN_CODE) {
                 // Correct code
                 localStorage.setItem('adminUnlocked', 'true');
-                unlockAdminFeatures();
+                await unlockAdminFeatures();
                 adminMessage.textContent = '✅ Admin access granted!';
                 adminMessage.className = 'mt-4 text-sm text-green-600';
                 
@@ -274,18 +374,18 @@ function initAdminSystem() {
     });
 }
 
-// Load saved data
+// Load saved data (fallback for when API fails)
 function loadSavedData() {
     // Load saved theme
     const savedTheme = localStorage.getItem('madabrandTheme');
-    if (savedTheme) {
+    if (savedTheme && !currentTheme) {
         currentTheme = JSON.parse(savedTheme);
         applyTheme();
     }
     
     // Load saved portfolio items
     const savedPortfolio = localStorage.getItem('madabrandPortfolio');
-    if (savedPortfolio) {
+    if (savedPortfolio && portfolioItems.length === 0) {
         portfolioItems = JSON.parse(savedPortfolio);
     }
     
@@ -306,8 +406,11 @@ function loadSavedData() {
 }
 
 // Enhanced unlock admin features
-function unlockAdminFeatures() {
+async function unlockAdminFeatures() {
     console.log('🔓 Admin features unlocked');
+    
+    // Reload fresh data from server
+    await loadServerData();
     
     // Show admin panel if it exists
     const adminPanel = document.getElementById('admin-panel');
@@ -367,6 +470,10 @@ function updateAdminPanel() {
                 <span>✏️</span>
                 <span>Edit Content</span>
             </button>
+            <button onclick="openSettings()" class="w-full bg-blue-50 text-blue-900 py-3 rounded-lg hover:bg-blue-100 transition border border-blue-200 flex items-center justify-center gap-2">
+                <span>⚙️</span>
+                <span>Site Settings</span>
+            </button>
             <div class="border-t border-blue-200 pt-3 space-y-2">
                 <button onclick="exportData()" class="w-full bg-green-50 text-green-700 py-2 rounded-lg hover:bg-green-100 transition border border-green-200 flex items-center justify-center gap-2">
                     <span>💾</span>
@@ -391,6 +498,76 @@ function updateAdminPanel() {
             adminPanel.classList.add('hidden');
         });
     }
+}
+
+// Open settings
+function openSettings() {
+    closeModal();
+    const modal = createModal('⚙️ Site Settings', 'large');
+    
+    modal.innerHTML = `
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Site Title</label>
+                <input type="text" id="site-title-settings" value="${document.title.replace(' | Premium Design Studio', '')}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Site Tagline</label>
+                <input type="text" id="site-tagline-settings" value="${document.querySelector('[data-site-tagline]')?.textContent || 'Premium Design Studio'}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Meta Description</label>
+                <textarea id="site-description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg">Premium brand design, logo design, and graphic design services in Lagos, Nigeria</textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">WhatsApp Number</label>
+                    <input type="text" id="whatsapp-number" value="2348104902357" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                    <input type="text" id="phone-number" value="08104902357" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3 pt-4 border-t">
+                <button onclick="closeModal()" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition">
+                    Cancel
+                </button>
+                <button onclick="saveSettings()" class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition">
+                    Save Settings
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// Save settings to API
+async function saveSettings() {
+    const settings = {
+        site: {
+            title: document.getElementById('site-title-settings').value.trim(),
+            tagline: document.getElementById('site-tagline-settings').value.trim(),
+            description: document.getElementById('site-description').value.trim()
+        },
+        integrations: {
+            whatsapp: document.getElementById('whatsapp-number').value.trim(),
+            phone: document.getElementById('phone-number').value.trim()
+        }
+    };
+    
+    const result = await apiCall('/settings', 'POST', settings);
+    
+    if (result && result.success) {
+        // Trigger rebuild
+        await apiCall('/rebuild', 'POST');
+        
+        showNotification('Settings saved! Page will refresh...', 'success');
+        setTimeout(() => location.reload(), 1500);
+    } else {
+        showNotification('Failed to save settings', 'error');
+    }
+    
+    closeModal();
 }
 
 // THEME EDITOR
@@ -514,7 +691,7 @@ function updateThemePreview() {
         secondaryColor: document.getElementById('secondary-color').value,
         backgroundColor: document.getElementById('bg-color').value,
         textColor: document.getElementById('text-color').value,
-        headingColor: document.getElementById('primary-color').value, // Use primary for heading
+        headingColor: document.getElementById('primary-color').value,
         fontFamily: document.getElementById('font-family').value
     };
     
@@ -539,7 +716,7 @@ function resetTheme() {
     showNotification('Theme reset to default', 'success');
 }
 
-function saveTheme() {
+async function saveTheme() {
     currentTheme = {
         primaryColor: document.getElementById('primary-color').value,
         secondaryColor: document.getElementById('secondary-color').value,
@@ -550,10 +727,21 @@ function saveTheme() {
         fontFamily: document.getElementById('font-family').value
     };
     
-    localStorage.setItem('madabrandTheme', JSON.stringify(currentTheme));
-    applyTheme();
-    closeModal();
-    showNotification('Theme saved successfully!', 'success');
+    // Save to API
+    const result = await apiCall('/settings', 'POST', { theme: currentTheme });
+    
+    if (result && result.success) {
+        localStorage.setItem('madabrandTheme', JSON.stringify(currentTheme));
+        applyTheme();
+        
+        // Trigger rebuild
+        await apiCall('/rebuild', 'POST');
+        
+        closeModal();
+        showNotification('Theme saved successfully!', 'success');
+    } else {
+        showNotification('Failed to save theme', 'error');
+    }
 }
 
 function applyTheme() {
@@ -639,7 +827,7 @@ function openPortfolioManager() {
                                 <button onclick="editPortfolioItem(${index})" class="text-blue-600 hover:text-blue-800 p-1" title="Edit">
                                     ✏️
                                 </button>
-                                <button onclick="deletePortfolioItem(${index})" class="text-red-600 hover:text-red-800 p-1" title="Delete">
+                                <button onclick="deletePortfolioItem(${item.id || index})" class="text-red-600 hover:text-red-800 p-1" title="Delete">
                                     🗑️
                                 </button>
                             </div>
@@ -669,10 +857,11 @@ function openPortfolioManager() {
 function openAddPortfolioItem(editIndex = null) {
     const isEdit = editIndex !== null;
     const item = isEdit ? portfolioItems[editIndex] : {
+        id: Date.now(),
         title: '',
         category: 'branding',
         description: '',
-        imageUrl: '',
+        images: [],
         date: new Date().toISOString().split('T')[0],
         link: '#'
     };
@@ -710,7 +899,7 @@ function openAddPortfolioItem(editIndex = null) {
             
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
-                <input type="text" id="portfolio-image" value="${item.imageUrl}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="/assets/images/photo_1.jpg">
+                <input type="text" id="portfolio-image" value="${item.images && item.images[0] || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="/assets/images/photo_1.jpg">
                 <p class="text-xs text-gray-500 mt-1">Path to your image file in the assets folder</p>
             </div>
             
@@ -719,11 +908,26 @@ function openAddPortfolioItem(editIndex = null) {
                 <input type="text" id="portfolio-link" value="${item.link}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="#case-study">
             </div>
             
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Client (Optional)</label>
+                <input type="text" id="portfolio-client" value="${item.client || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="e.g., NuelArk Construction">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Industry (Optional)</label>
+                <input type="text" id="portfolio-industry" value="${item.industry || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="e.g., Construction, Technology">
+            </div>
+            
+            <div class="flex items-center">
+                <input type="checkbox" id="portfolio-featured" ${item.featured ? 'checked' : ''} class="w-4 h-4 text-blue-900 border-gray-300 rounded focus:ring-blue-900">
+                <label for="portfolio-featured" class="ml-2 text-sm text-gray-700">Feature this project</label>
+            </div>
+            
             <div class="flex justify-end space-x-3 pt-4 border-t">
                 <button onclick="closeModal()" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition">
                     Cancel
                 </button>
-                <button onclick="savePortfolioItem(${isEdit ? editIndex : 'null'})" class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition">
+                <button onclick="savePortfolioItem(${isEdit ? JSON.stringify(item.id) : 'null'})" class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition">
                     ${isEdit ? 'Update' : 'Save'} Project
                 </button>
             </div>
@@ -731,14 +935,17 @@ function openAddPortfolioItem(editIndex = null) {
     `;
 }
 
-function savePortfolioItem(editIndex) {
+async function savePortfolioItem(editId = null) {
     const item = {
         title: document.getElementById('portfolio-title').value.trim(),
         category: document.getElementById('portfolio-category').value,
         description: document.getElementById('portfolio-description').value.trim(),
-        imageUrl: document.getElementById('portfolio-image').value.trim(),
+        images: document.getElementById('portfolio-image').value.trim() ? [document.getElementById('portfolio-image').value.trim()] : [],
         date: document.getElementById('portfolio-date').value,
-        link: document.getElementById('portfolio-link').value.trim() || '#'
+        link: document.getElementById('portfolio-link').value.trim() || '#',
+        client: document.getElementById('portfolio-client').value.trim(),
+        industry: document.getElementById('portfolio-industry').value.trim(),
+        featured: document.getElementById('portfolio-featured').checked
     };
     
     if (!item.title) {
@@ -753,47 +960,62 @@ function savePortfolioItem(editIndex) {
         return;
     }
     
-    if (editIndex !== null) {
-        portfolioItems[editIndex] = item;
+    let result;
+    if (editId) {
+        // Update existing project
+        item.id = editId;
+        result = await apiCall('/portfolio', 'PUT', item);
     } else {
-        portfolioItems.push(item);
+        // Add new project
+        result = await apiCall('/portfolio', 'POST', item);
     }
     
-    localStorage.setItem('madabrandPortfolio', JSON.stringify(portfolioItems));
-    
-    // Update the portfolio page if we're on it
-    if (window.location.pathname.includes('portfolio')) {
-        updatePortfolioDisplay();
+    if (result && result.success) {
+        // Trigger rebuild
+        await apiCall('/rebuild', 'POST');
+        
+        showNotification(`Project ${editId ? 'updated' : 'added'} successfully!`, 'success');
+        
+        // Reload portfolio data
+        const portfolio = await apiCall('/portfolio');
+        if (portfolio && portfolio.projects) {
+            portfolioItems = portfolio.projects;
+        }
+        
+        closeModal();
+        setTimeout(() => openPortfolioManager(), 300);
+    } else {
+        showNotification(`Failed to ${editId ? 'update' : 'add'} project`, 'error');
     }
-    
-    closeModal();
-    showNotification(`Project ${editIndex !== null ? 'updated' : 'added'} successfully!`, 'success');
-    
-    // Reopen portfolio manager
-    setTimeout(() => openPortfolioManager(), 300);
 }
 
 function editPortfolioItem(index) {
     openAddPortfolioItem(index);
 }
 
-function deletePortfolioItem(index) {
+async function deletePortfolioItem(id) {
     if (confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
-        portfolioItems.splice(index, 1);
-        localStorage.setItem('madabrandPortfolio', JSON.stringify(portfolioItems));
+        const result = await apiCall(`/portfolio?id=${id}`, 'DELETE');
         
-        if (window.location.pathname.includes('portfolio')) {
-            updatePortfolioDisplay();
+        if (result && result.success) {
+            // Trigger rebuild
+            await apiCall('/rebuild', 'POST');
+            
+            // Reload portfolio data
+            const portfolio = await apiCall('/portfolio');
+            if (portfolio && portfolio.projects) {
+                portfolioItems = portfolio.projects;
+            }
+            
+            showNotification('Project deleted successfully!', 'success');
+            openPortfolioManager();
+        } else {
+            showNotification('Failed to delete project', 'error');
         }
-        
-        showNotification('Project deleted successfully!', 'success');
-        openPortfolioManager();
     }
 }
 
 function updatePortfolioDisplay() {
-    // This is where you would update the actual portfolio page
-    // For now, we'll just show a notification
     showNotification('Portfolio data updated. Refresh page to see changes.', 'info');
 }
 
@@ -844,11 +1066,19 @@ function openContentEditor() {
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm text-gray-600 mb-2">Site Title</label>
-                        <input type="text" id="site-title" value="${localStorage.getItem('madabrandSiteTitle') || 'MadaBrand'}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        <input type="text" id="site-title" value="${localStorage.getItem('madabrandSiteTitle') || document.title.replace(' | Premium Design Studio', '')}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                     </div>
                     <div>
                         <label class="block text-sm text-gray-600 mb-2">Tagline</label>
-                        <input type="text" id="site-tagline" value="${localStorage.getItem('madabrandSiteTagline') || 'Premium Design Studio'}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        <input type="text" id="site-tagline" value="${localStorage.getItem('madabrandSiteTagline') || document.querySelector('[data-site-tagline]')?.textContent || 'Premium Design Studio'}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-2">Email Address</label>
+                        <input type="email" id="site-email" value="macaulaymadalene@gmail.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-2">Phone Number</label>
+                        <input type="text" id="site-phone" value="08104902357" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                     </div>
                 </div>
             </div>
@@ -865,8 +1095,55 @@ function openContentEditor() {
     `;
 }
 
+async function saveContentEdits() {
+    const siteTitle = document.getElementById('site-title').value.trim();
+    const siteTagline = document.getElementById('site-tagline').value.trim();
+    const siteEmail = document.getElementById('site-email').value.trim();
+    const sitePhone = document.getElementById('site-phone').value.trim();
+    
+    if (!siteTitle) {
+        showNotification('Site title cannot be empty', 'error');
+        return;
+    }
+    
+    // Save to localStorage as backup
+    localStorage.setItem('madabrandSiteTitle', siteTitle);
+    localStorage.setItem('madabrandSiteTagline', siteTagline);
+    
+    // Save to API
+    const contentData = {
+        global: {
+            siteTitle,
+            siteTagline,
+            email: siteEmail,
+            phone: sitePhone
+        }
+    };
+    
+    const result = await apiCall('/content', 'POST', contentData);
+    
+    if (result && result.success) {
+        // Trigger rebuild
+        await apiCall('/rebuild', 'POST');
+        
+        // Update page
+        document.title = siteTitle + ' | Premium Design Studio';
+        
+        const titleElements = document.querySelectorAll('[data-site-title]');
+        titleElements.forEach(el => el.textContent = siteTitle);
+        
+        const taglineElements = document.querySelectorAll('[data-site-tagline]');
+        taglineElements.forEach(el => el.textContent = siteTagline);
+        
+        closeModal();
+        showNotification('Content saved successfully! Page will refresh...', 'success');
+        setTimeout(() => location.reload(), 1500);
+    } else {
+        showNotification('Failed to save content', 'error');
+    }
+}
+
 function editPageContent(page) {
-    // For now, show a simple editor
     closeModal();
     
     const modal = createModal(`Editing ${page.charAt(0).toUpperCase() + page.slice(1)} Page`, 'large');
@@ -891,34 +1168,8 @@ function editPageContent(page) {
     `;
 }
 
-function saveContentEdits() {
-    const siteTitle = document.getElementById('site-title').value.trim();
-    const siteTagline = document.getElementById('site-tagline').value.trim();
-    
-    if (!siteTitle) {
-        showNotification('Site title cannot be empty', 'error');
-        return;
-    }
-    
-    localStorage.setItem('madabrandSiteTitle', siteTitle);
-    localStorage.setItem('madabrandSiteTagline', siteTagline);
-    
-    // Update page title
-    document.title = siteTitle + ' | Premium Design Studio';
-    
-    // Update any elements with data attributes
-    const titleElements = document.querySelectorAll('[data-site-title]');
-    titleElements.forEach(el => el.textContent = siteTitle);
-    
-    const taglineElements = document.querySelectorAll('[data-site-tagline]');
-    taglineElements.forEach(el => el.textContent = siteTagline);
-    
-    closeModal();
-    showNotification('Content saved successfully!', 'success');
-}
-
 // DATA IMPORT/EXPORT
-function exportData() {
+async function exportData() {
     const data = {
         theme: currentTheme,
         portfolio: portfolioItems,
@@ -948,13 +1199,13 @@ function importData() {
     input.type = 'file';
     input.accept = '.json';
     
-    input.onchange = function(e) {
+    input.onchange = async function(e) {
         const file = e.target.files[0];
         if (!file) return;
         
         const reader = new FileReader();
         
-        reader.onload = function(e) {
+        reader.onload = async function(e) {
             try {
                 const data = JSON.parse(e.target.result);
                 
@@ -963,24 +1214,25 @@ function importData() {
                 }
                 
                 if (confirm('Importing data will replace your current theme, portfolio, and settings. Continue?')) {
-                    // Import theme
+                    // Import theme via API
                     if (data.theme) {
-                        currentTheme = data.theme;
-                        localStorage.setItem('madabrandTheme', JSON.stringify(currentTheme));
-                        applyTheme();
+                        await apiCall('/settings', 'POST', { theme: data.theme });
                     }
                     
-                    // Import portfolio
+                    // Import portfolio via API
                     if (data.portfolio) {
-                        portfolioItems = data.portfolio;
-                        localStorage.setItem('madabrandPortfolio', JSON.stringify(portfolioItems));
+                        for (const project of data.portfolio) {
+                            await apiCall('/portfolio', 'POST', project);
+                        }
                     }
                     
-                    // Import settings
+                    // Import settings via API
                     if (data.settings) {
-                        localStorage.setItem('madabrandSiteTitle', data.settings.siteTitle);
-                        localStorage.setItem('madabrandSiteTagline', data.settings.siteTagline);
+                        await apiCall('/settings', 'POST', { site: data.settings });
                     }
+                    
+                    // Trigger rebuild
+                    await apiCall('/rebuild', 'POST');
                     
                     showNotification('Data imported successfully! Page will refresh...', 'success');
                     setTimeout(() => location.reload(), 1500);

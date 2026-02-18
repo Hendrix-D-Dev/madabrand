@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | MadaBrand</title>
+    <title>Dashboard | MadaBrand Admin</title>
     <link href="/dist/output.css" rel="stylesheet">
-    <script src="/scripts/admin/admin-auth.js" defer></script>
-    <script src="/scripts/admin/admin-utils.js" defer></script>
+    
+    <!-- Three.js and Vanta.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
-        /* Professional Admin Styling */
         * {
             margin: 0;
             padding: 0;
@@ -17,15 +22,18 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            background-attachment: fixed;
+            background: #0f172a;
+            overflow-x: hidden;
         }
 
-        /* Glassmorphism Effects */
-        .glass-sidebar {
-            background: rgba(30, 58, 138, 0.95);
-            backdrop-filter: blur(10px);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        #vanta-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.8;
         }
 
         .glass-card {
@@ -33,44 +41,21 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(30, 58, 138, 0.1);
             box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
         }
 
-        .glass-header {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(30, 58, 138, 0.1);
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 40px -12px rgba(30, 58, 138, 0.3);
+            border-color: rgba(30, 58, 138, 0.3);
         }
 
-        /* Professional Sidebar */
-        .admin-sidebar {
-            background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 100%);
-            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .sidebar-item {
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-            margin: 4px 12px;
-            border-radius: 10px;
-        }
-
-        .sidebar-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateX(5px);
-        }
-
-        .sidebar-item.active {
-            background: rgba(255, 255, 255, 0.15);
-            border-left-color: #fff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Stat Cards */
         .stat-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid rgba(30, 58, 138, 0.1);
             position: relative;
             overflow: hidden;
+            background: white;
         }
 
         .stat-card::before {
@@ -94,11 +79,11 @@
             transform: scaleX(1);
         }
 
-        /* Quick Action Cards */
         .quick-action-card {
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            background: white;
         }
 
         .quick-action-card::after {
@@ -124,67 +109,6 @@
             box-shadow: 0 20px 25px -5px rgba(30, 58, 138, 0.2);
         }
 
-        /* Activity Timeline */
-        .timeline-item {
-            position: relative;
-            padding-left: 2rem;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: linear-gradient(180deg, #1e3a8a, #3b82f6);
-            border-radius: 2px;
-        }
-
-        .timeline-dot {
-            position: absolute;
-            left: -5px;
-            top: 0;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #1e3a8a;
-            border: 2px solid white;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Modern Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-
-        /* Loading Skeleton */
-        .skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-        }
-
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-
-        /* Animated Gradient Background */
         .animated-gradient {
             background: linear-gradient(-45deg, #1e3a8a, #2563eb, #3b82f6, #60a5fa);
             background-size: 400% 400%;
@@ -197,686 +121,467 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Toast Notifications */
-        .toast {
-            position: fixed;
-            top: 24px;
-            right: 24px;
-            padding: 16px 24px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 9999;
-            animation: slideIn 0.3s ease;
-            border-left: 4px solid;
+        .main-content {
+            margin-left: 288px;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
         }
 
-        .toast.success { border-color: #10b981; }
-        .toast.error { border-color: #ef4444; }
-        .toast.info { border-color: #3b82f6; }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        /* Progress Bar */
-        .progress-bar {
-            height: 4px;
-            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
-            border-radius: 2px;
-            transition: width 0.3s ease;
+        @media (max-width: 1024px) {
+            .main-content {
+                margin-left: 0;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Admin Layout with Sidebar -->
-    <div class="flex h-screen bg-gray-100">
-        <!-- Professional Sidebar -->
-        <div class="admin-sidebar w-72 text-white flex flex-col shadow-2xl">
-            <!-- Logo Area with Animation -->
-            <div class="p-6 border-b border-white/10">
-                <div class="flex items-center space-x-3">
-                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-2xl animate-pulse">
-                        🎨
-                    </div>
-                    <div>
-                        <h2 class="font-bold text-xl tracking-tight">MadaBrand</h2>
-                        <p class="text-xs text-white/60 flex items-center gap-1">
-                            <span class="w-2 h-2 bg-green-400 rounded-full"></span>
-                            Admin Dashboard
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Navigation Menu -->
-            <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
-                <div class="text-xs font-semibold text-white/40 uppercase tracking-wider px-4 mb-2">Main</div>
-                
-                <a href="/admin/" class="sidebar-item active flex items-center space-x-3 px-4 py-3 text-white">
-                    <span class="text-xl">📊</span>
-                    <span class="font-medium">Dashboard</span>
-                    <span class="ml-auto bg-white/20 text-xs px-2 py-1 rounded-full">Home</span>
-                </a>
-                
-                <a href="/admin/portfolio-manager.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white/80 hover:text-white">
-                    <span class="text-xl">📁</span>
-                    <span class="font-medium">Portfolio Manager</span>
-                </a>
-                
-                <a href="/admin/content-editor.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white/80 hover:text-white">
-                    <span class="text-xl">✏️</span>
-                    <span class="font-medium">Content Editor</span>
-                </a>
-                
-                <a href="/admin/media-library.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white/80 hover:text-white">
-                    <span class="text-xl">🖼️</span>
-                    <span class="font-medium">Media Library</span>
-                    <span class="ml-auto bg-blue-500 text-xs px-2 py-1 rounded-full">9</span>
-                </a>
-                
-                <a href="/admin/settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white/80 hover:text-white">
-                    <span class="text-xl">⚙️</span>
-                    <span class="font-medium">Settings</span>
-                </a>
-                
-                <div class="border-t border-white/10 my-4"></div>
-                
-                <div class="text-xs font-semibold text-white/40 uppercase tracking-wider px-4 mb-2">System</div>
-                
-                <a href="/admin/backup.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white/80 hover:text-white">
-                    <span class="text-xl">💾</span>
-                    <span class="font-medium">Backup & Restore</span>
-                </a>
-                
-                <a href="/admin/analytics.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white/80 hover:text-white">
-                    <span class="text-xl">📈</span>
-                    <span class="font-medium">Analytics</span>
-                </a>
-                
-                <a href="/admin/logs.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white/80 hover:text-white">
-                    <span class="text-xl">📋</span>
-                    <span class="font-medium">System Logs</span>
-                </a>
-            </nav>
-            
-            <!-- User Profile Section -->
-            <div class="p-4 border-t border-white/10 bg-white/5">
-                <div class="flex items-center space-x-3 px-4 py-3">
-                    <div class="relative">
-                        <div class="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center text-white font-bold text-lg">
-                            A
-                        </div>
-                        <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-sm font-medium text-white">Admin User</p>
-                        <p class="text-xs text-white/60">Administrator</p>
-                    </div>
-                    <button onclick="logoutAdmin()" class="text-white/60 hover:text-white transition" title="Logout">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                        </svg>
-                    </button>
-                </div>
-                
-                <!-- Quick Stats -->
-                <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-white/10">
-                    <div class="text-center">
-                        <p class="text-xs text-white/40">Session</p>
-                        <p class="text-sm font-medium text-white" id="admin-session-status">Active</p>
-                    </div>
-                    <div class="text-center">
-                        <p class="text-xs text-white/40">Role</p>
-                        <p class="text-sm font-medium text-white">Admin</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Content Area -->
-        <div class="flex-1 overflow-y-auto bg-gray-50">
+<body>
+    <!-- Vanta Background -->
+    <div id="vanta-bg"></div>
+    
+    <!-- Admin Layout -->
+    <div class="flex">
+        <!-- Navigation Sidebar -->
+        <div id="nav-container" class="fixed left-0 top-0 h-full z-20"></div>
+        
+        <!-- Main Content -->
+        <main class="main-content flex-1">
             <!-- Top Bar -->
-            <div class="glass-header sticky top-0 z-10 px-8 py-4 flex justify-between items-center">
-                <div class="flex items-center space-x-4">
-                    <h1 class="text-2xl font-bold text-gray-900">Dashboard Overview</h1>
-                    <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">Live</span>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <!-- Search -->
-                    <div class="relative">
-                        <input type="text" placeholder="Quick search..." 
-                               class="pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-transparent w-64">
-                        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
+            <div class="glass-card rounded-2xl p-4 mb-8 sticky top-4 z-10">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent">Dashboard Overview</h1>
+                        <p class="text-gray-600 mt-1">Welcome back to your admin dashboard</p>
                     </div>
-                    
-                    <!-- Quick Actions Dropdown -->
-                    <div class="relative" x-data="{ open: false }">
-                        <button class="p-2 hover:bg-gray-100 rounded-lg transition">
-                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <input type="text" placeholder="Quick search..." 
+                                   class="pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-transparent w-64">
+                            <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <button onclick="refreshData()" class="p-2 hover:bg-gray-100 rounded-lg transition group">
+                            <svg class="w-6 h-6 text-gray-600 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                             </svg>
                         </button>
                     </div>
-                    
-                    <!-- Notifications -->
-                    <button class="p-2 hover:bg-gray-100 rounded-lg transition relative">
-                        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
-                        </svg>
-                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                    </button>
                 </div>
             </div>
 
-            <!-- Main Content -->
-            <div class="p-8">
-                <!-- Welcome Banner with Gradient -->
-                <div class="animated-gradient rounded-2xl p-8 mb-8 text-white relative overflow-hidden">
-                    <div class="absolute inset-0 bg-black/20"></div>
-                    <div class="relative z-10">
-                        <h1 class="text-3xl font-bold mb-2">Welcome back, Admin! 👋</h1>
-                        <p class="text-white/90 text-lg max-w-2xl">Manage your portfolio, content, and site settings from one powerful dashboard.</p>
-                        
-                        <!-- Quick Progress -->
-                        <div class="mt-6 max-w-md">
-                            <div class="flex justify-between text-sm mb-2">
-                                <span>Profile Completion</span>
-                                <span>75%</span>
-                            </div>
-                            <div class="w-full bg-white/30 rounded-full h-2">
-                                <div class="progress-bar" style="width: 75%"></div>
-                            </div>
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="stat-card rounded-2xl p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm text-gray-600 mb-1">Total Projects</p>
+                            <p class="text-4xl font-bold text-blue-900" id="total-projects">0</p>
+                            <p class="text-xs text-green-600 mt-2 flex items-center">
+                                <span class="mr-1 animate-pulse">↑</span> +12% this month
+                            </p>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Stats Grid with Micro-interactions -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div class="stat-card bg-white rounded-2xl p-6 shadow-lg">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm text-gray-600 mb-1">Total Projects</p>
-                                <p class="text-4xl font-bold text-blue-900" id="total-projects">0</p>
-                                <p class="text-xs text-green-600 mt-2 flex items-center">
-                                    <span class="mr-1">↑</span> +12% this month
-                                </p>
-                            </div>
-                            <div class="w-14 h-14 bg-gradient-to-br from-blue-900/10 to-blue-100 rounded-2xl flex items-center justify-center">
-                                <span class="text-3xl text-blue-900">📁</span>
-                            </div>
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-gray-100">
-                            <div class="flex items-center justify-between text-xs">
-                                <span class="text-gray-500">Last added: 2h ago</span>
-                                <span class="text-blue-600">View all →</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="stat-card bg-white rounded-2xl p-6 shadow-lg">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm text-gray-600 mb-1">Form Submissions</p>
-                                <p class="text-4xl font-bold text-blue-900" id="total-submissions">12</p>
-                                <p class="text-xs text-yellow-600 mt-2 flex items-center">
-                                    <span class="mr-1">↗</span> 3 unread
-                                </p>
-                            </div>
-                            <div class="w-14 h-14 bg-gradient-to-br from-blue-900/10 to-blue-100 rounded-2xl flex items-center justify-center">
-                                <span class="text-3xl text-blue-900">📧</span>
-                            </div>
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-gray-100">
-                            <div class="flex items-center justify-between text-xs">
-                                <span class="text-gray-500">Response rate: 95%</span>
-                                <span class="text-blue-600">View messages</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="stat-card bg-white rounded-2xl p-6 shadow-lg">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm text-gray-600 mb-1">Media Files</p>
-                                <p class="text-4xl font-bold text-blue-900" id="total-media">9</p>
-                                <p class="text-xs text-green-600 mt-2 flex items-center">
-                                    <span class="mr-1">↑</span> 3 new this week
-                                </p>
-                            </div>
-                            <div class="w-14 h-14 bg-gradient-to-br from-blue-900/10 to-blue-100 rounded-2xl flex items-center justify-center">
-                                <span class="text-3xl text-blue-900">🖼️</span>
-                            </div>
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-gray-100">
-                            <div class="flex items-center justify-between text-xs">
-                                <span class="text-gray-500">Total size: 24.5 MB</span>
-                                <span class="text-blue-600">Manage</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="stat-card bg-white rounded-2xl p-6 shadow-lg">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm text-gray-600 mb-1">Last Backup</p>
-                                <p class="text-4xl font-bold text-blue-900" id="last-backup">Today</p>
-                                <p class="text-xs text-blue-600 mt-2 flex items-center">
-                                    <span class="mr-1">✓</span> Auto-backup enabled
-                                </p>
-                            </div>
-                            <div class="w-14 h-14 bg-gradient-to-br from-blue-900/10 to-blue-100 rounded-2xl flex items-center justify-center">
-                                <span class="text-3xl text-blue-900">💾</span>
-                            </div>
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-gray-100">
-                            <div class="flex items-center justify-between text-xs">
-                                <span class="text-gray-500">Next: Tomorrow 3AM</span>
-                                <span class="text-blue-600">Backup now</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Actions with Enhanced Design -->
-                <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <span class="w-1 h-6 bg-blue-900 rounded-full"></span>
-                    Quick Actions
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                    <a href="/admin/portfolio-manager.html" class="quick-action-card bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:border-blue-200">
-                        <div class="w-14 h-14 bg-gradient-to-br from-blue-900/10 to-blue-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <div class="w-14 h-14 bg-gradient-to-br from-blue-900/10 to-blue-100 rounded-2xl flex items-center justify-center animate-bounce">
                             <span class="text-3xl text-blue-900">📁</span>
                         </div>
-                        <h3 class="font-semibold text-gray-900 mb-2 text-lg">Add New Project</h3>
-                        <p class="text-sm text-gray-600 mb-3">Upload portfolio work with images</p>
-                        <span class="text-blue-900 text-sm font-medium flex items-center gap-1">
-                            Get started 
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </span>
-                    </a>
-                    
-                    <a href="/admin/content-editor.html" class="quick-action-card bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:border-blue-200">
-                        <div class="w-14 h-14 bg-gradient-to-br from-blue-900/10 to-blue-100 rounded-xl flex items-center justify-center mb-4">
-                            <span class="text-3xl text-blue-900">✏️</span>
-                        </div>
-                        <h3 class="font-semibold text-gray-900 mb-2 text-lg">Edit Content</h3>
-                        <p class="text-sm text-gray-600 mb-3">Update page text and meta data</p>
-                        <span class="text-blue-900 text-sm font-medium flex items-center gap-1">
-                            Start editing
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </span>
-                    </a>
-                    
-                    <a href="/admin/media-library.html" class="quick-action-card bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:border-blue-200">
-                        <div class="w-14 h-14 bg-gradient-to-br from-blue-900/10 to-blue-100 rounded-xl flex items-center justify-center mb-4">
-                            <span class="text-3xl text-blue-900">🖼️</span>
-                        </div>
-                        <h3 class="font-semibold text-gray-900 mb-2 text-lg">Upload Images</h3>
-                        <p class="text-sm text-gray-600 mb-3">Manage your media library</p>
-                        <span class="text-blue-900 text-sm font-medium flex items-center gap-1">
-                            Upload files
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </span>
-                    </a>
-                    
-                    <a href="/admin/settings.html" class="quick-action-card bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:border-blue-200">
-                        <div class="w-14 h-14 bg-gradient-to-br from-blue-900/10 to-blue-100 rounded-xl flex items-center justify-center mb-4">
-                            <span class="text-3xl text-blue-900">⚙️</span>
-                        </div>
-                        <h3 class="font-semibold text-gray-900 mb-2 text-lg">Settings</h3>
-                        <p class="text-sm text-gray-600 mb-3">Change passcode, theme colors</p>
-                        <span class="text-blue-900 text-sm font-medium flex items-center gap-1">
-                            Configure
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </span>
-                    </a>
-                </div>
-
-                <!-- Two Column Layout -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Recent Activity - Takes 2 columns -->
-                    <div class="lg:col-span-2">
-                        <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-                            <div class="flex justify-between items-center mb-6">
-                                <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2">
-                                    <span class="w-1 h-5 bg-blue-900 rounded-full"></span>
-                                    Recent Activity
-                                </h3>
-                                <div class="flex gap-2">
-                                    <button class="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition">All</button>
-                                    <button class="px-3 py-1 text-sm hover:bg-gray-100 rounded-lg transition">Projects</button>
-                                    <button class="px-3 py-1 text-sm hover:bg-gray-100 rounded-lg transition">Content</button>
-                                </div>
-                            </div>
-                            
-                            <div class="space-y-4">
-                                <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-blue-50/50 to-white rounded-xl border border-blue-100">
-                                    <div class="w-10 h-10 bg-gradient-to-br from-blue-900 to-blue-700 rounded-xl flex items-center justify-center flex-shrink-0 text-white">
-                                        📁
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="flex items-center justify-between">
-                                            <p class="font-medium text-gray-900">New project added</p>
-                                            <span class="text-xs text-gray-500">2 hours ago</span>
-                                        </div>
-                                        <p class="text-sm text-gray-600">NuelArk Construction - Complete brand identity</p>
-                                        <div class="flex items-center gap-2 mt-2">
-                                            <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Published</span>
-                                            <span class="text-xs text-gray-400">by Admin</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="flex items-start gap-4 p-4 hover:bg-gray-50 rounded-xl transition">
-                                    <div class="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center flex-shrink-0 text-white">
-                                        ✏️
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="flex items-center justify-between">
-                                            <p class="font-medium text-gray-900">Content updated</p>
-                                            <span class="text-xs text-gray-500">Yesterday</span>
-                                        </div>
-                                        <p class="text-sm text-gray-600">Home page hero text modified</p>
-                                        <div class="flex items-center gap-2 mt-2">
-                                            <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">Draft</span>
-                                            <span class="text-xs text-gray-400">by Admin</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="flex items-start gap-4 p-4 hover:bg-gray-50 rounded-xl transition">
-                                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0 text-white">
-                                        💾
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="flex items-center justify-between">
-                                            <p class="font-medium text-gray-900">Auto-backup completed</p>
-                                            <span class="text-xs text-gray-500">Today, 3:00 AM</span>
-                                        </div>
-                                        <p class="text-sm text-gray-600">data-backup-2025-02-14.json</p>
-                                        <div class="flex items-center gap-2 mt-2">
-                                            <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Success</span>
-                                            <span class="text-xs text-gray-400">2.4 MB</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <button class="w-full mt-6 text-sm text-blue-900 hover:text-blue-700 font-medium text-center py-3 hover:bg-blue-50 rounded-xl transition border border-blue-100">
-                                View All Activity →
-                            </button>
-                        </div>
                     </div>
-                    
-                    <!-- Portfolio Preview - Takes 1 column -->
-                    <div class="lg:col-span-1">
-                        <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-                            <div class="flex justify-between items-center mb-6">
-                                <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2">
-                                    <span class="w-1 h-5 bg-blue-900 rounded-full"></span>
-                                    Recent Projects
-                                </h3>
-                                <a href="/admin/portfolio-manager.html" class="text-sm text-blue-900 hover:text-blue-700 font-medium flex items-center gap-1">
-                                    Manage All
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                    </svg>
-                                </a>
-                            </div>
-                            
-                            <div id="portfolio-preview-list" class="space-y-3">
-                                <!-- Projects will be loaded here -->
-                                <div class="text-center py-8">
-                                    <div class="animate-spin inline-block w-8 h-8 border-3 border-blue-900 border-t-transparent rounded-full"></div>
-                                    <p class="text-gray-500 mt-2">Loading projects...</p>
-                                </div>
-                            </div>
-                            
-                            <!-- Storage Usage -->
-                            <div class="mt-6 pt-6 border-t border-gray-100">
-                                <div class="flex justify-between text-sm mb-2">
-                                    <span class="text-gray-600">Storage Usage</span>
-                                    <span class="font-medium text-gray-900">45% used</span>
-                                </div>
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-gradient-to-r from-blue-900 to-blue-700 h-2 rounded-full" style="width: 45%"></div>
-                                </div>
-                                <p class="text-xs text-gray-500 mt-2">24.5 MB of 100 MB used</p>
-                            </div>
+                </div>
+                
+                <div class="stat-card rounded-2xl p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm text-gray-600 mb-1">Media Files</p>
+                            <p class="text-4xl font-bold text-blue-900" id="total-media">0</p>
+                            <p class="text-xs text-green-600 mt-2 flex items-center">
+                                <span class="mr-1 animate-pulse">↑</span> 3 new this week
+                            </p>
+                        </div>
+                        <div class="w-14 h-14 bg-gradient-to-br from-purple-900/10 to-purple-100 rounded-2xl flex items-center justify-center animate-pulse">
+                            <span class="text-3xl text-purple-900">🖼️</span>
                         </div>
                     </div>
                 </div>
-
-                <!-- Quick Backup with Enhanced Design -->
-                <div class="mt-6 bg-gradient-to-r from-blue-900/5 via-blue-100/30 to-blue-900/5 rounded-2xl p-8 border border-blue-200 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
-                    <div class="relative z-10">
-                        <div class="flex flex-col sm:flex-row justify-between items-center gap-6">
-                            <div class="flex items-start gap-4">
-                                <div class="w-16 h-16 bg-gradient-to-br from-blue-900 to-blue-800 rounded-2xl flex items-center justify-center shadow-lg">
-                                    <span class="text-3xl text-white">💾</span>
-                                </div>
-                                <div>
-                                    <h3 class="text-xl font-bold text-gray-900">Backup & Restore</h3>
-                                    <p class="text-sm text-gray-600 mt-1 max-w-lg">Create a complete backup of all your data including portfolio, content, and settings. Restore from previous backups with one click.</p>
-                                    
-                                    <!-- Last Backup Info -->
-                                    <div class="flex items-center gap-4 mt-3">
-                                        <div class="flex items-center gap-1 text-xs text-gray-500">
-                                            <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-                                            Last backup: Today, 3:00 AM
-                                        </div>
-                                        <div class="flex items-center gap-1 text-xs text-gray-500">
-                                            <span>📊</span>
-                                            Size: 2.4 MB
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex gap-3 flex-shrink-0">
-                                <button onclick="createBackup()" class="px-6 py-3 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-xl hover:from-blue-800 hover:to-blue-700 transition-all duration-300 hover:scale-105 shadow-lg flex items-center gap-2">
-                                    <span>💾</span>
-                                    <span>Backup Now</span>
-                                </button>
-                                <button onclick="restoreBackup()" class="px-6 py-3 bg-white text-blue-900 border-2 border-blue-900 rounded-xl hover:bg-blue-50 transition-all duration-300 hover:scale-105 shadow-lg flex items-center gap-2">
-                                    <span>↩️</span>
-                                    <span>Restore</span>
-                                </button>
-                            </div>
+                
+                <div class="stat-card rounded-2xl p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm text-gray-600 mb-1">Form Submissions</p>
+                            <p class="text-4xl font-bold text-blue-900" id="total-submissions">12</p>
+                            <p class="text-xs text-yellow-600 mt-2 flex items-center">
+                                <span class="mr-1 animate-pulse">↗</span> 3 unread
+                            </p>
+                        </div>
+                        <div class="w-14 h-14 bg-gradient-to-br from-green-900/10 to-green-100 rounded-2xl flex items-center justify-center animate-spin-slow">
+                            <span class="text-3xl text-green-900">📧</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card rounded-2xl p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm text-gray-600 mb-1">Storage Used</p>
+                            <p class="text-4xl font-bold text-blue-900" id="storage-used">24.5 MB</p>
+                            <p class="text-xs text-blue-600 mt-2 flex items-center">
+                                <span class="mr-1 animate-pulse">✓</span> of 100 MB
+                            </p>
+                        </div>
+                        <div class="w-14 h-14 bg-gradient-to-br from-orange-900/10 to-orange-100 rounded-2xl flex items-center justify-center animate-pulse">
+                            <span class="text-3xl text-orange-900">💾</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <!-- Quick Actions -->
+            <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <span class="w-1 h-6 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
+                Quick Actions
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <a href="/admin/portfolio-manager.html" class="quick-action-card p-6 rounded-2xl border border-gray-100 hover:border-blue-200 group">
+                    <div class="w-14 h-14 bg-gradient-to-br from-blue-900/10 to-blue-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <span class="text-3xl text-blue-900">📁</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 mb-2 text-lg">Add New Project</h3>
+                    <p class="text-sm text-gray-600 mb-3">Upload portfolio work with images</p>
+                    <span class="text-blue-900 text-sm font-medium flex items-center gap-1 group-hover:translate-x-2 transition-transform">
+                        Get started →
+                    </span>
+                </a>
+                
+                <a href="/admin/media-library.html" class="quick-action-card p-6 rounded-2xl border border-gray-100 hover:border-blue-200 group">
+                    <div class="w-14 h-14 bg-gradient-to-br from-purple-900/10 to-purple-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <span class="text-3xl text-purple-900">🖼️</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 mb-2 text-lg">Upload Images</h3>
+                    <p class="text-sm text-gray-600 mb-3">Manage your media library</p>
+                    <span class="text-purple-900 text-sm font-medium flex items-center gap-1 group-hover:translate-x-2 transition-transform">
+                        Upload files →
+                    </span>
+                </a>
+                
+                <a href="/admin/settings.html" class="quick-action-card p-6 rounded-2xl border border-gray-100 hover:border-blue-200 group">
+                    <div class="w-14 h-14 bg-gradient-to-br from-orange-900/10 to-orange-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <span class="text-3xl text-orange-900">⚙️</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 mb-2 text-lg">Settings</h3>
+                    <p class="text-sm text-gray-600 mb-3">Configure site settings</p>
+                    <span class="text-orange-900 text-sm font-medium flex items-center gap-1 group-hover:translate-x-2 transition-transform">
+                        Configure →
+                    </span>
+                </a>
+                
+                <a href="#" onclick="createBackup()" class="quick-action-card p-6 rounded-2xl border border-gray-100 hover:border-blue-200 group">
+                    <div class="w-14 h-14 bg-gradient-to-br from-green-900/10 to-green-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <span class="text-3xl text-green-900">💾</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 mb-2 text-lg">Backup Now</h3>
+                    <p class="text-sm text-gray-600 mb-3">Create a complete backup</p>
+                    <span class="text-green-900 text-sm font-medium flex items-center gap-1 group-hover:translate-x-2 transition-transform">
+                        Download →
+                    </span>
+                </a>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="font-bold text-lg text-gray-900 mb-4">Portfolio Growth</h3>
+                    <canvas id="growthChart" height="200"></canvas>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="font-bold text-lg text-gray-900 mb-4">Category Distribution</h3>
+                    <canvas id="categoryChart" height="200"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="glass-card rounded-2xl p-6 mb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2">
+                        <span class="w-1 h-5 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
+                        Recent Activity
+                    </h3>
+                    <div class="flex gap-2">
+                        <button class="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition">All</button>
+                        <button class="px-3 py-1 text-sm hover:bg-gray-100 rounded-lg transition">Projects</button>
+                        <button class="px-3 py-1 text-sm hover:bg-gray-100 rounded-lg transition">Media</button>
+                    </div>
+                </div>
+                
+                <div id="activity-list" class="space-y-4">
+                    <!-- Activity items will be loaded here -->
+                </div>
+            </div>
+        </main>
     </div>
 
     <script>
+        const API_BASE = '/api';
+        
         // Check authentication
         if (!sessionStorage.getItem('adminAuth') && !localStorage.getItem('adminRemember')) {
             window.location.href = '/admin/login.html';
         }
         
-        // Load stats with animation
-        function loadStats() {
-            const portfolio = JSON.parse(localStorage.getItem('madabrandPortfolio') || '[]');
-            
-            // Animate counter
-            animateValue('total-projects', 0, portfolio.length, 1000);
-            document.getElementById('total-media').textContent = '9';
-            document.getElementById('total-submissions').textContent = '12';
-            document.getElementById('last-backup').textContent = 'Today';
-            
-            // Load recent projects
-            const previewList = document.getElementById('portfolio-preview-list');
-            if (portfolio.length > 0) {
-                previewList.innerHTML = portfolio.slice(0, 3).map((item, index) => `
-                    <div class="flex items-center gap-3 p-3 hover:bg-gradient-to-r hover:from-blue-50 hover:to-white rounded-xl transition group" style="animation: slideIn 0.3s ease ${index * 0.1}s both">
-                        <div class="w-12 h-12 bg-gradient-to-br from-blue-900/10 to-blue-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                            <span class="text-xl">${item.category === 'logo' ? '✨' : item.category === 'graphic' ? '🎨' : '🏗️'}</span>
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex items-center justify-between">
-                                <p class="font-medium text-gray-900">${item.title || 'Untitled'}</p>
-                                ${item.featured ? '<span class="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">⭐ Featured</span>' : ''}
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">${item.category || 'branding'} • Added ${item.date || 'recently'}</p>
-                        </div>
-                        <button class="opacity-0 group-hover:opacity-100 transition text-gray-400 hover:text-blue-900">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </button>
-                    </div>
-                `).join('');
-            } else {
-                previewList.innerHTML = `
-                    <div class="text-center py-12">
-                        <div class="text-6xl mb-4 animate-bounce">📂</div>
-                        <p class="text-gray-500 mb-4">No projects yet</p>
-                        <a href="/admin/portfolio-manager.html" class="inline-flex items-center px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition">
-                            Add Your First Project
-                        </a>
-                    </div>
-                `;
+        // Load navigation
+        fetch('/admin/components/nav.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('nav-container').innerHTML = data;
+                
+                // Initialize Vanta for main background
+                VANTA.GLOBE({
+                    el: "#vanta-bg",
+                    color: 0x1e3a8a,
+                    backgroundColor: 0x0f172a,
+                    size: 0.8,
+                    waves: true
+                });
+            });
+        
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                // Load portfolio
+                const portfolioRes = await fetch(`${API_BASE}/portfolio`, {
+                    headers: { 'Authorization': 'Bearer MADA2024' }
+                });
+                const portfolioData = await portfolioRes.json();
+                const projects = portfolioData.projects || [];
+                
+                // Load media
+                const mediaRes = await fetch(`${API_BASE}/media`, {
+                    headers: { 'Authorization': 'Bearer MADA2024' }
+                });
+                const mediaData = await mediaRes.json();
+                const mediaFiles = mediaData.files || [];
+                
+                // Update stats
+                document.getElementById('total-projects').textContent = projects.length;
+                document.getElementById('total-media').textContent = mediaFiles.length;
+                
+                // Calculate storage
+                const totalSize = mediaFiles.reduce((acc, file) => acc + (file.size || 0), 0);
+                const storageMB = (totalSize / (1024 * 1024)).toFixed(2);
+                document.getElementById('storage-used').textContent = storageMB + ' MB';
+                
+                // Load recent activity
+                loadRecentActivity(projects, mediaFiles);
+                
+                // Initialize charts
+                initCharts(projects);
+                
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                // Use localStorage as fallback
+                loadFallbackData();
             }
         }
         
-        // Animate counter
-        function animateValue(elementId, start, end, duration) {
-            const element = document.getElementById(elementId);
-            const range = end - start;
-            const increment = range / (duration / 10);
-            let current = start;
+        // Fallback to localStorage
+        function loadFallbackData() {
+            const portfolio = JSON.parse(localStorage.getItem('madabrandPortfolio') || '[]');
+            const media = JSON.parse(localStorage.getItem('madabrandMedia') || '[]');
             
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= end) {
-                    current = end;
-                    clearInterval(timer);
-                }
-                element.textContent = Math.round(current);
-            }, 10);
+            document.getElementById('total-projects').textContent = portfolio.length;
+            document.getElementById('total-media').textContent = media.length;
+            
+            const totalSize = media.reduce((acc, file) => acc + (file.size || 0), 0);
+            const storageMB = (totalSize / (1024 * 1024)).toFixed(2);
+            document.getElementById('storage-used').textContent = storageMB + ' MB';
+            
+            loadRecentActivity(portfolio, media);
+            initCharts(portfolio);
         }
         
-        // Toast notification
-        function showToast(message, type = 'info') {
+        // Load recent activity
+        function loadRecentActivity(projects, media) {
+            const activityList = document.getElementById('activity-list');
+            const activities = [];
+            
+            // Add recent projects
+            projects.slice(0, 3).forEach(project => {
+                activities.push({
+                    type: 'project',
+                    title: project.title,
+                    time: '2 hours ago',
+                    icon: '📁',
+                    color: 'blue'
+                });
+            });
+            
+            // Add recent media
+            media.slice(0, 3).forEach(file => {
+                activities.push({
+                    type: 'media',
+                    title: file.name,
+                    time: '5 hours ago',
+                    icon: '🖼️',
+                    color: 'purple'
+                });
+            });
+            
+            if (activities.length === 0) {
+                activityList.innerHTML = `
+                    <div class="text-center py-8">
+                        <div class="text-6xl mb-4 animate-bounce">📊</div>
+                        <p class="text-gray-500">No recent activity</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            activityList.innerHTML = activities.map(activity => `
+                <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-${activity.color}-50/50 to-white rounded-xl border border-${activity.color}-100 hover:scale-105 transition-transform">
+                    <div class="w-10 h-10 bg-gradient-to-br from-${activity.color}-900 to-${activity.color}-700 rounded-xl flex items-center justify-center flex-shrink-0 text-white animate-pulse">
+                        ${activity.icon}
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <p class="font-medium text-gray-900">${activity.title}</p>
+                            <span class="text-xs text-gray-500">${activity.time}</span>
+                        </div>
+                        <p class="text-sm text-gray-600">${activity.type === 'project' ? 'New project added' : 'Media uploaded'}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Initialize charts
+        function initCharts(projects) {
+            // Growth chart
+            const ctx1 = document.getElementById('growthChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Projects',
+                        data: [12, 19, 25, 32, 38, projects.length],
+                        borderColor: '#1e3a8a',
+                        backgroundColor: 'rgba(30, 58, 138, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+            
+            // Category chart
+            const ctx2 = document.getElementById('categoryChart').getContext('2d');
+            const categories = projects.reduce((acc, p) => {
+                acc[p.category] = (acc[p.category] || 0) + 1;
+                return acc;
+            }, {});
+            
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(categories),
+                    datasets: [{
+                        data: Object.values(categories),
+                        backgroundColor: ['#1e3a8a', '#3b82f6', '#60a5fa']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+        
+        // Refresh data
+        function refreshData() {
+            showNotification('Refreshing data...', 'info');
+            loadDashboardData();
+        }
+        
+        // Create backup
+        async function createBackup() {
+            showNotification('Creating backup...', 'info');
+            
+            try {
+                const settingsRes = await fetch(`${API_BASE}/settings`, {
+                    headers: { 'Authorization': 'Bearer MADA2024' }
+                });
+                const settings = await settingsRes.json();
+                
+                const portfolioRes = await fetch(`${API_BASE}/portfolio`, {
+                    headers: { 'Authorization': 'Bearer MADA2024' }
+                });
+                const portfolio = await portfolioRes.json();
+                
+                const mediaRes = await fetch(`${API_BASE}/media`, {
+                    headers: { 'Authorization': 'Bearer MADA2024' }
+                });
+                const media = await mediaRes.json();
+                
+                const data = {
+                    settings,
+                    portfolio,
+                    media,
+                    backupDate: new Date().toISOString(),
+                    version: '1.0'
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `madabrand-backup-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showNotification('Backup created successfully!', 'success');
+            } catch (error) {
+                showNotification('Error creating backup', 'error');
+            }
+        }
+        
+        // Show notification
+        function showNotification(message, type = 'info') {
             const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
+            toast.className = `fixed top-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 animate-slide-in ${
+                type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' :
+                type === 'error' ? 'bg-red-100 text-red-800 border border-red-200' :
+                'bg-blue-100 text-blue-800 border border-blue-200'
+            }`;
             toast.innerHTML = `
-                <span class="text-xl">${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
-                <span class="font-medium">${message}</span>
+                <div class="flex items-center gap-3">
+                    <span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
+                    <span>${message}</span>
+                </div>
             `;
+            
             document.body.appendChild(toast);
             
             setTimeout(() => {
                 toast.style.transform = 'translateX(100%)';
-                toast.style.opacity = '0';
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
         
-        loadStats();
-        
+        // Logout function
         function logoutAdmin() {
             sessionStorage.removeItem('adminAuth');
             sessionStorage.removeItem('adminLoginTime');
             localStorage.removeItem('adminRemember');
-            
-            // Animate out before redirect
-            document.body.style.opacity = '0';
-            document.body.style.transform = 'scale(0.95)';
-            document.body.style.transition = 'all 0.3s ease';
-            
-            setTimeout(() => {
-                window.location.href = '/admin/login.html';
-            }, 300);
+            window.location.href = '/admin/login.html';
         }
         
-        function createBackup() {
-            const data = {
-                theme: JSON.parse(localStorage.getItem('madabrandTheme') || 'null'),
-                portfolio: JSON.parse(localStorage.getItem('madabrandPortfolio') || '[]'),
-                settings: {
-                    siteTitle: localStorage.getItem('madabrandSiteTitle') || 'MadaBrand',
-                    siteTagline: localStorage.getItem('madabrandSiteTagline') || 'Premium Design Studio'
-                },
-                backupDate: new Date().toISOString()
-            };
-            
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `madabrand-backup-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            showToast('Backup created successfully!', 'success');
-        }
-        
-        function restoreBackup() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    try {
-                        const data = JSON.parse(e.target.result);
-                        
-                        if (confirm('Restore will replace current data. Continue?')) {
-                            if (data.theme) localStorage.setItem('madabrandTheme', JSON.stringify(data.theme));
-                            if (data.portfolio) localStorage.setItem('madabrandPortfolio', JSON.stringify(data.portfolio));
-                            if (data.settings) {
-                                localStorage.setItem('madabrandSiteTitle', data.settings.siteTitle);
-                                localStorage.setItem('madabrandSiteTagline', data.settings.siteTagline);
-                            }
-                            
-                            showToast('Data restored! Refreshing...', 'success');
-                            setTimeout(() => location.reload(), 1500);
-                        }
-                    } catch (error) {
-                        showToast('Invalid backup file', 'error');
-                    }
-                };
-                
-                reader.readAsText(file);
-            };
-            
-            input.click();
-        }
-
-        // Add smooth page transitions
-        document.addEventListener('DOMContentLoaded', () => {
-            document.body.style.opacity = '0';
-            document.body.style.transform = 'scale(0.98)';
-            document.body.style.transition = 'all 0.3s ease';
-            
-            setTimeout(() => {
-                document.body.style.opacity = '1';
-                document.body.style.transform = 'scale(1)';
-            }, 100);
-        });
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', loadDashboardData);
     </script>
 </body>
 </html>

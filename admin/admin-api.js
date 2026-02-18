@@ -112,7 +112,11 @@ const AdminAPI = {
       body: JSON.stringify({ page, content })
     });
     
-    localStorage.setItem('madabrandContent', JSON.stringify(content));
+    // Update localStorage
+    const current = JSON.parse(localStorage.getItem('madabrandContent') || '{}');
+    current[page] = content;
+    localStorage.setItem('madabrandContent', JSON.stringify(current));
+    
     await this.triggerRebuild();
     return result;
   },
@@ -268,11 +272,12 @@ const AdminAPI = {
     notification.className = `fixed top-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 ${
       type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' :
       type === 'error' ? 'bg-red-100 text-red-800 border border-red-200' :
+      type === 'warning' ? 'bg-yellow-100 text-yellow-800 border border-yellow-200' :
       'bg-blue-100 text-blue-800 border border-blue-200'
     }`;
     notification.innerHTML = `
       <div class="flex items-center gap-3">
-        <span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
+        <span>${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}</span>
         <span>${message}</span>
       </div>
     `;
