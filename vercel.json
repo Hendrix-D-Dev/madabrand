@@ -34,8 +34,12 @@
       "destination": "/admin/index.html"
     },
     {
+      "source": "/admin/login",
+      "destination": "/admin/login.html"
+    },
+    {
       "source": "/admin/:path*",
-      "destination": "/admin/:path*"
+      "destination": "/admin/:path*.html"
     },
     {
       "source": "/madabrand-admin",
@@ -43,7 +47,7 @@
     },
     {
       "source": "/madabrand-admin/:path*",
-      "destination": "/admin/:path*"
+      "destination": "/admin/:path*.html"
     },
     {
       "source": "/api/:path*",
