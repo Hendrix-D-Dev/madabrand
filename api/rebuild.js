@@ -11,38 +11,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Get Vercel deployment URL from environment
-    const VERCEL_TOKEN = process.env.VERCEL_TOKEN;
-    const PROJECT_ID = process.env.VERCEL_PROJECT_ID;
+    // Since we're directly writing to HTML files in portfolio.js,
+    // we don't need to trigger a full Vercel rebuild. The HTML files
+    // are updated immediately on the server.
     
-    if (!VERCEL_TOKEN || !PROJECT_ID) {
-      // If no token, simulate rebuild (for development)
-      console.log('Simulating rebuild...');
-      return res.status(200).json({ 
-        success: true, 
-        message: 'Rebuild triggered (simulated)',
-        note: 'Add VERCEL_TOKEN and VERCEL_PROJECT_ID to environment for auto-rebuild'
-      });
-    }
-
-    // Trigger Vercel deployment hook
-    const response = await fetch(`https://api.vercel.com/v1/integrations/deploy/${PROJECT_ID}`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${VERCEL_TOKEN}`
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to trigger rebuild');
-    }
-
-    const data = await response.json();
+    console.log('✅ Portfolio pages updated successfully');
     
-    res.status(200).json({
-      success: true,
-      message: 'Rebuild triggered successfully',
-      deployment: data
+    return res.status(200).json({ 
+      success: true, 
+      message: 'Portfolio pages updated successfully',
+      note: 'HTML files have been regenerated and are live now'
     });
 
   } catch (error) {

@@ -80,12 +80,21 @@ const updatePortfolioPage = (projects) => {
     return icons[category] || '📁';
   };
   
-  // Replace the projects grid section
-  const gridRegex = /<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">.*?<\/div>\s*<!-- Load More Button -->/s;
-  const newGrid = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">${projectsHTML}</div>\n            \n            <!-- Load More Button -->`;
+  // Find the portfolio grid section - look for the grid container
+  const gridStart = content.indexOf('<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">');
+  const gridEnd = content.indexOf('</div>', gridStart) + 6;
   
-  content = content.replace(gridRegex, newGrid);
-  fs.writeFileSync(portfolioPath, content, 'utf8');
+  if (gridStart !== -1) {
+    const beforeGrid = content.substring(0, gridStart);
+    const afterGrid = content.substring(gridEnd);
+    const newGrid = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">${projectsHTML}</div>`;
+    
+    content = beforeGrid + newGrid + afterGrid;
+    fs.writeFileSync(portfolioPath, content, 'utf8');
+    console.log('✅ Portfolio page updated with', projects.length, 'projects');
+  } else {
+    console.error('❌ Could not find portfolio grid in HTML');
+  }
 };
 
 // Main API handler
@@ -104,93 +113,116 @@ export default async function handler(req, res) {
       break;
       
     case 'POST':
-      // Add new project
-      const form = new formidable.IncomingForm();
-      form.uploadDir = path.join(process.cwd(), 'temp');
-      form.keepExtensions = true;
-      
-      form.parse(req, async (err, fields, files) => {
-        if (err) {
-          return res.status(500).json({ error: 'Upload failed' });
-        }
+      // Add new project - handle both JSON and form data
+      if (req.headers['content-type']?.includes('multipart/form-data')) {
+        // Handle file upload
+        const form = new formidable.IncomingForm();
+        form.uploadDir = path.join(process.cwd(), 'temp');
+        form.keepExtensions = true;
         
-        try {
-          const portfolio = getPortfolioData();
-          
-          // Process uploaded images
-          const imageUrls = [];
-          if (files.images) {
-            const images = Array.isArray(files.images) ? files.images : [files.images];
-            
-            for (const image of images) {
-              // Optimize image with sharp
-              const filename = `project-${Date.now()}-${image.originalFilename}`;
-              const outputPath = path.join(process.cwd(), 'assets', 'images', filename);
-              
-              await sharp(image.filepath)
-                .resize(1200, 800, { fit: 'cover' })
-                .jpeg({ quality: 85 })
-                .toFile(outputPath);
-              
-              imageUrls.push(`/assets/images/${filename}`);
-              
-              // Clean up temp file
-              fs.unlinkSync(image.filepath);
-            }
+        form.parse(req, async (err, fields, files) => {
+          if (err) {
+            return res.status(500).json({ error: 'Upload failed' });
           }
+          
+          try {
+            const portfolio = getPortfolioData();
+            
+            // Process uploaded images
+            const imageUrls = [];
+            if (files.images) {
+              const images = Array.isArray(files.images) ? files.images : [files.images];
+              
+              for (const image of images) {
+                // Optimize image with sharp
+                const filename = `project-${Date.now()}-${image.originalFilename}`;
+                const outputPath = path.join(process.cwd(), 'assets', 'images', filename);
+                
+                await sharp(image.filepath)
+                  .resize(1200, 800, { fit: 'cover' })
+                  .jpeg({ quality: 85 })
+                  .toFile(outputPath);
+                
+                imageUrls.push(`/assets/images/${filename}`);
+                
+                // Clean up temp file
+                fs.unlinkSync(image.filepath);
+              }
+            }
+            
+            const newProject = {
+              id: Date.now(),
+              title: fields.title,
+              category: fields.category,
+              client: fields.client || '',
+              industry: fields.industry || '',
+              description: fields.description,
+              images: imageUrls,
+              featured: fields.featured === 'true',
+              dateAdded: new Date().toISOString()
+            };
+            
+            portfolio.projects.push(newProject);
+            savePortfolioData(portfolio);
+            
+            res.status(200).json({ success: true, project: newProject });
+          } catch (error) {
+            res.status(500).json({ error: error.message });
+          }
+        });
+      } else {
+        // Handle JSON data
+        try {
+          const projectData = req.body;
+          const portfolio = getPortfolioData();
           
           const newProject = {
             id: Date.now(),
-            title: fields.title,
-            category: fields.category,
-            client: fields.client || '',
-            industry: fields.industry || '',
-            description: fields.description,
-            images: imageUrls,
-            featured: fields.featured === 'true',
+            ...projectData,
             dateAdded: new Date().toISOString()
           };
           
           portfolio.projects.push(newProject);
           savePortfolioData(portfolio);
           
-          // Trigger Vercel rebuild
-          await fetch('https://api.vercel.com/v1/integrations/deploy/prj_xxx', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${process.env.VERCEL_TOKEN}`
-            }
-          });
-          
           res.status(200).json({ success: true, project: newProject });
         } catch (error) {
           res.status(500).json({ error: error.message });
         }
-      });
+      }
       break;
       
     case 'PUT':
       // Update project
-      const { id, ...updates } = req.body;
-      const portfolio = getPortfolioData();
-      const index = portfolio.projects.findIndex(p => p.id === id);
-      
-      if (index !== -1) {
-        portfolio.projects[index] = { ...portfolio.projects[index], ...updates };
-        savePortfolioData(portfolio);
-        res.status(200).json({ success: true });
-      } else {
-        res.status(404).json({ error: 'Project not found' });
+      try {
+        const updates = req.body;
+        const { id } = updates;
+        const portfolio = getPortfolioData();
+        const index = portfolio.projects.findIndex(p => p.id == id);
+        
+        if (index !== -1) {
+          portfolio.projects[index] = { ...portfolio.projects[index], ...updates };
+          savePortfolioData(portfolio);
+          res.status(200).json({ success: true });
+        } else {
+          res.status(404).json({ error: 'Project not found' });
+        }
+      } catch (error) {
+        res.status(500).json({ error: error.message });
       }
       break;
       
     case 'DELETE':
       // Delete project
-      const projectId = parseInt(req.query.id);
-      const data_portfolio = getPortfolioData();
-      data_portfolio.projects = data_portfolio.projects.filter(p => p.id !== projectId);
-      savePortfolioData(data_portfolio);
-      res.status(200).json({ success: true });
+      try {
+        const projectId = req.query.id;
+        const portfolio = getPortfolioData();
+        portfolio.projects = portfolio.projects.filter(p => p.id != projectId);
+        savePortfolioData(portfolio);
+        res.status(200).json({ success: true });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
       break;
       
     default:

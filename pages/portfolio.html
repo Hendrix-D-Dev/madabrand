@@ -9,75 +9,384 @@
     <meta name="description" content="Explore MadaBrand's premium portfolio of brand identity, logo design, and graphic design projects for Nigerian businesses and international clients.">
     <meta name="keywords" content="portfolio, brand design Nigeria, logo design Lagos, graphic design services Nigeria, Nigerian design studio">
     <meta name="author" content="MadaBrand">
+    
+    <!-- Three.js and Vanta.js for dynamic backgrounds -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow-x: hidden;
+            background: #0a0f1e;
+        }
+
+        /* Vanta Background Container */
+        #vanta-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.8;
+        }
+
+        /* Animated Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% 200%;
+            animation: gradientFlow 8s ease infinite;
+        }
+
+        @keyframes gradientFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Glass Morphism Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 102, 255, 0.3);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        /* Portfolio Item Cards */
+        .portfolio-item {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 2rem;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .portfolio-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .portfolio-item:hover::before {
+            left: 100%;
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(59, 130, 246, 0.3);
+            border-color: #3b82f6;
+        }
+
+        .portfolio-item .image-wrapper {
+            position: relative;
+            overflow: hidden;
+            height: 300px;
+        }
+
+        .portfolio-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .portfolio-item:hover img {
+            transform: scale(1.15);
+        }
+
+        .portfolio-item .category-badge {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            z-index: 2;
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+        }
+
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Pulse Animation */
+        @keyframes pulse-glow {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+                border-color: rgba(59, 130, 246, 0.3);
+            }
+            50% { 
+                box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
+                border-color: rgba(59, 130, 246, 0.6);
+            }
+        }
+
+        .pulse-glow {
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        /* Filter Buttons */
+        .filter-btn {
+            padding: 0.75rem 2rem;
+            border-radius: 3rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .filter-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Stat Cards */
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2rem;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Testimonial Cards */
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 2rem;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
+        }
+
+        /* Animated Background Elements */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+            filter: blur(60px);
+            z-index: 0;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            border-radius: 2px;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1f2e;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+        }
+
+        /* Loading Animation */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(59, 130, 246, 0.2);
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
-<body class="font-body bg-gradient-to-br from-blue-50 via-white to-blue-50">
+<body>
+    <!-- Vanta Background -->
+    <div id="vanta-bg"></div>
+    
+    <!-- Animated Orbs -->
+    <div class="orb top-20 left-20 w-96 h-96"></div>
+    <div class="orb bottom-20 right-20 w-[500px] h-[500px]" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(59, 130, 246, 0.15));"></div>
+    <div class="orb top-1/3 right-1/4 w-80 h-80" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(59, 130, 246, 0.1));"></div>
+    
     <!-- Navigation -->
-    <div id="navbar"></div>
+    <div id="navbar" class="relative z-50"></div>
     
     <!-- Hero Section -->
-    <section class="pt-28 md:pt-32 pb-16 md:pb-20 relative overflow-hidden">
-        <!-- Background Elements -->
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/5 via-transparent to-blue-50/30"></div>
-        <div class="absolute top-1/4 right-10 w-64 h-64 bg-blue-200/20 rounded-full blur-3xl"></div>
-        <div class="absolute bottom-1/3 left-10 w-96 h-96 bg-blue-300/10 rounded-full blur-3xl"></div>
-        
+    <section class="relative min-h-screen pt-32 pb-20 overflow-hidden">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="max-w-5xl mx-auto text-center">
-                <!-- Badge -->
-                <div class="inline-flex items-center bg-gradient-to-r from-blue-900 to-blue-700 text-white font-semibold px-6 py-3 rounded-full mb-6 md:mb-8 shadow-lg">
-                    <span class="mr-2">🎯</span>
-                    Premium Design Portfolio
+            <div class="max-w-6xl mx-auto text-center">
+                <!-- Animated Badge -->
+                <div class="inline-flex items-center bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm text-white font-semibold px-8 py-4 rounded-full mb-8 pulse-glow border border-blue-500/30">
+                    <span class="mr-3 text-2xl float-animation">✨</span>
+                    <span class="text-lg">Premium Design Portfolio</span>
                 </div>
                 
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-900 to-blue-700 bg-clip-text text-transparent">
-                    Design Excellence Showcase
+                <h1 class="text-6xl md:text-7xl lg:text-8xl font-bold mb-8 gradient-text leading-tight">
+                    Design Excellence<br>Showcase
                 </h1>
-                <p class="text-xl text-gray-700 mb-8 max-w-2xl mx-auto leading-relaxed">
+                
+                <p class="text-xl md:text-2xl text-white/80 mb-12 max-w-3xl mx-auto leading-relaxed">
                     Explore our transformative brand identity projects for Nigerian businesses and international clients. Each design tells a unique story of innovation and strategic thinking.
                 </p>
                 
-                <!-- Quick Stats -->
-                <div class="flex flex-wrap justify-center gap-6 md:gap-10 mb-8">
-                    <div class="text-center">
-                        <div class="text-3xl font-bold text-blue-900 mb-1">9+</div>
-                        <div class="text-gray-600 text-sm">Premium Projects</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-3xl font-bold text-blue-900 mb-1">15+</div>
-                        <div class="text-gray-600 text-sm">Satisfied Clients</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-3xl font-bold text-blue-900 mb-1">5</div>
-                        <div class="text-gray-600 text-sm">Industries Served</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-3xl font-bold text-blue-900 mb-1">3+</div>
-                        <div class="text-gray-600 text-sm">Years Excellence</div>
+                <!-- Quick Stats with Glass Morphism -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12" id="stats-container">
+                    <!-- Stats will be loaded dynamically -->
+                </div>
+                
+                <!-- Scroll Indicator -->
+                <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2">
+                    <div class="w-8 h-12 border-2 border-white/30 rounded-full flex justify-center">
+                        <div class="w-1 h-3 bg-gradient-to-b from-blue-400 to-purple-400 rounded-full mt-2 animate-bounce"></div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Decorative Line -->
-        <div class="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-300 to-transparent"></div>
+        <!-- Decorative Wave -->
+        <div class="absolute bottom-0 left-0 w-full">
+            <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 120L48 112C96 104 192 88 288 80C384 72 480 72 576 80C672 88 768 104 864 104C960 104 1056 88 1152 72C1248 56 1344 40 1392 32L1440 24V120H1392C1344 120 1248 120 1152 120C1056 120 960 120 864 120C768 120 672 120 576 120C480 120 384 120 288 120C192 120 96 120 48 120H0Z" fill="url(#gradient)" fill-opacity="0.3"/>
+                <defs>
+                    <linearGradient id="gradient" x1="0" y1="0" x2="1440" y2="0" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#3B82F6"/>
+                        <stop offset="1" stop-color="#8B5CF6"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+        </div>
     </section>
     
     <!-- Portfolio Navigation -->
-    <section class="py-8 md:py-12 bg-white/50 backdrop-blur-sm">
+    <section class="py-12 relative z-10">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="max-w-4xl mx-auto">
-                <h2 class="text-2xl font-bold mb-6 text-center text-blue-900">Browse Our Work</h2>
-                <div class="flex flex-wrap justify-center gap-3 md:gap-4">
-                    <button class="portfolio-filter px-5 py-2.5 bg-gradient-to-r from-blue-900 to-blue-800 text-white font-medium rounded-lg hover:from-blue-800 hover:to-blue-700 transition-all duration-300 hover:scale-105 text-sm md:text-base" data-filter="all">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-4xl md:text-5xl font-bold mb-8 text-white section-title">Browse Our Work</h2>
+                
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button class="filter-btn active bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm" data-filter="all">
                         All Projects
                     </button>
-                    <button class="portfolio-filter px-5 py-2.5 bg-white text-blue-900 font-medium rounded-lg hover:bg-blue-50 transition-all duration-300 hover:scale-105 border border-blue-200 text-sm md:text-base" data-filter="branding">
+                    <button class="filter-btn bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm" data-filter="branding">
                         Brand Identity
                     </button>
-                    <button class="portfolio-filter px-5 py-2.5 bg-white text-blue-900 font-medium rounded-lg hover:bg-blue-50 transition-all duration-300 hover:scale-105 border border-blue-200 text-sm md:text-base" data-filter="logo">
+                    <button class="filter-btn bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm" data-filter="logo">
                         Logo Design
                     </button>
-                    <button class="portfolio-filter px-5 py-2.5 bg-white text-blue-900 font-medium rounded-lg hover:bg-blue-50 transition-all duration-300 hover:scale-105 border border-blue-200 text-sm md:text-base" data-filter="graphic">
+                    <button class="filter-btn bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm" data-filter="graphic">
                         Graphic Design
                     </button>
                 </div>
@@ -86,427 +395,104 @@
     </section>
     
     <!-- Portfolio Grid -->
-    <section class="py-12 md:py-20 relative">
+    <section class="py-12 relative z-10">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                <!-- Project 1: NuelArk Construction -->
-                <div class="portfolio-item animate-on-scroll bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-blue-100 group" data-category="branding">
-                    <div class="relative h-64 md:h-72 overflow-hidden">
-                        <img src="/assets/images/photo_1_2025-12-10_09-45-08.jpg" 
-                             alt="NuelArk Construction Company Brand Identity" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div class="absolute top-4 left-4">
-                            <span class="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-900 text-xs rounded-full font-semibold">
-                                Brand Identity
-                            </span>
-                        </div>
-                    </div>
-                    <div class="p-6 md:p-8">
-                        <div class="flex items-start justify-between mb-4">
-                            <div>
-                                <h3 class="text-xl md:text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-900 transition-colors">
-                                    NuelArk Construction
-                                </h3>
-                                <p class="text-gray-500 text-sm">Construction Industry</p>
-                            </div>
-                            <div class="w-12 h-12 bg-blue-900/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <span class="text-xl">🏗️</span>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 mb-6 leading-relaxed">
-                            Complete brand identity system for a premium construction company. Geometric logo with gold-and-black palette blending architectural creativity with structural precision.
-                        </p>
-                        <a href="#nuelark-case-study" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group-hover:translate-x-2 transition-all duration-300">
-                            View Project Details
-                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Project 2: NuelArk Materials -->
-                <div class="portfolio-item animate-on-scroll bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-blue-100 group" data-category="branding">
-                    <div class="relative h-64 md:h-72 overflow-hidden">
-                        <img src="/assets/images/photo_2_2025-12-10_09-45-08.jpg" 
-                             alt="NuelArk Construction Brand Collateral Materials" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div class="absolute top-4 left-4">
-                            <span class="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-900 text-xs rounded-full font-semibold">
-                                Brand Collateral
-                            </span>
-                        </div>
-                    </div>
-                    <div class="p-6 md:p-8">
-                        <div class="flex items-start justify-between mb-4">
-                            <div>
-                                <h3 class="text-xl md:text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-900 transition-colors">
-                                    NuelArk Brand System
-                                </h3>
-                                <p class="text-gray-500 text-sm">Construction Industry</p>
-                            </div>
-                            <div class="w-12 h-12 bg-blue-900/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <span class="text-xl">📋</span>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 mb-6 leading-relaxed">
-                            Comprehensive brand collateral including business cards, branded safety equipment, corporate stationery, and presentation materials for real-world application.
-                        </p>
-                        <a href="#nuelark-case-study" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group-hover:translate-x-2 transition-all duration-300">
-                            View Details
-                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Project 3: Havenbridge Development -->
-                <div class="portfolio-item animate-on-scroll bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-blue-100 group" data-category="branding">
-                    <div class="relative h-64 md:h-72 overflow-hidden">
-                        <img src="/assets/images/photo_3_2025-12-10_09-45-08.jpg" 
-                             alt="Havenbridge Development Brand Identity" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div class="absolute top-4 left-4">
-                            <span class="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-900 text-xs rounded-full font-semibold">
-                                Brand Identity
-                            </span>
-                        </div>
-                    </div>
-                    <div class="p-6 md:p-8">
-                        <div class="flex items-start justify-between mb-4">
-                            <div>
-                                <h3 class="text-xl md:text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-900 transition-colors">
-                                    Havenbridge Development
-                                </h3>
-                                <p class="text-gray-500 text-sm">Real Estate</p>
-                            </div>
-                            <div class="w-12 h-12 bg-blue-900/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <span class="text-xl">🏡</span>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 mb-6 leading-relaxed">
-                            Premium brand identity for a real-estate development company. Minimalist logo design with navy and gold palette reflecting quality construction and modern living.
-                        </p>
-                        <a href="#havenbridge-case-study" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group-hover:translate-x-2 transition-all duration-300">
-                            View Case Study
-                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Project 4: Havenbridge Website -->
-                <div class="portfolio-item animate-on-scroll bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-blue-100 group" data-category="branding">
-                    <div class="relative h-64 md:h-72 overflow-hidden">
-                        <img src="/assets/images/photo_4_2025-12-10_09-45-08.jpg" 
-                             alt="Havenbridge Development Website Design" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div class="absolute top-4 left-4">
-                            <span class="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-900 text-xs rounded-full font-semibold">
-                                Website Design
-                            </span>
-                        </div>
-                    </div>
-                    <div class="p-6 md:p-8">
-                        <div class="flex items-start justify-between mb-4">
-                            <div>
-                                <h3 class="text-xl md:text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-900 transition-colors">
-                                    Havenbridge Website
-                                </h3>
-                                <p class="text-gray-500 text-sm">Digital Presence</p>
-                            </div>
-                            <div class="w-12 h-12 bg-blue-900/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <span class="text-xl">💻</span>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 mb-6 leading-relaxed">
-                            Complete website design integrating the Havenbridge brand identity with real-estate imagery and structured layout for a cohesive online presence.
-                        </p>
-                        <a href="#havenbridge-case-study" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group-hover:translate-x-2 transition-all duration-300">
-                            View Details
-                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Project 5: ADIVAS Eco-Brand -->
-                <div class="portfolio-item animate-on-scroll bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-blue-100 group" data-category="branding">
-                    <div class="relative h-64 md:h-72 overflow-hidden">
-                        <img src="/assets/images/photo_5_2025-12-10_09-49-24.jpg" 
-                             alt="ADIVAS Eco-Conscious Brand Identity" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div class="absolute top-4 left-4">
-                            <span class="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-900 text-xs rounded-full font-semibold">
-                                Eco Branding
-                            </span>
-                        </div>
-                    </div>
-                    <div class="p-6 md:p-8">
-                        <div class="flex items-start justify-between mb-4">
-                            <div>
-                                <h3 class="text-xl md:text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-900 transition-colors">
-                                    ADIVAS Eco-Brand
-                                </h3>
-                                <p class="text-gray-500 text-sm">Sustainability</p>
-                            </div>
-                            <div class="w-12 h-12 bg-blue-900/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <span class="text-xl">🍃</span>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 mb-6 leading-relaxed">
-                            Nature-inspired brand identity for sustainable living products. Leaf symbol design with earthy color palette representing growth, harmony, and environmental consciousness.
-                        </p>
-                        <a href="#adivas-case-study" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group-hover:translate-x-2 transition-all duration-300">
-                            View Case Study
-                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Project 6: ADIVAS Applications -->
-                <div class="portfolio-item animate-on-scroll bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-blue-100 group" data-category="graphic">
-                    <div class="relative h-64 md:h-72 overflow-hidden">
-                        <img src="/assets/images/photo_6_2025-12-10_09-49-24.jpg" 
-                             alt="ADIVAS Brand Applications" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div class="absolute top-4 left-4">
-                            <span class="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-900 text-xs rounded-full font-semibold">
-                                Brand Applications
-                            </span>
-                        </div>
-                    </div>
-                    <div class="p-6 md:p-8">
-                        <div class="flex items-start justify-between mb-4">
-                            <div>
-                                <h3 class="text-xl md:text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-900 transition-colors">
-                                    ADIVAS Applications
-                                </h3>
-                                <p class="text-gray-500 text-sm">Product Branding</p>
-                            </div>
-                            <div class="w-12 h-12 bg-blue-900/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <span class="text-xl">👜</span>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 mb-6 leading-relaxed">
-                            Practical brand applications including tote bags, business cards, and marketing materials showcasing the ADIVAS identity in real-world product contexts.
-                        </p>
-                        <a href="#adivas-case-study" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group-hover:translate-x-2 transition-all duration-300">
-                            View Details
-                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Project 7: Additional Work -->
-                <div class="portfolio-item animate-on-scroll bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-blue-100 group" data-category="graphic">
-                    <div class="relative h-64 md:h-72 overflow-hidden">
-                        <img src="/assets/images/photo_7_2025-12-10_09-49-24.jpg" 
-                             alt="Additional Design Work" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div class="absolute top-4 left-4">
-                            <span class="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-900 text-xs rounded-full font-semibold">
-                                Graphic Design
-                            </span>
-                        </div>
-                    </div>
-                    <div class="p-6 md:p-8">
-                        <div class="flex items-start justify-between mb-4">
-                            <div>
-                                <h3 class="text-xl md:text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-900 transition-colors">
-                                    Design Collection
-                                </h3>
-                                <p class="text-gray-500 text-sm">Various Industries</p>
-                            </div>
-                            <div class="w-12 h-12 bg-blue-900/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <span class="text-xl">🎨</span>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 mb-6 leading-relaxed">
-                            Curated collection of design work for various industries including technology, fashion, and lifestyle brands, showcasing versatility in style and execution.
-                        </p>
-                        <a href="#design-collection" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group-hover:translate-x-2 transition-all duration-300">
-                            View Collection
-                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Project 8: Logo Collection -->
-                <div class="portfolio-item animate-on-scroll bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-blue-100 group" data-category="logo">
-                    <div class="relative h-64 md:h-72 overflow-hidden">
-                        <img src="/assets/images/photo_8_2025-12-10_09-49-24.jpg" 
-                             alt="Logo Design Portfolio" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div class="absolute top-4 left-4">
-                            <span class="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-900 text-xs rounded-full font-semibold">
-                                Logo Design
-                            </span>
-                        </div>
-                    </div>
-                    <div class="p-6 md:p-8">
-                        <div class="flex items-start justify-between mb-4">
-                            <div>
-                                <h3 class="text-xl md:text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-900 transition-colors">
-                                    Logo Portfolio
-                                </h3>
-                                <p class="text-gray-500 text-sm">Custom Logos</p>
-                            </div>
-                            <div class="w-12 h-12 bg-blue-900/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <span class="text-xl">✨</span>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 mb-6 leading-relaxed">
-                            Selection of custom logo designs created for various Nigerian and international clients, demonstrating creative versatility and strategic thinking.
-                        </p>
-                        <a href="#logo-portfolio" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group-hover:translate-x-2 transition-all duration-300">
-                            Explore Logos
-                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Project 9: Brand Guidelines -->
-                <div class="portfolio-item animate-on-scroll bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-blue-100 group" data-category="branding">
-                    <div class="relative h-64 md:h-72 overflow-hidden">
-                        <img src="/assets/images/photo_9_2025-12-10_09-49-24.jpg" 
-                             alt="Brand Guidelines Documentation" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div class="absolute top-4 left-4">
-                            <span class="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-900 text-xs rounded-full font-semibold">
-                                Brand Systems
-                            </span>
-                        </div>
-                    </div>
-                    <div class="p-6 md:p-8">
-                        <div class="flex items-start justify-between mb-4">
-                            <div>
-                                <h3 class="text-xl md:text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-900 transition-colors">
-                                    Brand Guidelines
-                                </h3>
-                                <p class="text-gray-500 text-sm">Documentation</p>
-                            </div>
-                            <div class="w-12 h-12 bg-blue-900/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <span class="text-xl">📘</span>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 mb-6 leading-relaxed">
-                            Comprehensive brand guideline documents ensuring consistent application across all business touchpoints, from print materials to digital platforms.
-                        </p>
-                        <a href="#brand-guidelines" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group-hover:translate-x-2 transition-all duration-300">
-                            View System
-                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
+            <!-- Loading State -->
+            <div id="loading-state" class="text-center py-20">
+                <div class="loading-spinner mx-auto mb-4"></div>
+                <p class="text-white/60 text-lg">Loading stunning projects...</p>
+            </div>
+            
+            <!-- Projects Grid -->
+            <div id="portfolio-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 opacity-0 transition-opacity duration-500">
+                <!-- Projects will be loaded dynamically -->
             </div>
             
             <!-- Load More Button -->
-            <div class="text-center mt-12 md:mt-16">
-                <button id="load-more" class="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-900 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-300 hover:scale-105 border-2 border-blue-900 text-lg group">
-                    <span class="mr-2">📁</span>
-                    View More Projects
-                    <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                    </svg>
+            <div class="text-center mt-16">
+                <button id="load-more" class="group px-10 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 text-lg border border-white/20">
+                    <span class="flex items-center justify-center gap-3">
+                        <span class="text-2xl group-hover:rotate-180 transition-transform duration-500">📁</span>
+                        <span>Load More Projects</span>
+                    </span>
                 </button>
             </div>
         </div>
     </section>
     
     <!-- Featured Case Study -->
-    <section class="py-12 md:py-20 bg-gradient-to-br from-blue-900/5 to-white relative overflow-hidden">
-        <!-- Background Elements -->
-        <div class="absolute top-10 right-10 w-40 h-40 bg-blue-200/20 rounded-full blur-3xl"></div>
-        <div class="absolute bottom-10 left-10 w-60 h-60 bg-blue-300/10 rounded-full blur-3xl"></div>
-        
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center mb-12 md:mb-16">
-                <div class="inline-flex items-center bg-blue-900/10 text-blue-900 font-semibold px-5 py-2 rounded-full mb-4">
-                    <span class="mr-2">🏆</span>
-                    Featured Case Study
-                </div>
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-blue-900">NuelArk Construction: Where Art Meets Structure</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto text-lg">Transforming a construction company's brand identity to premium positioning</p>
-            </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center bg-white rounded-3xl p-6 md:p-8 shadow-2xl border border-blue-100">
-                <div class="order-2 lg:order-1">
-                    <div class="space-y-6">
-                        <div>
-                            <h3 class="text-2xl font-bold mb-4 text-gray-900">Project Overview</h3>
-                            <p class="text-gray-600 leading-relaxed">
-                                NuelArk Construction Company sought to elevate their brand from a standard construction firm to a premium industry leader. The challenge was to create a visual identity that communicates both structural excellence and artistic sensibility.
-                            </p>
-                        </div>
-                        
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
-                                <div class="text-2xl font-bold text-blue-900 mb-1">Complete</div>
-                                <div class="text-gray-600 text-sm">Brand System</div>
-                            </div>
-                            <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
-                                <div class="text-2xl font-bold text-blue-900 mb-1">12+</div>
-                                <div class="text-gray-600 text-sm">Applications</div>
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <h4 class="font-bold text-lg mb-3 text-blue-900">Key Achievements</h4>
-                            <ul class="space-y-2 text-gray-600">
-                                <li class="flex items-start">
-                                    <span class="text-blue-900 mr-2 mt-1">•</span>
-                                    <span>Geometric logo symbolizing structural precision</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-blue-900 mr-2 mt-1">•</span>
-                                    <span>Gold-and-black premium color palette</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-blue-900 mr-2 mt-1">•</span>
-                                    <span>Comprehensive brand guidelines document</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-blue-900 mr-2 mt-1">•</span>
-                                    <span>Real-world application across all touchpoints</span>
-                                </li>
-                            </ul>
-                        </div>
-                        
-                        <a href="#full-case-study" class="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-900 to-blue-800 text-white font-semibold rounded-lg hover:from-blue-800 hover:to-blue-700 transition-all duration-300 hover:scale-105 shadow-lg">
-                            <span class="mr-2">📖</span>
-                            Read Full Case Study
-                        </a>
-                    </div>
+    <section class="py-20 relative z-10">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center bg-gradient-to-r from-yellow-500/20 to-orange-500/20 backdrop-blur-sm text-white px-6 py-3 rounded-full mb-6 border border-yellow-500/30">
+                    <span class="mr-2 text-2xl">🏆</span>
+                    <span class="font-semibold">Featured Case Study</span>
                 </div>
                 
-                <div class="order-1 lg:order-2">
-                    <div class="rounded-2xl overflow-hidden border border-blue-200 shadow-lg">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 text-white section-title">
+                    NuelArk Construction
+                </h2>
+                <p class="text-xl text-white/70 max-w-2xl mx-auto">
+                    Where Art Meets Structural Excellence
+                </p>
+            </div>
+            
+            <div class="glass-card rounded-3xl overflow-hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="p-8 lg:p-12">
+                        <div class="space-y-6">
+                            <h3 class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                Project Overview
+                            </h3>
+                            
+                            <p class="text-gray-700 leading-relaxed text-lg">
+                                NuelArk Construction Company sought to elevate their brand from a standard construction firm to a premium industry leader. The challenge was to create a visual identity that communicates both structural excellence and artistic sensibility.
+                            </p>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4">
+                                    <div class="text-2xl font-bold text-blue-900 mb-1">Complete</div>
+                                    <div class="text-gray-600">Brand System</div>
+                                </div>
+                                <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4">
+                                    <div class="text-2xl font-bold text-purple-900 mb-1">12+</div>
+                                    <div class="text-gray-600">Applications</div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-blue-50/50 rounded-xl p-6">
+                                <h4 class="font-bold text-xl text-blue-900 mb-4">Key Achievements</h4>
+                                <ul class="space-y-3">
+                                    <li class="flex items-center text-gray-700">
+                                        <span class="w-2 h-2 bg-blue-600 rounded-full mr-3"></span>
+                                        Geometric logo symbolizing structural precision
+                                    </li>
+                                    <li class="flex items-center text-gray-700">
+                                        <span class="w-2 h-2 bg-purple-600 rounded-full mr-3"></span>
+                                        Gold-and-black premium color palette
+                                    </li>
+                                    <li class="flex items-center text-gray-700">
+                                        <span class="w-2 h-2 bg-pink-600 rounded-full mr-3"></span>
+                                        Comprehensive brand guidelines document
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <a href="#" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 text-lg font-semibold">
+                                <span class="mr-2">📖</span>
+                                Read Full Case Study
+                                <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="relative h-96 lg:h-auto overflow-hidden">
                         <img src="/assets/images/photo_1_2025-12-10_09-45-08.jpg" 
-                             alt="NuelArk Construction Brand Identity Showcase" 
-                             class="w-full h-64 md:h-96 object-cover">
+                             alt="NuelArk Construction Brand Identity" 
+                             class="w-full h-full object-cover hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
                     </div>
                 </div>
             </div>
@@ -514,65 +500,70 @@
     </section>
     
     <!-- Client Testimonials -->
-    <section class="py-12 md:py-20 bg-white">
+    <section class="py-20 relative z-10">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12 md:mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-blue-900">Client Experiences</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto text-lg">What Nigerian business owners say about working with us</p>
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 text-white section-title">
+                    Client Experiences
+                </h2>
+                <p class="text-xl text-white/70">What Nigerian business owners say about working with us</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-blue-100 hover:border-blue-300 transition-all duration-300 hover:-translate-y-1">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="testimonial-card">
                     <div class="flex items-center mb-6">
-                        <div class="w-14 h-14 bg-blue-900/10 rounded-full flex items-center justify-center mr-4">
-                            <span class="text-xl font-bold text-blue-900">N</span>
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mr-4">
+                            N
                         </div>
                         <div>
-                            <h4 class="font-bold text-lg text-gray-900">Nuel Ark</h4>
-                            <p class="text-gray-600 text-sm">CEO, NuelArk Construction</p>
+                            <h4 class="font-bold text-xl text-gray-900">Nuel Ark</h4>
+                            <p class="text-gray-600">CEO, NuelArk Construction</p>
                         </div>
                     </div>
-                    <p class="text-gray-600 mb-4 italic leading-relaxed">
+                    <p class="text-gray-700 mb-4 italic leading-relaxed">
                         "MadaBrand perfectly captured our vision of blending architectural creativity with structural strength. Our new branding has elevated our company's perception in the Lagos construction market."
                     </p>
-                    <div class="text-yellow-500 flex">
-                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    <div class="flex text-yellow-500 text-xl">
+                        ★★★★★
                     </div>
                 </div>
                 
-                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-blue-100 hover:border-blue-300 transition-all duration-300 hover:-translate-y-1">
+                <!-- Testimonial 2 -->
+                <div class="testimonial-card">
                     <div class="flex items-center mb-6">
-                        <div class="w-14 h-14 bg-blue-900/10 rounded-full flex items-center justify-center mr-4">
-                            <span class="text-xl font-bold text-blue-900">H</span>
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mr-4">
+                            H
                         </div>
                         <div>
-                            <h4 class="font-bold text-lg text-gray-900">Haven Bridge</h4>
-                            <p class="text-gray-600 text-sm">Founder, Havenbridge Development</p>
+                            <h4 class="font-bold text-xl text-gray-900">Haven Bridge</h4>
+                            <p class="text-gray-600">Founder, Havenbridge Development</p>
                         </div>
                     </div>
-                    <p class="text-gray-600 mb-4 italic leading-relaxed">
+                    <p class="text-gray-700 mb-4 italic leading-relaxed">
                         "The brand identity created for our real-estate development perfectly reflects our commitment to quality and modern living. The attention to detail was exceptional."
                     </p>
-                    <div class="text-yellow-500 flex">
-                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    <div class="flex text-yellow-500 text-xl">
+                        ★★★★★
                     </div>
                 </div>
                 
-                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-blue-100 hover:border-blue-300 transition-all duration-300 hover:-translate-y-1">
+                <!-- Testimonial 3 -->
+                <div class="testimonial-card">
                     <div class="flex items-center mb-6">
-                        <div class="w-14 h-14 bg-blue-900/10 rounded-full flex items-center justify-center mr-4">
-                            <span class="text-xl font-bold text-blue-900">A</span>
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-600 to-teal-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mr-4">
+                            A
                         </div>
                         <div>
-                            <h4 class="font-bold text-lg text-gray-900">Adi Vas</h4>
-                            <p class="text-gray-600 text-sm">Creative Director, ADIVAS</p>
+                            <h4 class="font-bold text-xl text-gray-900">Adi Vas</h4>
+                            <p class="text-gray-600">Creative Director, ADIVAS</p>
                         </div>
                     </div>
-                    <p class="text-gray-600 mb-4 italic leading-relaxed">
+                    <p class="text-gray-700 mb-4 italic leading-relaxed">
                         "Our eco-conscious brand identity exceeded expectations. The leaf symbol perfectly captures our sustainability commitment, resonating with our Nigerian and international customers."
                     </p>
-                    <div class="text-yellow-500 flex">
-                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    <div class="flex text-yellow-500 text-xl">
+                        ★★★★★
                     </div>
                 </div>
             </div>
@@ -580,39 +571,55 @@
     </section>
     
     <!-- Final CTA -->
-    <section class="py-12 md:py-20 bg-gradient-to-r from-blue-900 to-blue-800 text-white">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready for Your Brand Transformation?</h2>
-            <p class="text-blue-100 text-lg md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed">
-                Let's create something exceptional for your Nigerian business or international venture.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="/contact" class="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-900 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-300 hover:scale-105 shadow-xl text-lg group">
-                    <span class="mr-2">🚀</span>
-                    Start Your Project
-                    <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                    </svg>
-                </a>
-                <a href="https://wa.me/2348104902357" target="_blank" class="inline-flex items-center justify-center px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-lg transition-all duration-300 hover:scale-105 text-lg border border-white/20 group">
-                    <span class="mr-2">💬</span>
-                    WhatsApp Consultation
-                </a>
+    <section class="py-20 relative z-10">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass-card rounded-3xl p-12 text-center max-w-4xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 gradient-text">
+                    Ready for Your Brand Transformation?
+                </h2>
+                <p class="text-xl text-gray-700 mb-8 max-w-2xl mx-auto">
+                    Let's create something exceptional for your Nigerian business or international venture.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="/contact" class="group px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 text-lg font-semibold">
+                        <span class="flex items-center justify-center gap-2">
+                            <span>🚀</span>
+                            Start Your Project
+                        </span>
+                    </a>
+                    <a href="https://wa.me/2348104902357" target="_blank" class="group px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 text-lg font-semibold">
+                        <span class="flex items-center justify-center gap-2">
+                            <span>💬</span>
+                            WhatsApp Consultation
+                        </span>
+                    </a>
+                </div>
             </div>
         </div>
     </section>
     
     <!-- Footer -->
-    <div id="footer"></div>
+    <div id="footer" class="relative z-10"></div>
 
     <!-- Scripts -->
     <script src="/scripts/main.js"></script>
+    <script src="/scripts/portfolio-loader.js"></script>
     
-    <!-- Component Loader & Portfolio Scripts -->
     <script>
-        // Load navbar and footer
+        // Initialize Vanta with beautiful globe effect
         document.addEventListener('DOMContentLoaded', function() {
-            // Load navbar
+            VANTA.GLOBE({
+                el: "#vanta-bg",
+                color: 0x3b82f6,
+                backgroundColor: 0x0a0f1e,
+                size: 0.8,
+                waves: true,
+                waveSpeed: 0.5,
+                zoom: 0.8
+            });
+            
+            // Load navbar and footer
             fetch('/components/navbar.html')
                 .then(response => response.text())
                 .then(data => {
@@ -621,10 +628,8 @@
                 })
                 .catch(error => {
                     console.error('Error loading navbar:', error);
-                    document.getElementById('navbar').innerHTML = '<div class="p-4 bg-red-900/10 text-red-700 rounded-lg m-4">Navigation loading failed</div>';
                 });
             
-            // Load footer
             fetch('/components/footer.html')
                 .then(response => response.text())
                 .then(data => {
@@ -632,14 +637,7 @@
                 })
                 .catch(error => {
                     console.error('Error loading footer:', error);
-                    document.getElementById('footer').innerHTML = '<div class="p-4 bg-red-900/10 text-red-700 rounded-lg m-4">Footer loading failed</div>';
                 });
-            
-            // Initialize portfolio filtering
-            initPortfolioFilter();
-            
-            // Initialize scroll animations
-            initScrollAnimations();
         });
 
         // Initialize mobile menu
@@ -653,7 +651,6 @@
                     mobileMenu.classList.toggle('hidden');
                 });
                 
-                // Close menu when clicking outside
                 document.addEventListener('click', function(event) {
                     if (!mobileMenu.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
                         mobileMenu.classList.add('hidden');
@@ -662,49 +659,14 @@
             }
         }
 
-        // Portfolio filtering functionality
-        function initPortfolioFilter() {
-            const filterButtons = document.querySelectorAll('.portfolio-filter');
-            const portfolioItems = document.querySelectorAll('.portfolio-item');
-            
-            if (filterButtons.length > 0) {
-                filterButtons.forEach(button => {
-                    button.addEventListener('click', function() {
-                        // Remove active styles from all buttons
-                        filterButtons.forEach(btn => {
-                            btn.classList.remove('bg-gradient-to-r', 'from-blue-900', 'to-blue-800', 'text-white', 'hover:from-blue-800', 'hover:to-blue-700');
-                            btn.classList.add('bg-white', 'text-blue-900', 'border', 'border-blue-200', 'hover:bg-blue-50');
-                        });
-                        
-                        // Add active styles to clicked button
-                        this.classList.remove('bg-white', 'text-blue-900', 'border', 'border-blue-200', 'hover:bg-blue-50');
-                        this.classList.add('bg-gradient-to-r', 'from-blue-900', 'to-blue-800', 'text-white', 'hover:from-blue-800', 'hover:to-blue-700');
-                        
-                        const filterValue = this.getAttribute('data-filter');
-                        
-                        // Filter portfolio items
-                        portfolioItems.forEach(item => {
-                            if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
-                                item.classList.remove('hidden');
-                                item.classList.add('animate-fade-in');
-                            } else {
-                                item.classList.add('hidden');
-                            }
-                        });
-                    });
-                });
-            }
-        }
-
         // Load More functionality
         document.getElementById('load-more')?.addEventListener('click', function() {
-            // Show notification for demonstration
             const notification = document.createElement('div');
-            notification.className = 'fixed top-4 right-4 z-50 p-4 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-lg shadow-xl border border-blue-300/30 backdrop-blur-sm';
+            notification.className = 'fixed top-4 right-4 z-50 px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl shadow-2xl border border-white/20 backdrop-blur-sm transform transition-all duration-500 animate-slide-in';
             notification.innerHTML = `
-                <div class="flex items-center">
-                    <span class="mr-3 text-xl">📁</span>
-                    <span>More projects would load here in a production site</span>
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">🎉</span>
+                    <span class="font-medium">More projects coming soon! Stay tuned.</span>
                 </div>
             `;
             
@@ -713,38 +675,28 @@
             setTimeout(() => {
                 notification.style.opacity = '0';
                 notification.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 300);
+                setTimeout(() => notification.remove(), 500);
             }, 3000);
         });
 
-        // Scroll animations
-        function initScrollAnimations() {
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
-
-            // Observe all animate-on-scroll elements
-            document.querySelectorAll('.animate-on-scroll').forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(20px)';
-                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(el);
-            });
-        }
+        // Add slide-in animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    opacity: 0;
+                    transform: translateX(100%);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+            .animate-slide-in {
+                animation: slideIn 0.5s ease-out;
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
