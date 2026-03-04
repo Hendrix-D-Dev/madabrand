@@ -326,6 +326,21 @@
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100%); }
         }
+
+        /* Empty state styling */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 2rem;
+            border: 2px dashed #1e3a8a20;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -350,7 +365,7 @@
                     Explore our transformative brand identity projects for Nigerian businesses and international clients. Each design tells a unique story of innovation and strategic thinking.
                 </p>
                 
-                <!-- Stats Grid -->
+                <!-- Stats Grid - Will be populated dynamically -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto" id="stats-container">
                     <!-- Stats loaded via JavaScript -->
                 </div>
@@ -385,17 +400,16 @@
                 <!-- Projects will be loaded dynamically -->
             </div>
             
-            <!-- Load More Button -->
-            <div class="text-center mt-12 md:mt-16">
-                <button id="load-more" class="inline-flex items-center px-8 py-4 bg-blue-900 text-white font-semibold rounded-full hover:bg-blue-800 transition-all duration-300 hover:scale-105 shadow-lg">
-                    <span class="mr-2">📁</span>
-                    Load More Projects
-                </button>
+            <!-- No Results Message (hidden by default) -->
+            <div id="no-results" class="empty-state hidden">
+                <div class="empty-state-icon">🔍</div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">No Projects Found</h3>
+                <p class="text-gray-600">No projects match the selected filter. Try another category.</p>
             </div>
         </div>
     </section>
     
-    <!-- Featured Case Study -->
+    <!-- Featured Case Study (Static - can be managed via admin later) -->
     <section class="py-12 md:py-20 bg-gradient-to-br from-blue-50 via-white to-blue-50">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-8 md:mb-12">
@@ -404,8 +418,8 @@
                     Featured Case Study
                 </div>
                 
-                <h2 class="section-title text-center">NuelArk Construction</h2>
-                <p class="text-gray-600 text-lg">Where Art Meets Structural Excellence</p>
+                <h2 class="section-title text-center" data-editable="featured-title">NuelArk Construction</h2>
+                <p class="text-gray-600 text-lg" data-editable="featured-subtitle">Where Art Meets Structural Excellence</p>
             </div>
             
             <div class="case-study-card">
@@ -417,7 +431,7 @@
                                 Project Overview
                             </h3>
                             
-                            <p class="text-gray-600 leading-relaxed">
+                            <p class="text-gray-600 leading-relaxed" data-editable="featured-description">
                                 NuelArk Construction Company sought to elevate their brand from a standard construction firm to a premium industry leader. The challenge was to create a visual identity that communicates both structural excellence and artistic sensibility.
                             </p>
                             
@@ -465,6 +479,7 @@
                         <img src="/assets/images/photo_1_2025-12-10_09-45-08.jpg" 
                              alt="NuelArk Construction Brand Identity" 
                              class="w-full h-full object-cover hover:scale-110 transition-transform duration-700"
+                             data-editable="featured-image"
                              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%231e3a8a20\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%231e3a8a\' font-family=\'Arial\' font-size=\'24\'%3ENuelArk%3C/text%3E%3C/svg%3E'">
                     </div>
                 </div>
@@ -573,112 +588,13 @@
     <script src="/scripts/main.js"></script>
     
     <script>
-        // Portfolio Data
-        const portfolioData = [
-            {
-                id: 1,
-                title: "NuelArk Construction",
-                category: "branding",
-                client: "Nuel Ark",
-                industry: "Construction",
-                description: "Complete brand identity system for a premium construction company.",
-                image: "/assets/images/photo_1_2025-12-10_09-45-08.jpg",
-                featured: true
-            },
-            {
-                id: 2,
-                title: "Havenbridge Development",
-                category: "branding",
-                client: "Haven Bridge",
-                industry: "Real Estate",
-                description: "Premium brand identity for a real-estate development company.",
-                image: "/assets/images/photo_3_2025-12-10_09-45-08.jpg",
-                featured: true
-            },
-            {
-                id: 3,
-                title: "ADIVAS Eco-Brand",
-                category: "branding",
-                client: "Adi Vas",
-                industry: "Sustainability",
-                description: "Nature-inspired brand identity for sustainable living products.",
-                image: "/assets/images/photo_5_2025-12-10_09-49-24.jpg",
-                featured: true
-            },
-            {
-                id: 4,
-                title: "Logo Collection",
-                category: "logo",
-                client: "Various",
-                industry: "Design",
-                description: "Collection of custom logo designs for diverse businesses.",
-                image: "/assets/images/photo_2_2025-12-10_09-45-08.jpg",
-                featured: false
-            },
-            {
-                id: 5,
-                title: "Brand Guidelines",
-                category: "graphic",
-                client: "Multiple Brands",
-                industry: "Design",
-                description: "Comprehensive brand guidelines and style guides.",
-                image: "/assets/images/photo_4_2025-12-10_09-45-08.jpg",
-                featured: false
-            },
-            {
-                id: 6,
-                title: "Social Media Graphics",
-                category: "graphic",
-                client: "Various",
-                industry: "Digital",
-                description: "Engaging social media visuals and templates.",
-                image: "/assets/images/photo_6_2025-12-10_09-49-24.jpg",
-                featured: false
-            },
-            {
-                id: 7,
-                title: "Print Design Portfolio",
-                category: "graphic",
-                client: "Various",
-                industry: "Print",
-                description: "Business cards, brochures, and stationery design.",
-                image: "/assets/images/photo_7_2025-12-10_09-49-24.jpg",
-                featured: false
-            },
-            {
-                id: 8,
-                title: "Web Design Projects",
-                category: "web",
-                client: "Various",
-                industry: "Digital",
-                description: "Modern website designs and UI/UX projects.",
-                image: "/assets/images/photo_8_2025-12-10_09-49-24.jpg",
-                featured: false
-            },
-            {
-                id: 9,
-                title: "Packaging Design",
-                category: "graphic",
-                client: "Various",
-                industry: "Product",
-                description: "Creative packaging solutions for products.",
-                image: "/assets/images/photo_9_2025-12-10_09-49-24.jpg",
-                featured: false
-            },
-            {
-                id: 10,
-                title: "Brand Identity",
-                category: "branding",
-                client: "Tech Startup",
-                industry: "Technology",
-                description: "Complete rebrand for a Lagos tech company.",
-                image: "/assets/images/photo_10_2025-12-10_09-49-24.jpg",
-                featured: false
-            }
-        ];
-
+        // API Integration - Fetch portfolio from API instead of hardcoded data
+        const API_BASE = '/api';
+        
+        // State management
+        let portfolioData = [];
         let currentFilter = 'all';
-        let visibleCount = 6;
+        let isLoading = false;
 
         // Load navbar and footer
         document.addEventListener('DOMContentLoaded', function() {
@@ -703,23 +619,162 @@
                     document.getElementById('footer').innerHTML = '<footer class="bg-blue-900 text-white p-4 text-center">Footer</footer>';
                 });
 
-            // Load stats
-            loadStats();
-            
-            // Load projects
-            setTimeout(loadProjects, 500);
+            // Fetch portfolio data from API
+            fetchPortfolio();
             
             // Initialize filters
             initFilters();
+            
+            // Set up auto-refresh (checks for updates every 30 seconds when admin is active)
+            setupAutoRefresh();
         });
 
-        // Load stats
-        function loadStats() {
+        // Fetch portfolio from API
+        async function fetchPortfolio() {
+            showLoading(true);
+            
+            try {
+                // Try to fetch from API first
+                const response = await fetch(`${API_BASE}/portfolio`, {
+                    headers: {
+                        'Authorization': 'Bearer MADA2024'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    portfolioData = data.projects || data || [];
+                } else {
+                    // Fallback to localStorage if API fails
+                    const localData = localStorage.getItem('madabrandPortfolio');
+                    portfolioData = localData ? JSON.parse(localData) : getDefaultPortfolio();
+                    console.warn('Using localStorage fallback for portfolio');
+                }
+            } catch (error) {
+                console.error('Error fetching portfolio:', error);
+                // Fallback to default data
+                portfolioData = getDefaultPortfolio();
+            }
+            
+            // Update stats and grid
+            updateStats();
+            filterAndDisplayProjects();
+            showLoading(false);
+        }
+
+        // Default portfolio data (only used as fallback)
+        function getDefaultPortfolio() {
+            return [
+                {
+                    id: 1,
+                    title: "NuelArk Construction",
+                    category: "branding",
+                    client: "Nuel Ark",
+                    industry: "Construction",
+                    description: "Complete brand identity system for a premium construction company.",
+                    image: "/assets/images/photo_1_2025-12-10_09-45-08.jpg",
+                    featured: true
+                },
+                {
+                    id: 2,
+                    title: "Havenbridge Development",
+                    category: "branding",
+                    client: "Haven Bridge",
+                    industry: "Real Estate",
+                    description: "Premium brand identity for a real-estate development company.",
+                    image: "/assets/images/photo_3_2025-12-10_09-45-08.jpg",
+                    featured: true
+                },
+                {
+                    id: 3,
+                    title: "ADIVAS Eco-Brand",
+                    category: "branding",
+                    client: "Adi Vas",
+                    industry: "Sustainability",
+                    description: "Nature-inspired brand identity for sustainable living products.",
+                    image: "/assets/images/photo_5_2025-12-10_09-49-24.jpg",
+                    featured: true
+                },
+                {
+                    id: 4,
+                    title: "Logo Collection",
+                    category: "logo",
+                    client: "Various",
+                    industry: "Design",
+                    description: "Collection of custom logo designs for diverse businesses.",
+                    image: "/assets/images/photo_2_2025-12-10_09-45-08.jpg",
+                    featured: false
+                },
+                {
+                    id: 5,
+                    title: "Brand Guidelines",
+                    category: "graphic",
+                    client: "Multiple Brands",
+                    industry: "Design",
+                    description: "Comprehensive brand guidelines and style guides.",
+                    image: "/assets/images/photo_4_2025-12-10_09-45-08.jpg",
+                    featured: false
+                },
+                {
+                    id: 6,
+                    title: "Social Media Graphics",
+                    category: "graphic",
+                    client: "Various",
+                    industry: "Digital",
+                    description: "Engaging social media visuals and templates.",
+                    image: "/assets/images/photo_6_2025-12-10_09-49-24.jpg",
+                    featured: false
+                },
+                {
+                    id: 7,
+                    title: "Print Design Portfolio",
+                    category: "graphic",
+                    client: "Various",
+                    industry: "Print",
+                    description: "Business cards, brochures, and stationery design.",
+                    image: "/assets/images/photo_7_2025-12-10_09-49-24.jpg",
+                    featured: false
+                },
+                {
+                    id: 8,
+                    title: "Web Design Projects",
+                    category: "web",
+                    client: "Various",
+                    industry: "Digital",
+                    description: "Modern website designs and UI/UX projects.",
+                    image: "/assets/images/photo_8_2025-12-10_09-49-24.jpg",
+                    featured: false
+                },
+                {
+                    id: 9,
+                    title: "Packaging Design",
+                    category: "graphic",
+                    client: "Various",
+                    industry: "Product",
+                    description: "Creative packaging solutions for products.",
+                    image: "/assets/images/photo_9_2025-12-10_09-49-24.jpg",
+                    featured: false
+                },
+                {
+                    id: 10,
+                    title: "Brand Identity",
+                    category: "branding",
+                    client: "Tech Startup",
+                    industry: "Technology",
+                    description: "Complete rebrand for a Lagos tech company.",
+                    image: "/assets/images/photo_10_2025-12-10_09-49-24.jpg",
+                    featured: false
+                }
+            ];
+        }
+
+        // Update stats based on portfolio data
+        function updateStats() {
             const statsContainer = document.getElementById('stats-container');
             const totalProjects = portfolioData.length;
             const brandingCount = portfolioData.filter(p => p.category === 'branding').length;
             const logoCount = portfolioData.filter(p => p.category === 'logo').length;
-            const graphicCount = portfolioData.filter(p => p.category === 'graphic').length;
+            const graphicCount = portfolioData.filter(p => p.category === 'graphic' || p.category === 'web').length;
             
             statsContainer.innerHTML = `
                 <div class="stat-card">
@@ -741,40 +796,47 @@
             `;
         }
 
-        // Load projects
-        function loadProjects() {
-            const loadingState = document.getElementById('loading-state');
+        // Filter and display projects
+        function filterAndDisplayProjects() {
             const grid = document.getElementById('portfolio-grid');
+            const noResults = document.getElementById('no-results');
             
-            // Filter projects
+            // Filter projects based on current filter
             const filtered = currentFilter === 'all' 
                 ? portfolioData 
                 : portfolioData.filter(p => p.category === currentFilter);
             
-            const visibleProjects = filtered.slice(0, visibleCount);
+            if (filtered.length === 0) {
+                // Show no results message
+                grid.innerHTML = '';
+                grid.style.opacity = '0';
+                noResults.classList.remove('hidden');
+                return;
+            }
             
-            // Generate HTML
-            const projectsHTML = visibleProjects.map(project => `
+            // Hide no results message
+            noResults.classList.add('hidden');
+            
+            // Generate HTML for all projects (no load more - show all)
+            const projectsHTML = filtered.map(project => `
                 <div class="portfolio-card" data-category="${project.category}">
                     <div class="image-wrapper">
-                        <img src="${project.image}" 
+                        <img src="${project.image || '/assets/images/placeholder.jpg'}" 
                              alt="${project.title}"
                              loading="lazy"
                              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%231e3a8a20\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%231e3a8a\' font-family=\'Arial\' font-size=\'24\'%3E${project.title}%3C/text%3E%3C/svg%3E'">
                         <div class="category-badge">
-                            ${project.category === 'branding' ? '🏗️ Brand Identity' : 
-                              project.category === 'logo' ? '✨ Logo Design' : 
-                              project.category === 'web' ? '🌐 Web Design' : '🎨 Graphic Design'}
+                            ${getCategoryDisplay(project.category)}
                         </div>
                     </div>
                     <div class="p-6 flex-1 flex flex-col">
                         <div class="mb-3">
                             <h3 class="text-xl font-bold text-gray-900 mb-1">${project.title}</h3>
-                            <p class="text-sm text-gray-500">${project.client} • ${project.industry}</p>
+                            <p class="text-sm text-gray-500">${project.client || 'Client'} • ${project.industry || 'Design'}</p>
                         </div>
-                        <p class="text-gray-600 text-sm leading-relaxed flex-1">${project.description}</p>
+                        <p class="text-gray-600 text-sm leading-relaxed flex-1">${project.description || 'No description provided.'}</p>
                         <div class="mt-4 pt-4 border-t border-gray-100">
-                            <a href="#" class="text-blue-900 font-semibold hover:text-blue-700 transition flex items-center text-sm">
+                            <a href="/portfolio/${project.id}" class="text-blue-900 font-semibold hover:text-blue-700 transition flex items-center text-sm">
                                 View Project
                                 <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
@@ -785,17 +847,34 @@
                 </div>
             `).join('');
             
-            // Hide loading, show grid
-            loadingState.style.display = 'none';
+            // Update grid
             grid.innerHTML = projectsHTML;
             grid.style.opacity = '1';
+        }
+
+        // Helper function to get category display name
+        function getCategoryDisplay(category) {
+            const displays = {
+                'branding': '🏗️ Brand Identity',
+                'logo': '✨ Logo Design',
+                'graphic': '🎨 Graphic Design',
+                'web': '🌐 Web Design'
+            };
+            return displays[category] || '📁 Design';
+        }
+
+        // Show/hide loading state
+        function showLoading(show) {
+            const loadingState = document.getElementById('loading-state');
+            const grid = document.getElementById('portfolio-grid');
+            const noResults = document.getElementById('no-results');
             
-            // Hide load more if no more projects
-            const loadMoreBtn = document.getElementById('load-more');
-            if (visibleProjects.length >= filtered.length) {
-                loadMoreBtn.style.display = 'none';
+            if (show) {
+                loadingState.style.display = 'block';
+                grid.style.opacity = '0';
+                if (noResults) noResults.classList.add('hidden');
             } else {
-                loadMoreBtn.style.display = 'inline-flex';
+                loadingState.style.display = 'none';
             }
         }
 
@@ -811,23 +890,48 @@
                     
                     // Update filter
                     currentFilter = this.dataset.filter;
-                    visibleCount = 6;
                     
                     // Show loading
-                    document.getElementById('loading-state').style.display = 'block';
-                    document.getElementById('portfolio-grid').style.opacity = '0';
+                    showLoading(true);
                     
-                    // Reload projects
-                    setTimeout(loadProjects, 300);
+                    // Filter and display projects
+                    setTimeout(() => {
+                        filterAndDisplayProjects();
+                        showLoading(false);
+                    }, 300);
                 });
             });
         }
 
-        // Load more
-        document.getElementById('load-more').addEventListener('click', function() {
-            visibleCount += 3;
-            loadProjects();
-        });
+        // Auto-refresh setup (checks for updates every 30 seconds when admin is active)
+        function setupAutoRefresh() {
+            // Only auto-refresh if we're not in an iframe and page is visible
+            if (window.self === window.top && !document.hidden) {
+                setInterval(async () => {
+                    try {
+                        const response = await fetch(`${API_BASE}/portfolio`, {
+                            headers: { 'Authorization': 'Bearer MADA2024' },
+                            cache: 'no-cache'
+                        });
+                        
+                        if (response.ok) {
+                            const data = await response.json();
+                            const newData = data.projects || data || [];
+                            
+                            // Check if data has changed (simple length check)
+                            if (JSON.stringify(newData) !== JSON.stringify(portfolioData)) {
+                                console.log('📦 Portfolio updated, refreshing...');
+                                portfolioData = newData;
+                                updateStats();
+                                filterAndDisplayProjects();
+                            }
+                        }
+                    } catch (error) {
+                        // Silently fail - don't show errors for auto-refresh
+                    }
+                }, 30000); // Check every 30 seconds
+            }
+        }
 
         // Mobile menu
         function initMobileMenu() {
@@ -854,6 +958,20 @@
                 e.target.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%231e3a8a20\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%231e3a8a\' font-family=\'Arial\' font-size=\'24\'%3EImage%20Not%20Found%3C/text%3E%3C/svg%3E';
             }
         }, true);
+
+        // Listen for storage events (when admin makes changes in another tab)
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'madabrandPortfolio') {
+                console.log('📦 Portfolio updated in another tab, refreshing...');
+                fetchPortfolio();
+            }
+        });
+
+        // Listen for custom events from admin
+        window.addEventListener('portfolio-updated', function() {
+            console.log('📦 Portfolio updated, refreshing...');
+            fetchPortfolio();
+        });
     </script>
 </body>
 </html>
