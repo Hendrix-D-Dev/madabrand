@@ -3,8 +3,8 @@ const ADMIN_CODE = "MADA2024"; // Change this to your secret code
 let currentTheme = null;
 let portfolioItems = [];
 
-// API Base URL - adjust for production
-const API_BASE = '/api';
+// API Base URL - CHANGE THIS to your Render URL after deployment
+const API_BASE = 'https://madabrand.onrender.com/api'; // Your Render backend URL
 
 // Helper for authenticated API calls
 async function apiCall(endpoint, method = 'GET', data = null) {
@@ -13,7 +13,8 @@ async function apiCall(endpoint, method = 'GET', data = null) {
         headers: {
             'Authorization': `Bearer ${ADMIN_CODE}`,
             'Content-Type': 'application/json'
-        }
+        },
+        mode: 'cors'
     };
     
     if (data) {
@@ -21,8 +22,12 @@ async function apiCall(endpoint, method = 'GET', data = null) {
     }
     
     try {
+        console.log(`📡 API Call: ${method} ${API_BASE}${endpoint}`);
         const response = await fetch(`${API_BASE}${endpoint}`, options);
+        
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error('API Error Response:', errorText);
             throw new Error(`API Error: ${response.status}`);
         }
         return await response.json();
@@ -67,6 +72,8 @@ async function loadServerData() {
         
     } catch (error) {
         console.error('Failed to load server data:', error);
+        // Fallback to localStorage
+        loadSavedData();
     }
 }
 
@@ -121,12 +128,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             if (validateForm()) {
-                // Submit to API or email service
+                // Submit to API
                 const formData = new FormData(this);
                 const data = Object.fromEntries(formData);
                 
                 try {
-                    // Here you could send to your API or a service like Formspree
+                    // Here you could send to your API
                     showNotification('Thank you for your message! We\'ll get back to you soon.', 'success');
                     contactForm.reset();
                 } catch (error) {
@@ -200,36 +207,42 @@ function validateForm() {
     
     // Reset error states
     [name, email, message].forEach(field => {
-        field.classList.remove('border-red-500');
-        const errorElement = field.nextElementSibling;
-        if (errorElement && errorElement.classList.contains('text-red-500')) {
-            errorElement.remove();
+        if (field) {
+            field.classList.remove('border-red-500');
+            const errorElement = field.nextElementSibling;
+            if (errorElement && errorElement.classList.contains('text-red-500')) {
+                errorElement.remove();
+            }
         }
     });
     
     // Validate name
-    if (!name.value.trim()) {
+    if (name && !name.value.trim()) {
         showError(name, 'Name is required');
         isValid = false;
     }
     
     // Validate email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email.value.trim()) {
-        showError(email, 'Email is required');
-        isValid = false;
-    } else if (!emailRegex.test(email.value)) {
-        showError(email, 'Please enter a valid email');
-        isValid = false;
+    if (email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email.value.trim()) {
+            showError(email, 'Email is required');
+            isValid = false;
+        } else if (!emailRegex.test(email.value)) {
+            showError(email, 'Please enter a valid email');
+            isValid = false;
+        }
     }
     
     // Validate message
-    if (!message.value.trim()) {
-        showError(message, 'Message is required');
-        isValid = false;
-    } else if (message.value.trim().length < 10) {
-        showError(message, 'Message must be at least 10 characters');
-        isValid = false;
+    if (message) {
+        if (!message.value.trim()) {
+            showError(message, 'Message is required');
+            isValid = false;
+        } else if (message.value.trim().length < 10) {
+            showError(message, 'Message must be at least 10 characters');
+            isValid = false;
+        }
     }
     
     return isValid;
@@ -287,15 +300,15 @@ function initAdminSystem() {
     function openAdminModal() {
         if (adminModal) {
             adminModal.classList.remove('hidden');
-            adminCodeInput.focus();
+            if (adminCodeInput) adminCodeInput.focus();
         }
     }
     
     function closeAdminModalFunc() {
         if (adminModal) {
             adminModal.classList.add('hidden');
-            adminCodeInput.value = '';
-            adminMessage.textContent = '';
+            if (adminCodeInput) adminCodeInput.value = '';
+            if (adminMessage) adminMessage.textContent = '';
         }
     }
     
@@ -325,8 +338,10 @@ function initAdminSystem() {
                 // Correct code
                 localStorage.setItem('adminUnlocked', 'true');
                 await unlockAdminFeatures();
-                adminMessage.textContent = '✅ Admin access granted!';
-                adminMessage.className = 'mt-4 text-sm text-green-600';
+                if (adminMessage) {
+                    adminMessage.textContent = '✅ Admin access granted!';
+                    adminMessage.className = 'mt-4 text-sm text-green-600';
+                }
                 
                 // Close modal after 1 second
                 setTimeout(() => {
@@ -338,8 +353,10 @@ function initAdminSystem() {
                 }, 1000);
             } else {
                 // Wrong code
-                adminMessage.textContent = '❌ Invalid admin code';
-                adminMessage.className = 'mt-4 text-sm text-red-600';
+                if (adminMessage) {
+                    adminMessage.textContent = '❌ Invalid admin code';
+                    adminMessage.className = 'mt-4 text-sm text-red-600';
+                }
                 adminCodeInput.value = '';
                 adminCodeInput.focus();
             }
@@ -666,20 +683,25 @@ function openThemeEditor() {
         const colorInput = document.getElementById(`${type}-color`);
         const textInput = document.getElementById(`${type}-color-text`);
         
-        colorInput.addEventListener('input', function() {
-            textInput.value = this.value;
-            updateThemePreview();
-        });
-        
-        textInput.addEventListener('input', function() {
-            if (this.value.match(/^#[0-9A-F]{6}$/i)) {
-                colorInput.value = this.value;
+        if (colorInput && textInput) {
+            colorInput.addEventListener('input', function() {
+                textInput.value = this.value;
                 updateThemePreview();
-            }
-        });
+            });
+            
+            textInput.addEventListener('input', function() {
+                if (this.value.match(/^#[0-9A-F]{6}$/i)) {
+                    colorInput.value = this.value;
+                    updateThemePreview();
+                }
+            });
+        }
     });
     
-    document.getElementById('font-family').addEventListener('change', updateThemePreview);
+    const fontFamilySelect = document.getElementById('font-family');
+    if (fontFamilySelect) {
+        fontFamilySelect.addEventListener('change', updateThemePreview);
+    }
 }
 
 function updateThemePreview() {
@@ -698,10 +720,16 @@ function updateThemePreview() {
     preview.style.background = theme.backgroundColor;
     preview.style.color = theme.textColor;
     preview.style.fontFamily = theme.fontFamily;
-    preview.querySelector('h3').style.color = theme.headingColor;
-    preview.querySelector('button').style.background = theme.primaryColor;
-    preview.querySelectorAll('button')[1].style.borderColor = theme.secondaryColor;
-    preview.querySelectorAll('button')[1].style.color = theme.secondaryColor;
+    
+    const heading = preview.querySelector('h3');
+    if (heading) heading.style.color = theme.headingColor;
+    
+    const buttons = preview.querySelectorAll('button');
+    if (buttons[0]) buttons[0].style.background = theme.primaryColor;
+    if (buttons[1]) {
+        buttons[1].style.borderColor = theme.secondaryColor;
+        buttons[1].style.color = theme.secondaryColor;
+    }
 }
 
 function resetTheme() {
@@ -827,7 +855,7 @@ function openPortfolioManager() {
                                 <button onclick="editPortfolioItem(${index})" class="text-blue-600 hover:text-blue-800 p-1" title="Edit">
                                     ✏️
                                 </button>
-                                <button onclick="deletePortfolioItem(${item.id || index})" class="text-red-600 hover:text-red-800 p-1" title="Delete">
+                                <button onclick="deletePortfolioItem('${item.id || index}')" class="text-red-600 hover:text-red-800 p-1" title="Delete">
                                     🗑️
                                 </button>
                             </div>
@@ -1345,7 +1373,7 @@ function addAdminIndicators() {
     
     // Add edit buttons to portfolio items on portfolio page
     if (window.location.pathname.includes('portfolio')) {
-        document.querySelectorAll('.portfolio-item').forEach((item, index) => {
+        document.querySelectorAll('.portfolio-item, .portfolio-card').forEach((item, index) => {
             if (!item.querySelector('.portfolio-edit-btn')) {
                 const editBtn = document.createElement('button');
                 editBtn.className = 'portfolio-edit-btn absolute top-4 right-4 bg-blue-900/20 text-blue-900 text-xs px-3 py-1 rounded-lg hover:bg-blue-900/30 transition opacity-0 group-hover:opacity-100 z-10';
