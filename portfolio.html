@@ -588,8 +588,8 @@
     <script src="/scripts/main.js"></script>
     
     <script>
-        // API Integration - Fetch portfolio from API instead of hardcoded data
-       
+        // FIXED: Define API_BASE here since main.js loads after this script
+        const API_BASE = 'https://madabrand.onrender.com/api';
         
         // State management
         let portfolioData = [];
@@ -625,7 +625,7 @@
             // Initialize filters
             initFilters();
             
-            // Set up auto-refresh (checks for updates every 30 seconds when admin is active)
+            // Set up auto-refresh
             setupAutoRefresh();
         });
 
@@ -634,7 +634,7 @@
             showLoading(true);
             
             try {
-                // Try to fetch from API first
+                console.log('📡 Fetching portfolio from:', `${API_BASE}/portfolio`);
                 const response = await fetch(`${API_BASE}/portfolio`, {
                     headers: {
                         'Authorization': 'Bearer MADA2024'
@@ -643,15 +643,17 @@
                 
                 if (response.ok) {
                     const data = await response.json();
+                    console.log('✅ Portfolio data received:', data);
+                    // FIXED: Handle both formats - array or { projects: [] }
                     portfolioData = data.projects || data || [];
                 } else {
-                    // Fallback to localStorage if API fails
+                    console.warn('⚠️ API returned:', response.status);
+                    // Fallback to localStorage
                     const localData = localStorage.getItem('madabrandPortfolio');
                     portfolioData = localData ? JSON.parse(localData) : getDefaultPortfolio();
-                    console.warn('Using localStorage fallback for portfolio');
                 }
             } catch (error) {
-                console.error('Error fetching portfolio:', error);
+                console.error('❌ Error fetching portfolio:', error);
                 // Fallback to default data
                 portfolioData = getDefaultPortfolio();
             }
@@ -672,7 +674,7 @@
                     client: "Nuel Ark",
                     industry: "Construction",
                     description: "Complete brand identity system for a premium construction company.",
-                    image: "/assets/images/photo_1_2025-12-10_09-45-08.jpg",
+                    images: ["/assets/images/photo_1_2025-12-10_09-45-08.jpg"],
                     featured: true
                 },
                 {
@@ -682,7 +684,7 @@
                     client: "Haven Bridge",
                     industry: "Real Estate",
                     description: "Premium brand identity for a real-estate development company.",
-                    image: "/assets/images/photo_3_2025-12-10_09-45-08.jpg",
+                    images: ["/assets/images/photo_3_2025-12-10_09-45-08.jpg"],
                     featured: true
                 },
                 {
@@ -692,7 +694,7 @@
                     client: "Adi Vas",
                     industry: "Sustainability",
                     description: "Nature-inspired brand identity for sustainable living products.",
-                    image: "/assets/images/photo_5_2025-12-10_09-49-24.jpg",
+                    images: ["/assets/images/photo_5_2025-12-10_09-49-24.jpg"],
                     featured: true
                 },
                 {
@@ -702,7 +704,7 @@
                     client: "Various",
                     industry: "Design",
                     description: "Collection of custom logo designs for diverse businesses.",
-                    image: "/assets/images/photo_2_2025-12-10_09-45-08.jpg",
+                    images: ["/assets/images/photo_2_2025-12-10_09-45-08.jpg"],
                     featured: false
                 },
                 {
@@ -712,7 +714,7 @@
                     client: "Multiple Brands",
                     industry: "Design",
                     description: "Comprehensive brand guidelines and style guides.",
-                    image: "/assets/images/photo_4_2025-12-10_09-45-08.jpg",
+                    images: ["/assets/images/photo_4_2025-12-10_09-45-08.jpg"],
                     featured: false
                 },
                 {
@@ -722,7 +724,7 @@
                     client: "Various",
                     industry: "Digital",
                     description: "Engaging social media visuals and templates.",
-                    image: "/assets/images/photo_6_2025-12-10_09-49-24.jpg",
+                    images: ["/assets/images/photo_6_2025-12-10_09-49-24.jpg"],
                     featured: false
                 },
                 {
@@ -732,7 +734,7 @@
                     client: "Various",
                     industry: "Print",
                     description: "Business cards, brochures, and stationery design.",
-                    image: "/assets/images/photo_7_2025-12-10_09-49-24.jpg",
+                    images: ["/assets/images/photo_7_2025-12-10_09-49-24.jpg"],
                     featured: false
                 },
                 {
@@ -742,7 +744,7 @@
                     client: "Various",
                     industry: "Digital",
                     description: "Modern website designs and UI/UX projects.",
-                    image: "/assets/images/photo_8_2025-12-10_09-49-24.jpg",
+                    images: ["/assets/images/photo_8_2025-12-10_09-49-24.jpg"],
                     featured: false
                 },
                 {
@@ -752,7 +754,7 @@
                     client: "Various",
                     industry: "Product",
                     description: "Creative packaging solutions for products.",
-                    image: "/assets/images/photo_9_2025-12-10_09-49-24.jpg",
+                    images: ["/assets/images/photo_9_2025-12-10_09-49-24.jpg"],
                     featured: false
                 },
                 {
@@ -762,7 +764,7 @@
                     client: "Tech Startup",
                     industry: "Technology",
                     description: "Complete rebrand for a Lagos tech company.",
-                    image: "/assets/images/photo_10_2025-12-10_09-49-24.jpg",
+                    images: ["/assets/images/photo_10_2025-12-10_09-49-24.jpg"],
                     featured: false
                 }
             ];
@@ -778,7 +780,7 @@
             
             statsContainer.innerHTML = `
                 <div class="stat-card">
-                    <div class="stat-number">${totalProjects}+</div>
+                    <div class="stat-number">${totalProjects}</div>
                     <div class="stat-label">Total Projects</div>
                 </div>
                 <div class="stat-card">
@@ -817,11 +819,15 @@
             // Hide no results message
             noResults.classList.add('hidden');
             
-            // Generate HTML for all projects (no load more - show all)
-            const projectsHTML = filtered.map(project => `
+            // Generate HTML for all projects
+            const projectsHTML = filtered.map(project => {
+                // FIXED: Handle both image and images array
+                const imageUrl = project.images && project.images[0] ? project.images[0] : (project.image || '/assets/images/placeholder.jpg');
+                
+                return `
                 <div class="portfolio-card" data-category="${project.category}">
                     <div class="image-wrapper">
-                        <img src="${project.image || '/assets/images/placeholder.jpg'}" 
+                        <img src="${imageUrl}" 
                              alt="${project.title}"
                              loading="lazy"
                              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%231e3a8a20\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%231e3a8a\' font-family=\'Arial\' font-size=\'24\'%3E${project.title}%3C/text%3E%3C/svg%3E'">
@@ -845,7 +851,7 @@
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
             
             // Update grid
             grid.innerHTML = projectsHTML;
@@ -903,9 +909,8 @@
             });
         }
 
-        // Auto-refresh setup (checks for updates every 30 seconds when admin is active)
+        // Auto-refresh setup
         function setupAutoRefresh() {
-            // Only auto-refresh if we're not in an iframe and page is visible
             if (window.self === window.top && !document.hidden) {
                 setInterval(async () => {
                     try {
@@ -918,7 +923,6 @@
                             const data = await response.json();
                             const newData = data.projects || data || [];
                             
-                            // Check if data has changed (simple length check)
                             if (JSON.stringify(newData) !== JSON.stringify(portfolioData)) {
                                 console.log('📦 Portfolio updated, refreshing...');
                                 portfolioData = newData;
@@ -927,9 +931,9 @@
                             }
                         }
                     } catch (error) {
-                        // Silently fail - don't show errors for auto-refresh
+                        // Silently fail
                     }
-                }, 30000); // Check every 30 seconds
+                }, 30000);
             }
         }
 
@@ -959,7 +963,7 @@
             }
         }, true);
 
-        // Listen for storage events (when admin makes changes in another tab)
+        // Listen for storage events
         window.addEventListener('storage', function(e) {
             if (e.key === 'madabrandPortfolio') {
                 console.log('📦 Portfolio updated in another tab, refreshing...');

@@ -6,6 +6,9 @@ let portfolioItems = [];
 // API Base URL - CHANGE THIS to your Render URL after deployment
 const API_BASE = 'https://madabrand.onrender.com/api'; // Your Render backend URL
 
+// Make API_BASE available to all scripts
+window.API_BASE = API_BASE;
+
 // Helper for authenticated API calls
 async function apiCall(endpoint, method = 'GET', data = null) {
     const options = {
