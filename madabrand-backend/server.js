@@ -70,12 +70,34 @@ const initDataFiles = async () => {
 
 initDataFiles();
 
-// Authentication middleware
+// FIXED: Authentication middleware - more flexible
 const authenticate = (req, res, next) => {
   const authHeader = req.headers.authorization;
-  if (!authHeader || authHeader !== 'Bearer MADA2024') {
-    return res.status(401).json({ error: 'Unauthorized' });
+  
+  // Log for debugging
+  console.log('🔐 Auth Header:', authHeader);
+  
+  if (!authHeader) {
+    console.log('❌ No authorization header');
+    return res.status(401).json({ error: 'No authorization header' });
   }
+  
+  // Check if it starts with 'Bearer '
+  if (!authHeader.startsWith('Bearer ')) {
+    console.log('❌ Not Bearer token');
+    return res.status(401).json({ error: 'Invalid authorization format' });
+  }
+  
+  // Extract the token
+  const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+  
+  // Check if token matches (trim to remove any whitespace)
+  if (token.trim() !== 'MADA2024') {
+    console.log('❌ Invalid token:', token);
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+  
+  console.log('✅ Authentication successful');
   next();
 };
 
@@ -105,6 +127,11 @@ app.get('/api/health', (req, res) => {
     uptime: process.uptime(),
     environment: process.env.NODE_ENV || 'development'
   });
+});
+
+// Add a test endpoint (no auth for testing)
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'API is working!' });
 });
 
 // Error handling middleware
