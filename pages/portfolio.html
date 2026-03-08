@@ -11,8 +11,336 @@
     <meta name="author" content="MadaBrand">
     
     <style>
-        /* Base responsive styles - KEEP ALL YOUR EXISTING STYLES */
-        /* ... (keep all your existing CSS) ... */
+        /* Base responsive styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Modern card styles */
+        .portfolio-card {
+            background: white;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(30, 58, 138, 0.1);
+        }
+
+        .portfolio-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(30, 58, 138, 0.2), 0 10px 10px -5px rgba(30, 58, 138, 0.1);
+            border-color: #1e3a8a;
+        }
+
+        .portfolio-card .image-wrapper {
+            position: relative;
+            padding-top: 75%; /* 4:3 Aspect Ratio */
+            overflow: hidden;
+            background: #f1f5f9;
+        }
+
+        .portfolio-card img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .portfolio-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .portfolio-card .category-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: white;
+            color: #1e3a8a;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 10;
+            border: 1px solid #1e3a8a20;
+        }
+
+        /* Filter buttons */
+        .filter-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            background: white;
+            color: #1e3a8a;
+            border: 2px solid #1e3a8a20;
+            font-size: 0.9rem;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .filter-btn:hover {
+            background: #1e3a8a;
+            color: white;
+            border-color: #1e3a8a;
+        }
+
+        .filter-btn.active {
+            background: #1e3a8a;
+            color: white;
+            border-color: #1e3a8a;
+        }
+
+        /* Filter container - horizontal scroll on mobile */
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1rem 0;
+        }
+
+        @media (max-width: 640px) {
+            .filter-container {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                justify-content: flex-start;
+                padding: 1rem;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+            .filter-container::-webkit-scrollbar {
+                display: none;
+            }
+            .filter-btn {
+                flex: 0 0 auto;
+            }
+        }
+
+        /* Stat cards */
+        .stat-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #1e3a8a10;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(30, 58, 138, 0.15);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1e3a8a;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        /* Testimonial cards */
+        .testimonial-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #1e3a8a10;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(30, 58, 138, 0.15);
+        }
+
+        /* Section titles */
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+            border-radius: 2px;
+        }
+
+        .text-center .section-title::after {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #1e3a8a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Image error fallback */
+        img {
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+        }
+
+        img[src=""] {
+            opacity: 0;
+        }
+
+        /* Grid responsive gaps */
+        .grid {
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                gap: 2rem;
+            }
+        }
+
+        /* Featured case study */
+        .case-study-card {
+            background: white;
+            border-radius: 2rem;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(30, 58, 138, 0.2);
+            border: 1px solid #1e3a8a20;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 640px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem !important;
+                line-height: 1.2 !important;
+            }
+            
+            .hero-badge {
+                padding: 0.75rem 1.5rem !important;
+                font-size: 0.9rem !important;
+            }
+            
+            .testimonial-card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1e3a8a;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2563eb;
+        }
+
+        /* Image loading animation */
+        .image-loading {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Empty state styling */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 2rem;
+            border: 2px dashed #1e3a8a20;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -257,13 +585,11 @@
     <div id="footer"></div>
 
     <!-- Scripts -->
-    <!-- Keep-alive script FIRST to wake up server -->
-    <script src="/scripts/keep-alive.js"></script>
-    <!-- Main site script SECOND -->
     <script src="/scripts/main.js"></script>
     
     <script>
-        // REMOVED: const API_BASE = 'https://madabrand.onrender.com/api'; - Now using from main.js
+        // FIXED: Define API_BASE here since main.js loads after this script
+        const API_BASE = 'https://madabrand.onrender.com/api';
         
         // State management
         let portfolioData = [];
@@ -293,7 +619,7 @@
                     document.getElementById('footer').innerHTML = '<footer class="bg-blue-900 text-white p-4 text-center">Footer</footer>';
                 });
 
-            // Fetch portfolio data from API (API_BASE comes from main.js)
+            // Fetch portfolio data from API
             fetchPortfolio();
             
             // Initialize filters
@@ -308,11 +634,8 @@
             showLoading(true);
             
             try {
-                // Use window.API_BASE which is set in main.js
-                const apiUrl = window.API_BASE || 'https://madabrand.onrender.com/api';
-                console.log('📡 Fetching portfolio from:', `${apiUrl}/portfolio`);
-                
-                const response = await fetch(`${apiUrl}/portfolio`, {
+                console.log('📡 Fetching portfolio from:', `${API_BASE}/portfolio`);
+                const response = await fetch(`${API_BASE}/portfolio`, {
                     headers: {
                         'Authorization': 'Bearer MADA2024'
                     }
@@ -321,17 +644,21 @@
                 if (response.ok) {
                     const data = await response.json();
                     console.log('✅ Portfolio data received:', data);
+                    // FIXED: Handle both formats - array or { projects: [] }
                     portfolioData = data.projects || data || [];
                 } else {
                     console.warn('⚠️ API returned:', response.status);
+                    // Fallback to localStorage
                     const localData = localStorage.getItem('madabrandPortfolio');
                     portfolioData = localData ? JSON.parse(localData) : getDefaultPortfolio();
                 }
             } catch (error) {
                 console.error('❌ Error fetching portfolio:', error);
+                // Fallback to default data
                 portfolioData = getDefaultPortfolio();
             }
             
+            // Update stats and grid
             updateStats();
             filterAndDisplayProjects();
             showLoading(false);
@@ -476,20 +803,25 @@
             const grid = document.getElementById('portfolio-grid');
             const noResults = document.getElementById('no-results');
             
+            // Filter projects based on current filter
             const filtered = currentFilter === 'all' 
                 ? portfolioData 
                 : portfolioData.filter(p => p.category === currentFilter);
             
             if (filtered.length === 0) {
+                // Show no results message
                 grid.innerHTML = '';
                 grid.style.opacity = '0';
                 noResults.classList.remove('hidden');
                 return;
             }
             
+            // Hide no results message
             noResults.classList.add('hidden');
             
+            // Generate HTML for all projects
             const projectsHTML = filtered.map(project => {
+                // FIXED: Handle both image and images array
                 const imageUrl = project.images && project.images[0] ? project.images[0] : (project.image || '/assets/images/placeholder.jpg');
                 
                 return `
@@ -521,10 +853,12 @@
                 </div>
             `}).join('');
             
+            // Update grid
             grid.innerHTML = projectsHTML;
             grid.style.opacity = '1';
         }
 
+        // Helper function to get category display name
         function getCategoryDisplay(category) {
             const displays = {
                 'branding': '🏗️ Brand Identity',
@@ -535,6 +869,7 @@
             return displays[category] || '📁 Design';
         }
 
+        // Show/hide loading state
         function showLoading(show) {
             const loadingState = document.getElementById('loading-state');
             const grid = document.getElementById('portfolio-grid');
@@ -549,15 +884,23 @@
             }
         }
 
+        // Initialize filters
         function initFilters() {
             const filterBtns = document.querySelectorAll('.filter-btn');
             
             filterBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
+                    // Update active state
                     filterBtns.forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
+                    
+                    // Update filter
                     currentFilter = this.dataset.filter;
+                    
+                    // Show loading
                     showLoading(true);
+                    
+                    // Filter and display projects
                     setTimeout(() => {
                         filterAndDisplayProjects();
                         showLoading(false);
@@ -566,12 +909,12 @@
             });
         }
 
+        // Auto-refresh setup
         function setupAutoRefresh() {
             if (window.self === window.top && !document.hidden) {
                 setInterval(async () => {
                     try {
-                        const apiUrl = window.API_BASE || 'https://madabrand.onrender.com/api';
-                        const response = await fetch(`${apiUrl}/portfolio`, {
+                        const response = await fetch(`${API_BASE}/portfolio`, {
                             headers: { 'Authorization': 'Bearer MADA2024' },
                             cache: 'no-cache'
                         });
@@ -594,6 +937,7 @@
             }
         }
 
+        // Mobile menu
         function initMobileMenu() {
             const menuBtn = document.getElementById('mobile-menu-btn');
             const mobileMenu = document.getElementById('mobile-menu');
@@ -612,12 +956,14 @@
             }
         }
 
+        // Image error handling
         document.addEventListener('error', function(e) {
             if (e.target.tagName === 'IMG') {
                 e.target.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%231e3a8a20\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%231e3a8a\' font-family=\'Arial\' font-size=\'24\'%3EImage%20Not%20Found%3C/text%3E%3C/svg%3E';
             }
         }, true);
 
+        // Listen for storage events
         window.addEventListener('storage', function(e) {
             if (e.key === 'madabrandPortfolio') {
                 console.log('📦 Portfolio updated in another tab, refreshing...');
@@ -625,6 +971,7 @@
             }
         });
 
+        // Listen for custom events from admin
         window.addEventListener('portfolio-updated', function() {
             console.log('📦 Portfolio updated, refreshing...');
             fetchPortfolio();
