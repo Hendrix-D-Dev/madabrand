@@ -38,7 +38,9 @@ const dirs = [
 ];
 
 dirs.forEach(dir => {
-  fs.ensureDirSync(path.join(__dirname, dir));
+  const dirPath = path.join(__dirname, dir);
+  fs.ensureDirSync(dirPath);
+  console.log(`📁 Directory ensured: ${dir}`);
 });
 
 // Initialize data files if they don't exist
@@ -61,37 +63,42 @@ const initDataFiles = async () => {
 
   for (const [filePath, defaultContent] of Object.entries(files)) {
     const fullPath = path.join(__dirname, filePath);
-    if (!await fs.pathExists(fullPath)) {
-      await fs.writeFile(fullPath, JSON.stringify(defaultContent, null, 2));
-      console.log(`✅ Created: ${filePath}`);
+    try {
+      if (!await fs.pathExists(fullPath)) {
+        await fs.writeFile(fullPath, JSON.stringify(defaultContent, null, 2));
+        console.log(`✅ Created: ${filePath}`);
+      } else {
+        console.log(`📄 Found existing: ${filePath}`);
+      }
+    } catch (error) {
+      console.error(`❌ Error creating ${filePath}:`, error.message);
     }
   }
 };
 
-initDataFiles();
+// Run initialization
+initDataFiles().catch(err => {
+  console.error('❌ Failed to initialize data files:', err);
+});
 
-// FIXED: Authentication middleware - more flexible
+// Authentication middleware
 const authenticate = (req, res, next) => {
   const authHeader = req.headers.authorization;
   
-  // Log for debugging
-  console.log('🔐 Auth Header:', authHeader);
+  console.log(`[${new Date().toISOString()}] 🔐 Auth Header:`, authHeader);
   
   if (!authHeader) {
     console.log('❌ No authorization header');
     return res.status(401).json({ error: 'No authorization header' });
   }
   
-  // Check if it starts with 'Bearer '
   if (!authHeader.startsWith('Bearer ')) {
     console.log('❌ Not Bearer token');
     return res.status(401).json({ error: 'Invalid authorization format' });
   }
   
-  // Extract the token
-  const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+  const token = authHeader.substring(7);
   
-  // Check if token matches (trim to remove any whitespace)
   if (token.trim() !== 'MADA2024') {
     console.log('❌ Invalid token:', token);
     return res.status(401).json({ error: 'Invalid token' });
@@ -129,23 +136,35 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Add a test endpoint (no auth for testing)
+// Test endpoint
 app.get('/api/test', (req, res) => {
-  res.json({ message: 'API is working!' });
+  res.json({ 
+    message: 'API is working!',
+    timestamp: new Date().toISOString(),
+    directories: {
+      data: fs.existsSync(path.join(__dirname, 'data')),
+      uploads: fs.existsSync(path.join(__dirname, 'uploads'))
+    }
+  });
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error('❌ Server error:', err);
+  console.error(`[${new Date().toISOString()}] ❌ Server error:`, err);
   res.status(500).json({ 
     error: err.message || 'Internal server error',
-    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    timestamp: new Date().toISOString()
   });
 });
 
 // 404 handler
 app.use((req, res) => {
-  res.status(404).json({ error: 'Endpoint not found' });
+  console.log(`[${new Date().toISOString()}] 404: ${req.method} ${req.url}`);
+  res.status(404).json({ 
+    error: 'Endpoint not found',
+    path: req.url,
+    method: req.method
+  });
 });
 
 app.listen(PORT, () => {
@@ -153,4 +172,5 @@ app.listen(PORT, () => {
   console.log(`📁 Data directory: ${path.join(__dirname, 'data')}`);
   console.log(`📸 Uploads directory: ${path.join(__dirname, 'uploads')}`);
   console.log(`🔗 API URL: http://localhost:${PORT}/api`);
+  console.log(`🌍 CORS enabled for: https://madabrand-e6hw.vercel.app`);
 });
