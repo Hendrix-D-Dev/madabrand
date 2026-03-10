@@ -591,6 +591,9 @@
     <script src="/scripts/main.js"></script>
     <!-- 3. Portfolio page script (uses API_BASE from main.js) -->
     <script>
+        // Use window.API_BASE from main.js, with fallback
+        const API_BASE = window.API_BASE || 'https://madabrand.onrender.com/api';
+        
         // State management
         let portfolioData = [];
         let currentFilter = 'all';
@@ -619,7 +622,7 @@
                     document.getElementById('footer').innerHTML = '<footer class="bg-blue-900 text-white p-4 text-center">Footer</footer>';
                 });
 
-            // Fetch portfolio data from API (API_BASE comes from main.js)
+            // Fetch portfolio data from API
             fetchPortfolio();
             
             // Initialize filters
@@ -634,11 +637,8 @@
             showLoading(true);
             
             try {
-                // Use the globally defined API_BASE from main.js
-                const apiUrl = window.API_BASE || 'https://madabrand.onrender.com/api';
-                console.log('📡 Fetching portfolio from:', `${apiUrl}/portfolio`);
-                
-                const response = await fetch(`${apiUrl}/portfolio`, {
+                console.log('📡 Fetching portfolio from:', `${API_BASE}/portfolio`);
+                const response = await fetch(`${API_BASE}/portfolio`, {
                     headers: {
                         'Authorization': 'Bearer MADA2024'
                     }
@@ -647,7 +647,13 @@
                 if (response.ok) {
                     const data = await response.json();
                     console.log('✅ Portfolio data received:', data);
+                    // Handle both formats - array or { projects: [] }
                     portfolioData = data.projects || data || [];
+                    
+                    // DEBUG: Log the first project to see image path
+                    if (portfolioData.length > 0) {
+                        console.log('🔍 Sample project image path:', portfolioData[0].images?.[0] || portfolioData[0].image);
+                    }
                 } else {
                     console.warn('⚠️ API returned:', response.status);
                     // Fallback to localStorage
@@ -823,8 +829,14 @@
             
             // Generate HTML for all projects
             const projectsHTML = filtered.map(project => {
-                // Handle both image and images array
-                const imageUrl = project.images && project.images[0] ? project.images[0] : (project.image || '/assets/images/placeholder.jpg');
+                // Handle both image formats and fix path if needed
+                let imageUrl = project.images && project.images[0] ? project.images[0] : (project.image || '/assets/images/placeholder.jpg');
+                
+                // FIX: If image path starts with /uploads/, change to /assets/images/ for frontend
+                if (imageUrl.includes('/uploads/')) {
+                    const filename = imageUrl.split('/').pop();
+                    imageUrl = `/assets/images/${filename}`;
+                }
                 
                 return `
                 <div class="portfolio-card" data-category="${project.category}">
@@ -832,7 +844,7 @@
                         <img src="${imageUrl}" 
                              alt="${project.title}"
                              loading="lazy"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%231e3a8a20\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%231e3a8a\' font-family=\'Arial\' font-size=\'24\'%3E${project.title}%3C/text%3E%3C/svg%3E'">
+                             onerror="this.src='/assets/images/photo_1_2025-12-10_09-45-08.jpg'; console.log('Image failed to load:', '${imageUrl}')">
                         <div class="category-badge">
                             ${getCategoryDisplay(project.category)}
                         </div>
@@ -916,8 +928,7 @@
             if (window.self === window.top && !document.hidden) {
                 setInterval(async () => {
                     try {
-                        const apiUrl = window.API_BASE || 'https://madabrand.onrender.com/api';
-                        const response = await fetch(`${apiUrl}/portfolio`, {
+                        const response = await fetch(`${API_BASE}/portfolio`, {
                             headers: { 'Authorization': 'Bearer MADA2024' },
                             cache: 'no-cache'
                         });
@@ -962,7 +973,8 @@
         // Image error handling
         document.addEventListener('error', function(e) {
             if (e.target.tagName === 'IMG') {
-                e.target.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%231e3a8a20\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%231e3a8a\' font-family=\'Arial\' font-size=\'24\'%3EImage%20Not%20Found%3C/text%3E%3C/svg%3E';
+                console.log('Image failed to load, using fallback:', e.target.src);
+                e.target.src = '/assets/images/photo_1_2025-12-10_09-45-08.jpg';
             }
         }, true);
 

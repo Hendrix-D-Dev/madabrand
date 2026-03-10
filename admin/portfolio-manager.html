@@ -2,14 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Portfolio Manager | MadaBrand Admin</title>
     <link href="/dist/output.css" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <!-- Three.js and Vanta.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
     
     <style>
         * {
@@ -19,7 +21,7 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #0f172a;
             overflow-x: hidden;
         }
@@ -31,31 +33,34 @@
             width: 100%;
             height: 100%;
             z-index: 0;
-            opacity: 0.8;
+            opacity: 0.6;
         }
 
+        /* Modern Glass Card Effect */
         .glass-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(30, 58, 138, 0.1);
-            box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
+            border: 1px solid rgba(30, 58, 138, 0.15);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 25px 40px -12px rgba(30, 58, 138, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 30px 60px -12px rgba(30, 58, 138, 0.3);
             border-color: rgba(30, 58, 138, 0.3);
         }
 
+        /* Modern Stat Cards */
         .stat-card {
             background: white;
-            border-radius: 1rem;
+            border-radius: 1.25rem;
             padding: 1.5rem;
-            border: 1px solid #e2e8f0;
+            border: 1px solid rgba(30, 58, 138, 0.1);
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         .stat-card::before {
@@ -79,6 +84,17 @@
             transform: scaleX(1);
         }
 
+        .stat-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        /* Upload Area */
         .upload-area {
             border: 2px dashed #cbd5e1;
             background: #f8fafc;
@@ -88,6 +104,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            border-radius: 1.5rem;
             position: relative;
             overflow: hidden;
         }
@@ -99,9 +116,9 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(30, 58, 138, 0.1), transparent);
+            background: linear-gradient(45deg, transparent, rgba(30, 58, 138, 0.08), transparent);
             transform: rotate(45deg);
-            animation: shine 3s infinite;
+            animation: shine 4s infinite;
         }
 
         @keyframes shine {
@@ -113,16 +130,18 @@
         .upload-area.dragover {
             border-color: #1e3a8a;
             background: #eff6ff;
-            transform: scale(1.02);
+            transform: scale(1.01);
         }
 
+        /* Image Preview Cards */
         .image-preview-card {
             position: relative;
-            border-radius: 0.75rem;
+            border-radius: 1rem;
             overflow: hidden;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
             aspect-ratio: 1;
+            cursor: pointer;
         }
 
         .image-preview-card:hover {
@@ -140,97 +159,222 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
             opacity: 0;
             transition: opacity 0.3s ease;
             display: flex;
             align-items: flex-end;
+            justify-content: space-between;
             padding: 1rem;
+            color: white;
         }
 
-        .modern-input {
+        /* Modern Inputs */
+        .modern-input, .modern-select, .modern-textarea {
             border: 1px solid #e2e8f0;
-            border-radius: 0.75rem;
-            padding: 0.75rem 1rem;
-            transition: all 0.3s ease;
+            border-radius: 0.875rem;
+            padding: 0.875rem 1.25rem;
+            transition: all 0.2s ease;
             font-size: 0.95rem;
             width: 100%;
+            background: white;
         }
 
-        .modern-input:focus {
+        .modern-input:focus, .modern-select:focus, .modern-textarea:focus {
             border-color: #1e3a8a;
-            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+            box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.1);
             outline: none;
         }
 
-        .modern-select {
-            border: 1px solid #e2e8f0;
-            border-radius: 0.75rem;
-            padding: 0.75rem 1rem;
-            background: white;
-            cursor: pointer;
-            font-size: 0.95rem;
-            width: 100%;
+        .modern-textarea {
+            resize: vertical;
+            min-height: 120px;
         }
 
+        /* Project Cards */
         .project-card {
             background: white;
-            border-radius: 1rem;
+            border-radius: 1.25rem;
             overflow: hidden;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border: 1px solid #e2e8f0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(30, 58, 138, 0.1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
         .project-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(30, 58, 138, 0.2);
+            transform: translateY(-6px);
+            box-shadow: 0 25px 30px -12px rgba(30, 58, 138, 0.25);
             border-color: #1e3a8a;
         }
 
+        .project-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .project-card:hover .project-image img {
+            transform: scale(1.1);
+        }
+
+        .project-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.35rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            z-index: 10;
+        }
+
+        /* Main Content Layout */
         .main-content {
             margin-left: 288px;
             padding: 2rem;
             position: relative;
             z-index: 10;
             min-height: 100vh;
+            transition: margin-left 0.3s ease;
         }
 
         @media (max-width: 1024px) {
             .main-content {
                 margin-left: 0;
+                padding: 1rem;
             }
         }
 
+        @media (max-width: 640px) {
+            .main-content {
+                padding: 0.75rem;
+            }
+            
+            .stat-card {
+                padding: 1rem;
+            }
+            
+            .stat-number {
+                font-size: 1.75rem;
+            }
+        }
+
+        /* Progress Bar */
         .progress-bar {
             background: linear-gradient(90deg, #1e3a8a, #3b82f6);
             transition: width 0.3s ease;
+            height: 0.5rem;
+            border-radius: 9999px;
         }
 
+        /* Toast Notifications */
         .toast {
             position: fixed;
             top: 24px;
             right: 24px;
-            padding: 16px 24px;
+            padding: 1rem 1.5rem;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 0.75rem;
             z-index: 9999;
             animation: slideIn 0.3s ease;
             border-left: 4px solid;
+            max-width: 400px;
+            width: calc(100% - 2rem);
         }
 
-        .toast.success { border-color: #10b981; }
-        .toast.error { border-color: #ef4444; }
-        .toast.warning { border-color: #f59e0b; }
-        .toast.info { border-color: #3b82f6; }
+        .toast.success { border-color: #10b981; background: #f0fdf4; }
+        .toast.error { border-color: #ef4444; background: #fef2f2; }
+        .toast.warning { border-color: #f59e0b; background: #fffbeb; }
+        .toast.info { border-color: #3b82f6; background: #eff6ff; }
 
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #1e3a8a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1e3a8a;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2563eb;
+        }
+
+        /* Responsive Grid Adjustments */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 640px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        /* Modal Animation */
+        .modal-enter {
+            transform: scale(0.95);
+            opacity: 0;
+        }
+        
+        .modal-enter-active {
+            transform: scale(1);
+            opacity: 1;
+            transition: all 0.3s ease;
+        }
+
+        .modal-exit {
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        .modal-exit-active {
+            transform: scale(0.95);
+            opacity: 0;
+            transition: all 0.3s ease;
         }
     </style>
 </head>
@@ -239,39 +383,60 @@
     <div id="vanta-bg"></div>
     
     <!-- Admin Layout -->
-    <div class="flex">
+    <div class="flex min-h-screen">
         <!-- Navigation Sidebar -->
-        <div id="nav-container" class="fixed left-0 top-0 h-full z-20"></div>
+        <div id="nav-container" class="fixed left-0 top-0 h-full z-20 w-72 hidden lg:block"></div>
+        
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-toggle" class="lg:hidden fixed top-4 left-4 z-30 bg-white rounded-xl p-3 shadow-lg">
+            <i class="fas fa-bars text-blue-900 text-xl"></i>
+        </button>
+        
+        <!-- Mobile Navigation -->
+        <div id="mobile-nav" class="fixed inset-0 bg-black/50 z-40 hidden" onclick="toggleMobileNav()">
+            <div class="w-64 bg-white h-full overflow-y-auto" onclick="event.stopPropagation()">
+                <div id="mobile-nav-container"></div>
+            </div>
+        </div>
         
         <!-- Main Content -->
-        <main class="main-content flex-1">
+        <main class="main-content flex-1 lg:ml-72">
             <!-- Top Bar -->
-            <div class="glass-card rounded-2xl p-4 mb-8 sticky top-4 z-10">
-                <div class="flex justify-between items-center">
+            <div class="glass-card rounded-2xl p-6 mb-8 sticky top-4 z-10">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
-                        <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent">Portfolio Manager</h1>
-                        <p class="text-gray-600 mt-1">Manage your portfolio projects</p>
+                        <h1 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent">
+                            Portfolio Manager
+                        </h1>
+                        <p class="text-gray-600 mt-1">Manage and organize your portfolio projects</p>
                     </div>
-                    <div class="flex items-center space-x-4">
-                        <button onclick="saveAllChanges()" class="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:scale-105 transition-all duration-300 shadow-lg flex items-center gap-2">
-                            <span>💾</span>
-                            <span>Publish Changes</span>
+                    <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                        <button onclick="saveAllChanges()" class="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:scale-105 transition-all duration-300 shadow-lg flex items-center justify-center gap-2">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Publish All</span>
+                        </button>
+                        <button onclick="refreshData()" class="px-6 py-3 bg-white text-blue-900 rounded-xl hover:bg-blue-50 transition-all duration-300 shadow-lg flex items-center justify-center gap-2 border border-blue-200">
+                            <i class="fas fa-sync-alt"></i>
+                            <span>Refresh</span>
                         </button>
                     </div>
                 </div>
             </div>
 
             <!-- Stats Overview -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
                 <div class="stat-card">
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-sm text-gray-600 mb-1">Total Projects</p>
                             <p class="text-3xl font-bold text-blue-900" id="total-projects">0</p>
                         </div>
-                        <div class="w-12 h-12 bg-gradient-to-br from-blue-900/10 to-blue-100 rounded-xl flex items-center justify-center animate-bounce">
-                            <span class="text-2xl text-blue-900">📁</span>
+                        <div class="stat-icon bg-blue-100 text-blue-900">
+                            <i class="fas fa-folder-open"></i>
                         </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <p class="text-xs text-gray-500">Across all categories</p>
                     </div>
                 </div>
                 
@@ -281,9 +446,12 @@
                             <p class="text-sm text-gray-600 mb-1">Featured</p>
                             <p class="text-3xl font-bold text-blue-900" id="featured-projects">0</p>
                         </div>
-                        <div class="w-12 h-12 bg-gradient-to-br from-yellow-900/10 to-yellow-100 rounded-xl flex items-center justify-center animate-pulse">
-                            <span class="text-2xl text-yellow-600">⭐</span>
+                        <div class="stat-icon bg-yellow-100 text-yellow-600">
+                            <i class="fas fa-star"></i>
                         </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <p class="text-xs text-gray-500">Highlighted projects</p>
                     </div>
                 </div>
                 
@@ -291,11 +459,14 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-sm text-gray-600 mb-1">Categories</p>
-                            <p class="text-3xl font-bold text-blue-900" id="total-categories">3</p>
+                            <p class="text-3xl font-bold text-blue-900" id="total-categories">0</p>
                         </div>
-                        <div class="w-12 h-12 bg-gradient-to-br from-purple-900/10 to-purple-100 rounded-xl flex items-center justify-center animate-spin-slow">
-                            <span class="text-2xl text-purple-600">🏷️</span>
+                        <div class="stat-icon bg-purple-100 text-purple-600">
+                            <i class="fas fa-tags"></i>
                         </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <p class="text-xs text-gray-500">Active categories</p>
                     </div>
                 </div>
                 
@@ -305,142 +476,170 @@
                             <p class="text-sm text-gray-600 mb-1">Last Updated</p>
                             <p class="text-3xl font-bold text-blue-900" id="last-updated">Today</p>
                         </div>
-                        <div class="w-12 h-12 bg-gradient-to-br from-green-900/10 to-green-100 rounded-xl flex items-center justify-center animate-pulse">
-                            <span class="text-2xl text-green-600">🕒</span>
+                        <div class="stat-icon bg-green-100 text-green-600">
+                            <i class="fas fa-clock"></i>
                         </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <p class="text-xs text-gray-500" id="last-updated-time">Just now</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Add New Project Section -->
-            <div class="glass-card rounded-2xl p-8 mb-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                    <span class="w-1 h-6 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
-                    Add New Project
-                </h2>
+            <!-- Add New Project Section (Collapsible) -->
+            <div class="glass-card rounded-2xl mb-8 overflow-hidden">
+                <button onclick="toggleAddSection()" class="w-full px-8 py-5 flex justify-between items-center bg-gradient-to-r from-blue-50 to-white">
+                    <h2 class="text-xl font-bold text-gray-900 flex items-center gap-3">
+                        <span class="w-1 h-8 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
+                        <i class="fas fa-plus-circle text-blue-900"></i>
+                        Add New Project
+                    </h2>
+                    <i class="fas fa-chevron-down text-blue-900 transition-transform duration-300" id="add-section-chevron"></i>
+                </button>
                 
-                <form id="project-form" class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Left Column -->
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Project Title *</label>
-                                <input type="text" id="project-title" class="modern-input" placeholder="e.g., NuelArk Construction Company" required>
+                <div id="add-project-section" class="p-8 border-t border-blue-100">
+                    <form id="project-form" class="space-y-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <!-- Left Column -->
+                            <div class="space-y-5">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        <i class="fas fa-heading text-blue-900 mr-2"></i>Project Title *
+                                    </label>
+                                    <input type="text" id="project-title" class="modern-input" placeholder="e.g., NuelArk Construction Company" required>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        <i class="fas fa-layer-group text-blue-900 mr-2"></i>Category *
+                                    </label>
+                                    <select id="project-category" class="modern-select">
+                                        <option value="branding">🏗️ Brand Identity</option>
+                                        <option value="logo">✨ Logo Design</option>
+                                        <option value="graphic">🎨 Graphic Design</option>
+                                        <option value="web">🌐 Web Design</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        <i class="fas fa-user-tie text-blue-900 mr-2"></i>Client Name
+                                    </label>
+                                    <input type="text" id="project-client" class="modern-input" placeholder="e.g., Nuel Ark">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        <i class="fas fa-building text-blue-900 mr-2"></i>Industry
+                                    </label>
+                                    <input type="text" id="project-industry" class="modern-input" placeholder="e.g., Construction">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        <i class="fas fa-calendar text-blue-900 mr-2"></i>Project Date
+                                    </label>
+                                    <input type="date" id="project-date" class="modern-input">
+                                </div>
                             </div>
                             
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Category *</label>
-                                <select id="project-category" class="modern-select">
-                                    <option value="branding">Brand Identity</option>
-                                    <option value="logo">Logo Design</option>
-                                    <option value="graphic">Graphic Design</option>
-                                </select>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Client Name</label>
-                                <input type="text" id="project-client" class="modern-input" placeholder="e.g., Nuel Ark">
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Industry</label>
-                                <input type="text" id="project-industry" class="modern-input" placeholder="e.g., Construction">
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Project Date</label>
-                                <input type="date" id="project-date" class="modern-input">
+                            <!-- Right Column -->
+                            <div class="space-y-5">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        <i class="fas fa-align-left text-blue-900 mr-2"></i>Description *
+                                    </label>
+                                    <textarea id="project-description" rows="5" class="modern-textarea" placeholder="Describe the project in detail..." required></textarea>
+                                </div>
+                                
+                                <div class="flex items-center space-x-6 p-4 bg-blue-50 rounded-xl">
+                                    <label class="flex items-center cursor-pointer group">
+                                        <input type="checkbox" id="project-featured" class="w-5 h-5 text-blue-900 rounded focus:ring-blue-900">
+                                        <span class="ml-3 text-sm font-medium text-gray-700 group-hover:text-blue-900 transition">
+                                            <i class="fas fa-star text-yellow-500 mr-1"></i>Feature this project
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                         
-                        <!-- Right Column -->
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Description *</label>
-                                <textarea id="project-description" rows="6" class="modern-input" placeholder="Describe the project..." required></textarea>
+                        <!-- Image Upload Area -->
+                        <div class="mt-8">
+                            <label class="block text-sm font-semibold text-gray-700 mb-3">
+                                <i class="fas fa-images text-blue-900 mr-2"></i>Project Images *
+                            </label>
+                            <div class="upload-area rounded-2xl p-8" id="upload-area">
+                                <input type="file" id="file-input" multiple accept="image/*" class="hidden">
+                                <div class="text-center relative z-10">
+                                    <div class="text-6xl text-blue-900 mb-4 animate-bounce">📸</div>
+                                    <p class="text-gray-700 font-medium mb-2">Drag & drop images here or click to browse</p>
+                                    <p class="text-sm text-gray-500 mb-4">Supports: JPG, PNG, GIF, WebP (Max 10MB each)</p>
+                                    <button type="button" onclick="document.getElementById('file-input').click()" class="px-6 py-3 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-xl hover:scale-105 transition-all duration-300 shadow-lg">
+                                        <i class="fas fa-upload mr-2"></i>Choose Files
+                                    </button>
+                                </div>
                             </div>
                             
-                            <div class="flex items-center space-x-6">
-                                <label class="flex items-center cursor-pointer group">
-                                    <input type="checkbox" id="project-featured" class="w-4 h-4 text-blue-900 rounded focus:ring-blue-900">
-                                    <span class="ml-2 text-sm text-gray-700 group-hover:text-blue-900 transition">Featured Project</span>
-                                </label>
+                            <!-- Image Preview Grid -->
+                            <div id="image-preview-grid" class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mt-4">
+                                <!-- Images will appear here -->
                             </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Image Upload Area -->
-                    <div class="mt-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-3">Project Images *</label>
-                        <div class="upload-area rounded-2xl p-8" id="upload-area">
-                            <input type="file" id="file-input" multiple accept="image/*" class="hidden">
-                            <div class="text-center relative z-10">
-                                <div class="text-5xl text-blue-900 mb-4 animate-bounce">📸</div>
-                                <p class="text-gray-700 font-medium mb-2">Drag & drop images here or click to browse</p>
-                                <p class="text-sm text-gray-500 mb-4">Supports: JPG, PNG, GIF, WebP (Max 10MB each)</p>
-                                <button type="button" onclick="document.getElementById('file-input').click()" class="px-6 py-3 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-xl hover:scale-105 transition-all duration-300 shadow-lg">
-                                    Choose Files
-                                </button>
+                            
+                            <!-- Upload Progress -->
+                            <div id="upload-progress" class="hidden mt-4">
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-gray-600 font-medium">Uploading...</span>
+                                    <span id="upload-percent" class="font-semibold text-blue-900">0%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div id="upload-bar" class="progress-bar" style="width: 0%"></div>
+                                </div>
                             </div>
                         </div>
                         
-                        <!-- Image Preview Grid -->
-                        <div id="image-preview-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mt-4">
-                            <!-- Images will appear here -->
+                        <!-- Form Actions -->
+                        <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200">
+                            <button type="button" onclick="resetForm()" class="px-6 py-3 border-2 border-gray-300 rounded-xl hover:bg-gray-50 transition-all hover:scale-105 font-medium">
+                                <i class="fas fa-times mr-2"></i>Cancel
+                            </button>
+                            <button type="submit" class="px-8 py-3 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-xl hover:scale-105 transition-all duration-300 shadow-lg font-medium">
+                                <i class="fas fa-cloud-upload-alt mr-2"></i>Publish Project
+                            </button>
                         </div>
-                        
-                        <!-- Upload Progress -->
-                        <div id="upload-progress" class="hidden mt-4">
-                            <div class="flex justify-between text-sm mb-2">
-                                <span class="text-gray-600">Uploading...</span>
-                                <span id="upload-percent" class="font-semibold text-blue-900">0%</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div id="upload-bar" class="progress-bar h-2 rounded-full" style="width: 0%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex justify-end space-x-4 pt-4">
-                        <button type="button" onclick="resetForm()" class="px-6 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all hover:scale-105">
-                            Cancel
-                        </button>
-                        <button type="submit" class="px-8 py-3 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-xl hover:scale-105 transition-all duration-300 shadow-lg font-medium">
-                            Publish Project
-                        </button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
 
             <!-- Existing Projects -->
-            <div class="glass-card rounded-2xl p-8">
-                <div class="flex justify-between items-center mb-6">
+            <div class="glass-card rounded-2xl p-6 md:p-8">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                     <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
-                        <span class="w-1 h-6 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
+                        <span class="w-1 h-8 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
+                        <i class="fas fa-th-large text-blue-900"></i>
                         Existing Projects
                     </h2>
-                    <div class="flex space-x-3">
-                        <div class="relative">
-                            <input type="text" id="search-projects" placeholder="Search projects..." class="pl-10 pr-4 py-2 border border-gray-200 rounded-xl text-sm w-64 focus:ring-2 focus:ring-blue-900">
-                            <svg class="w-4 h-4 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
+                    <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                        <div class="relative flex-1 sm:flex-none">
+                            <input type="text" id="search-projects" placeholder="Search projects..." 
+                                   class="pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm w-full sm:w-64 focus:ring-2 focus:ring-blue-900">
+                            <i class="fas fa-search text-gray-400 absolute left-3 top-3.5"></i>
                         </div>
-                        <select id="filter-category" class="px-4 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-900">
+                        <select id="filter-category" class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-900 bg-white">
                             <option value="all">All Categories</option>
                             <option value="branding">Brand Identity</option>
                             <option value="logo">Logo Design</option>
                             <option value="graphic">Graphic Design</option>
+                            <option value="web">Web Design</option>
                         </select>
                     </div>
                 </div>
                 
                 <!-- Projects Grid -->
-                <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div id="projects-grid" class="projects-grid">
                     <!-- Projects will be loaded here -->
-                    <div class="col-span-full text-center py-12">
-                        <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-900 border-t-transparent"></div>
-                        <p class="text-gray-500 mt-2">Loading projects...</p>
+                    <div class="col-span-full text-center py-16">
+                        <div class="loading-spinner mx-auto mb-4"></div>
+                        <p class="text-gray-500 text-lg">Loading your portfolio...</p>
                     </div>
                 </div>
             </div>
@@ -449,19 +648,31 @@
 
     <!-- Edit Project Modal -->
     <div id="edit-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto transform scale-95 transition-all duration-300" id="edit-modal-content">
-            <div class="sticky top-0 bg-gradient-to-r from-blue-900 to-blue-800 text-white px-6 py-4 flex justify-between items-center">
-                <h3 class="text-xl font-bold">Edit Project</h3>
-                <button onclick="closeEditModal()" class="text-white/80 hover:text-white text-2xl transition-transform hover:scale-110">×</button>
+        <div class="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95" id="edit-modal-content">
+            <div class="sticky top-0 bg-gradient-to-r from-blue-900 to-blue-800 text-white px-6 py-5 flex justify-between items-center">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                    <i class="fas fa-edit"></i>
+                    Edit Project
+                </h3>
+                <button onclick="closeEditModal()" class="text-white/80 hover:text-white text-2xl transition-transform hover:scale-110">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <div class="p-6" id="edit-modal-form">
-                <!-- Edit form will be injected here -->
-            </div>
+            <div class="p-6" id="edit-modal-form"></div>
         </div>
     </div>
 
+    <!-- Image Preview Modal -->
+    <div id="image-preview-modal" class="hidden fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4">
+        <button onclick="closeImagePreview()" class="absolute top-4 right-4 text-white text-3xl hover:scale-110 transition">
+            <i class="fas fa-times"></i>
+        </button>
+        <img id="preview-image" src="" alt="Preview" class="max-w-full max-h-[90vh] object-contain rounded-lg">
+    </div>
+
     <script>
-        const API_BASE = '/api';
+        // Configuration
+        const API_BASE = 'https://madabrand.onrender.com/api';
         let projects = [];
         let uploadedImages = [];
         
@@ -470,73 +681,196 @@
             window.location.href = '/admin/login.html';
         }
 
+        // Initialize Vanta
+        VANTA.NET({
+            el: "#vanta-bg",
+            color: 0x1e3a8a,
+            backgroundColor: 0x0f172a,
+            points: 12,
+            maxDistance: 20,
+            spacing: 15
+        });
+
         // Load navigation
-        fetch('/admin/components/nav.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('nav-container').innerHTML = data;
-                
-                // Initialize Vanta
-                VANTA.WAVES({
-                    el: "#vanta-bg",
-                    color: 0x1e3a8a,
-                    waveHeight: 20,
-                    shininess: 30,
-                    waveSpeed: 1,
-                    zoom: 0.8
-                });
-            });
-        
+        Promise.all([
+            fetch('/admin/components/nav.html').then(r => r.text()),
+            fetch('/admin/components/nav.html').then(r => r.text())
+        ]).then(([desktopNav, mobileNav]) => {
+            document.getElementById('nav-container').innerHTML = desktopNav;
+            document.getElementById('mobile-nav-container').innerHTML = mobileNav;
+        });
+
+        // Mobile menu toggle
+        function toggleMobileNav() {
+            const nav = document.getElementById('mobile-nav');
+            nav.classList.toggle('hidden');
+        }
+
+        document.getElementById('mobile-menu-toggle')?.addEventListener('click', toggleMobileNav);
+
+        // Toggle add section
+        function toggleAddSection() {
+            const section = document.getElementById('add-project-section');
+            const chevron = document.getElementById('add-section-chevron');
+            section.classList.toggle('hidden');
+            chevron.style.transform = section.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+
         // Load existing projects
         async function loadProjects() {
+            showLoading(true);
+            
             try {
                 const response = await fetch(`${API_BASE}/portfolio`, {
                     headers: { 'Authorization': 'Bearer MADA2024' }
                 });
-                const data = await response.json();
-                projects = data.projects || [];
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    projects = data.projects || data || [];
+                } else {
+                    console.warn('API returned:', response.status);
+                    // Fallback to localStorage
+                    const localData = localStorage.getItem('madabrandPortfolio');
+                    projects = localData ? JSON.parse(localData) : getDefaultPortfolio();
+                }
             } catch (error) {
                 console.error('Error loading projects:', error);
-                // Fallback to sample data
-                projects = [
-                    {
-                        id: 1,
-                        title: "NuelArk Construction",
-                        category: "branding",
-                        client: "Nuel Ark",
-                        industry: "Construction",
-                        description: "Complete brand identity system for a premium construction company.",
-                        images: ["/assets/images/photo_1_2025-12-10_09-45-08.jpg"],
-                        featured: true,
-                        date: "2025-02-14"
-                    },
-                    {
-                        id: 2,
-                        title: "Havenbridge Development",
-                        category: "branding",
-                        client: "Haven Bridge",
-                        industry: "Real Estate",
-                        description: "Premium brand identity for a real-estate development company.",
-                        images: ["/assets/images/photo_3_2025-12-10_09-45-08.jpg"],
-                        featured: true,
-                        date: "2025-02-13"
-                    },
-                    {
-                        id: 3,
-                        title: "ADIVAS Eco-Brand",
-                        category: "branding",
-                        client: "Adi Vas",
-                        industry: "Sustainability",
-                        description: "Nature-inspired brand identity for sustainable living products.",
-                        images: ["/assets/images/photo_5_2025-12-10_09-49-24.jpg"],
-                        featured: true,
-                        date: "2025-02-12"
-                    }
-                ];
+                projects = getDefaultPortfolio();
             }
             
             renderProjects();
             updateStats();
+            showLoading(false);
+        }
+
+        // Default portfolio data
+        function getDefaultPortfolio() {
+            return [
+                {
+                    id: 1,
+                    title: "NuelArk Construction",
+                    category: "branding",
+                    client: "Nuel Ark",
+                    industry: "Construction",
+                    description: "Complete brand identity system for a premium construction company.",
+                    images: ["/assets/images/photo_1_2025-12-10_09-45-08.jpg"],
+                    featured: true,
+                    date: "2025-02-14"
+                },
+                {
+                    id: 2,
+                    title: "Havenbridge Development",
+                    category: "branding",
+                    client: "Haven Bridge",
+                    industry: "Real Estate",
+                    description: "Premium brand identity for a real-estate development company.",
+                    images: ["/assets/images/photo_3_2025-12-10_09-45-08.jpg"],
+                    featured: true,
+                    date: "2025-02-13"
+                },
+                {
+                    id: 3,
+                    title: "ADIVAS Eco-Brand",
+                    category: "branding",
+                    client: "Adi Vas",
+                    industry: "Sustainability",
+                    description: "Nature-inspired brand identity for sustainable living products.",
+                    images: ["/assets/images/photo_5_2025-12-10_09-49-24.jpg"],
+                    featured: true,
+                    date: "2025-02-12"
+                },
+                {
+                    id: 4,
+                    title: "Logo Collection",
+                    category: "logo",
+                    client: "Various",
+                    industry: "Design",
+                    description: "Collection of custom logo designs for diverse businesses.",
+                    images: ["/assets/images/photo_2_2025-12-10_09-45-08.jpg"],
+                    featured: false,
+                    date: "2025-02-11"
+                },
+                {
+                    id: 5,
+                    title: "Brand Guidelines",
+                    category: "graphic",
+                    client: "Multiple Brands",
+                    industry: "Design",
+                    description: "Comprehensive brand guidelines and style guides.",
+                    images: ["/assets/images/photo_4_2025-12-10_09-45-08.jpg"],
+                    featured: false,
+                    date: "2025-02-10"
+                },
+                {
+                    id: 6,
+                    title: "Social Media Graphics",
+                    category: "graphic",
+                    client: "Various",
+                    industry: "Digital",
+                    description: "Engaging social media visuals and templates.",
+                    images: ["/assets/images/photo_6_2025-12-10_09-49-24.jpg"],
+                    featured: false,
+                    date: "2025-02-09"
+                },
+                {
+                    id: 7,
+                    title: "Print Design Portfolio",
+                    category: "graphic",
+                    client: "Various",
+                    industry: "Print",
+                    description: "Business cards, brochures, and stationery design.",
+                    images: ["/assets/images/photo_7_2025-12-10_09-49-24.jpg"],
+                    featured: false,
+                    date: "2025-02-08"
+                },
+                {
+                    id: 8,
+                    title: "Web Design Projects",
+                    category: "web",
+                    client: "Various",
+                    industry: "Digital",
+                    description: "Modern website designs and UI/UX projects.",
+                    images: ["/assets/images/photo_8_2025-12-10_09-49-24.jpg"],
+                    featured: false,
+                    date: "2025-02-07"
+                },
+                {
+                    id: 9,
+                    title: "Packaging Design",
+                    category: "graphic",
+                    client: "Various",
+                    industry: "Product",
+                    description: "Creative packaging solutions for products.",
+                    images: ["/assets/images/photo_9_2025-12-10_09-49-24.jpg"],
+                    featured: false,
+                    date: "2025-02-06"
+                },
+                {
+                    id: 10,
+                    title: "Brand Identity",
+                    category: "branding",
+                    client: "Tech Startup",
+                    industry: "Technology",
+                    description: "Complete rebrand for a Lagos tech company.",
+                    images: ["/assets/images/photo_10_2025-12-10_09-49-24.jpg"],
+                    featured: false,
+                    date: "2025-02-05"
+                }
+            ];
+        }
+
+        // Show/hide loading state
+        function showLoading(show) {
+            const grid = document.getElementById('projects-grid');
+            if (show) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-16">
+                        <div class="loading-spinner mx-auto mb-4"></div>
+                        <p class="text-gray-500 text-lg">Loading your portfolio...</p>
+                    </div>
+                `;
+            }
         }
 
         // Render projects grid
@@ -546,49 +880,92 @@
             const categoryFilter = document.getElementById('filter-category')?.value || 'all';
             
             const filtered = projects.filter(p => {
-                const matchesSearch = p.title?.toLowerCase().includes(searchTerm);
+                const matchesSearch = p.title?.toLowerCase().includes(searchTerm) || 
+                                     p.client?.toLowerCase().includes(searchTerm) ||
+                                     p.industry?.toLowerCase().includes(searchTerm);
                 const matchesCategory = categoryFilter === 'all' || p.category === categoryFilter;
                 return matchesSearch && matchesCategory;
             });
             
             if (filtered.length === 0) {
                 grid.innerHTML = `
-                    <div class="col-span-full text-center py-12">
-                        <div class="text-6xl mb-4 animate-bounce">🔍</div>
-                        <p class="text-gray-500 text-lg">No projects found</p>
-                        <p class="text-gray-400 mt-2">Try adjusting your search or add a new project</p>
+                    <div class="col-span-full text-center py-16">
+                        <div class="text-7xl mb-6 opacity-30">🔍</div>
+                        <p class="text-gray-600 text-xl font-medium mb-2">No projects found</p>
+                        <p class="text-gray-500">Try adjusting your search or add a new project</p>
                     </div>
                 `;
                 return;
             }
             
-            grid.innerHTML = filtered.map(project => `
+            grid.innerHTML = filtered.map(project => {
+                // Handle image path
+                let imageUrl = project.images?.[0] || '/assets/images/placeholder.jpg';
+                if (imageUrl.includes('/uploads/')) {
+                    const filename = imageUrl.split('/').pop();
+                    imageUrl = `/assets/images/${filename}`;
+                }
+                
+                return `
                 <div class="project-card group">
-                    <div class="relative h-48 overflow-hidden">
-                        <img src="${project.images?.[0] || '/assets/images/placeholder.jpg'}" 
+                    <div class="project-image relative">
+                        <img src="${imageUrl}" 
                              alt="${project.title}"
-                             class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                        ${project.featured ? '<span class="absolute top-3 right-3 bg-gradient-to-r from-yellow-500 to-amber-500 text-white text-xs px-2 py-1 rounded-full shadow-lg animate-pulse">⭐ Featured</span>' : ''}
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
+                             loading="lazy"
+                             onclick="previewImage('${imageUrl}')"
+                             onerror="this.src='/assets/images/placeholder.jpg'">
+                        ${project.featured ? 
+                            '<div class="project-badge bg-gradient-to-r from-yellow-500 to-amber-500 text-white"><i class="fas fa-star mr-1"></i>Featured</div>' : 
+                            ''}
                     </div>
-                    <div class="p-6">
+                    <div class="p-5 flex-1 flex flex-col">
                         <div class="flex justify-between items-start mb-2">
-                            <h3 class="font-bold text-lg text-gray-900">${project.title}</h3>
-                            <span class="text-xs px-2 py-1 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 rounded-full">${project.category}</span>
+                            <h3 class="font-bold text-lg text-gray-900 line-clamp-1">${project.title}</h3>
+                            <span class="text-xs px-3 py-1 bg-blue-50 text-blue-700 rounded-full font-medium whitespace-nowrap ml-2">
+                                ${getCategoryIcon(project.category)} ${project.category}
+                            </span>
                         </div>
-                        <p class="text-sm text-gray-600 mb-3 line-clamp-2">${project.description}</p>
-                        <p class="text-xs text-gray-500 mb-4">${project.client || 'Client'} • ${project.industry || 'Industry'}</p>
-                        <div class="flex gap-2">
-                            <button onclick="editProject('${project.id}')" class="flex-1 px-3 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-900 rounded-lg hover:from-blue-100 hover:to-indigo-100 transition-all hover:scale-105 text-sm font-medium">
-                                Edit
+                        <p class="text-sm text-gray-600 mb-3 line-clamp-2 flex-1">${project.description}</p>
+                        <div class="flex items-center gap-2 text-xs text-gray-500 mb-4">
+                            <i class="fas fa-user-tie"></i>
+                            <span>${project.client || 'Client'}</span>
+                            <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
+                            <i class="fas fa-building"></i>
+                            <span>${project.industry || 'Industry'}</span>
+                        </div>
+                        <div class="flex gap-2 mt-auto">
+                            <button onclick="editProject('${project.id}')" class="flex-1 px-3 py-2.5 bg-blue-50 text-blue-900 rounded-xl hover:bg-blue-100 transition-all hover:scale-105 text-sm font-medium flex items-center justify-center gap-2">
+                                <i class="fas fa-edit"></i>
+                                <span>Edit</span>
                             </button>
-                            <button onclick="deleteProject('${project.id}')" class="flex-1 px-3 py-2 bg-gradient-to-r from-red-50 to-rose-50 text-red-600 rounded-lg hover:from-red-100 hover:to-rose-100 transition-all hover:scale-105 text-sm font-medium">
-                                Delete
+                            <button onclick="deleteProject('${project.id}')" class="flex-1 px-3 py-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all hover:scale-105 text-sm font-medium flex items-center justify-center gap-2">
+                                <i class="fas fa-trash-alt"></i>
+                                <span>Delete</span>
                             </button>
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
+        }
+
+        function getCategoryIcon(category) {
+            const icons = {
+                'branding': '🏗️',
+                'logo': '✨',
+                'graphic': '🎨',
+                'web': '🌐'
+            };
+            return icons[category] || '📁';
+        }
+
+        // Image preview function
+        function previewImage(src) {
+            document.getElementById('preview-image').src = src;
+            document.getElementById('image-preview-modal').classList.remove('hidden');
+        }
+
+        function closeImagePreview() {
+            document.getElementById('image-preview-modal').classList.add('hidden');
         }
 
         // Handle image upload
@@ -638,7 +1015,9 @@
                 const reader = new FileReader();
                 
                 reader.onload = function(e) {
+                    const imageId = 'img-' + Date.now() + '-' + index;
                     uploadedImages.push({
+                        id: imageId,
                         file: file,
                         preview: e.target.result,
                         name: file.name
@@ -647,14 +1026,15 @@
                     // Add preview
                     const previewDiv = document.createElement('div');
                     previewDiv.className = 'image-preview-card';
+                    previewDiv.id = imageId;
                     previewDiv.innerHTML = `
                         <img src="${e.target.result}" class="w-full h-full object-cover">
                         <div class="image-overlay">
-                            <span class="text-white text-sm truncate">${file.name}</span>
+                            <span class="text-sm truncate flex-1">${file.name}</span>
+                            <button onclick="removeImage('${imageId}')" class="bg-red-500 hover:bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center">
+                                <i class="fas fa-times"></i>
+                            </button>
                         </div>
-                        <button onclick="removeImage('${file.name}')" class="absolute top-2 right-2 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm hover:bg-red-600 transition-all hover:scale-110 opacity-0 group-hover:opacity-100">
-                            ×
-                        </button>
                     `;
                     previewGrid.appendChild(previewDiv);
                     
@@ -677,25 +1057,10 @@
             });
         }
 
-        function removeImage(fileName) {
-            uploadedImages = uploadedImages.filter(img => img.name !== fileName);
-            renderImagePreviews();
+        function removeImage(imageId) {
+            uploadedImages = uploadedImages.filter(img => img.id !== imageId);
+            document.getElementById(imageId)?.remove();
             showToast('Image removed', 'info');
-        }
-
-        function renderImagePreviews() {
-            const previewGrid = document.getElementById('image-preview-grid');
-            previewGrid.innerHTML = uploadedImages.map(img => `
-                <div class="image-preview-card">
-                    <img src="${img.preview}" class="w-full h-full object-cover">
-                    <div class="image-overlay">
-                        <span class="text-white text-sm truncate">${img.name}</span>
-                    </div>
-                    <button onclick="removeImage('${img.name}')" class="absolute top-2 right-2 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm hover:bg-red-600 transition-all hover:scale-110">
-                        ×
-                    </button>
-                </div>
-            `).join('');
         }
 
         // Form submission
@@ -703,7 +1068,7 @@
             e.preventDefault();
             
             const newProject = {
-                id: Date.now().toString(),
+                id: Date.now(),
                 title: document.getElementById('project-title').value,
                 category: document.getElementById('project-category').value,
                 client: document.getElementById('project-client').value,
@@ -715,7 +1080,6 @@
             };
             
             try {
-                // Save to API
                 const response = await fetch(`${API_BASE}/portfolio`, {
                     method: 'POST',
                     headers: {
@@ -726,22 +1090,16 @@
                 });
                 
                 if (response.ok) {
-                    // Trigger rebuild
-                    await fetch(`${API_BASE}/rebuild`, {
-                        method: 'POST',
-                        headers: { 'Authorization': 'Bearer MADA2024' }
-                    });
-                    
                     projects.push(newProject);
+                    localStorage.setItem('madabrandPortfolio', JSON.stringify(projects));
                     showToast('Project published successfully!', 'success');
                 } else {
                     throw new Error('API Error');
                 }
             } catch (error) {
-                // Fallback to localStorage
                 projects.push(newProject);
                 localStorage.setItem('madabrandPortfolio', JSON.stringify(projects));
-                showToast('Project saved locally only', 'warning');
+                showToast('Project saved locally', 'warning');
             }
             
             resetForm();
@@ -754,44 +1112,55 @@
             const project = projects.find(p => p.id == id);
             if (!project) return;
             
-            // Populate edit modal
             const modalForm = document.getElementById('edit-modal-form');
             modalForm.innerHTML = `
-                <form id="edit-project-form" class="space-y-4">
+                <form id="edit-project-form" class="space-y-5">
                     <input type="hidden" id="edit-project-id" value="${project.id}">
                     
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Project Title *</label>
-                        <input type="text" id="edit-project-title" class="modern-input" value="${project.title}" required>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-heading text-blue-900 mr-2"></i>Project Title *
+                        </label>
+                        <input type="text" id="edit-project-title" class="modern-input" value="${escapeHtml(project.title)}" required>
                     </div>
                     
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Category *</label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-layer-group text-blue-900 mr-2"></i>Category *
+                            </label>
                             <select id="edit-project-category" class="modern-select">
-                                <option value="branding" ${project.category === 'branding' ? 'selected' : ''}>Brand Identity</option>
-                                <option value="logo" ${project.category === 'logo' ? 'selected' : ''}>Logo Design</option>
-                                <option value="graphic" ${project.category === 'graphic' ? 'selected' : ''}>Graphic Design</option>
+                                <option value="branding" ${project.category === 'branding' ? 'selected' : ''}>🏗️ Brand Identity</option>
+                                <option value="logo" ${project.category === 'logo' ? 'selected' : ''}>✨ Logo Design</option>
+                                <option value="graphic" ${project.category === 'graphic' ? 'selected' : ''}>🎨 Graphic Design</option>
+                                <option value="web" ${project.category === 'web' ? 'selected' : ''}>🌐 Web Design</option>
                             </select>
                         </div>
                         
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Featured</label>
-                            <label class="flex items-center">
-                                <input type="checkbox" id="edit-project-featured" class="w-4 h-4 text-blue-900 rounded" ${project.featured ? 'checked' : ''}>
-                                <span class="ml-2 text-sm text-gray-700">Feature this project</span>
+                        <div class="flex items-center justify-center h-full pt-6">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" id="edit-project-featured" class="w-5 h-5 text-blue-900 rounded" ${project.featured ? 'checked' : ''}>
+                                <span class="ml-2 text-sm text-gray-700">
+                                    <i class="fas fa-star text-yellow-500 mr-1"></i>Featured
+                                </span>
                             </label>
                         </div>
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Description *</label>
-                        <textarea id="edit-project-description" rows="4" class="modern-input" required>${project.description}</textarea>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-align-left text-blue-900 mr-2"></i>Description *
+                        </label>
+                        <textarea id="edit-project-description" rows="4" class="modern-textarea" required>${escapeHtml(project.description)}</textarea>
                     </div>
                     
-                    <div class="flex justify-end space-x-3 pt-4">
-                        <button type="button" onclick="closeEditModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">Cancel</button>
-                        <button type="submit" class="px-4 py-2 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-lg hover:scale-105 transition-all">Update Project</button>
+                    <div class="flex justify-end gap-3 pt-4 border-t">
+                        <button type="button" onclick="closeEditModal()" class="px-5 py-2.5 border-2 border-gray-300 rounded-xl hover:bg-gray-50 transition font-medium">
+                            Cancel
+                        </button>
+                        <button type="submit" class="px-5 py-2.5 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-xl hover:scale-105 transition-all font-medium">
+                            <i class="fas fa-save mr-2"></i>Update Project
+                        </button>
                     </div>
                 </form>
             `;
@@ -826,29 +1195,31 @@
                     });
                     
                     if (response.ok) {
-                        await fetch(`${API_BASE}/rebuild`, {
-                            method: 'POST',
-                            headers: { 'Authorization': 'Bearer MADA2024' }
-                        });
-                        
                         const index = projects.findIndex(p => p.id == id);
                         projects[index] = updatedProject;
+                        localStorage.setItem('madabrandPortfolio', JSON.stringify(projects));
                         showToast('Project updated successfully!', 'success');
                     } else {
                         throw new Error('API Error');
                     }
                 } catch (error) {
-                    // Fallback
                     const index = projects.findIndex(p => p.id == id);
                     projects[index] = updatedProject;
                     localStorage.setItem('madabrandPortfolio', JSON.stringify(projects));
-                    showToast('Updated locally only', 'warning');
+                    showToast('Updated locally', 'warning');
                 }
                 
                 closeEditModal();
                 renderProjects();
                 updateStats();
             });
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         // Close edit modal
@@ -862,7 +1233,7 @@
 
         // Delete project
         async function deleteProject(id) {
-            if (confirm('Delete this project? This action cannot be undone.')) {
+            if (confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
                 try {
                     const response = await fetch(`${API_BASE}/portfolio?id=${id}`, {
                         method: 'DELETE',
@@ -870,21 +1241,16 @@
                     });
                     
                     if (response.ok) {
-                        await fetch(`${API_BASE}/rebuild`, {
-                            method: 'POST',
-                            headers: { 'Authorization': 'Bearer MADA2024' }
-                        });
-                        
                         projects = projects.filter(p => p.id != id);
+                        localStorage.setItem('madabrandPortfolio', JSON.stringify(projects));
                         showToast('Project deleted successfully!', 'success');
                     } else {
                         throw new Error('API Error');
                     }
                 } catch (error) {
-                    // Fallback
                     projects = projects.filter(p => p.id != id);
                     localStorage.setItem('madabrandPortfolio', JSON.stringify(projects));
-                    showToast('Deleted locally only', 'warning');
+                    showToast('Deleted locally', 'warning');
                 }
                 
                 renderProjects();
@@ -892,26 +1258,24 @@
             }
         }
 
-        // Save all changes to API
+        // Save all changes
         async function saveAllChanges() {
-            showToast('Publishing changes to live site...', 'info');
+            showToast('Publishing changes...', 'info');
             
             try {
+                // Save all projects to API
                 for (const project of projects) {
-                    await fetch(`${API_BASE}/portfolio`, {
-                        method: project.id ? 'PUT' : 'POST',
-                        headers: {
-                            'Authorization': 'Bearer MADA2024',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(project)
-                    });
+                    if (!project._synced) {
+                        await fetch(`${API_BASE}/portfolio`, {
+                            method: project.id ? 'PUT' : 'POST',
+                            headers: {
+                                'Authorization': 'Bearer MADA2024',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(project)
+                        });
+                    }
                 }
-                
-                await fetch(`${API_BASE}/rebuild`, {
-                    method: 'POST',
-                    headers: { 'Authorization': 'Bearer MADA2024' }
-                });
                 
                 showToast('✅ All changes published!', 'success');
             } catch (error) {
@@ -920,21 +1284,42 @@
             }
         }
 
+        // Refresh data
+        async function refreshData() {
+            await loadProjects();
+            showToast('Data refreshed', 'success');
+        }
+
         // Update stats
         function updateStats() {
             document.getElementById('total-projects').textContent = projects.length;
             document.getElementById('featured-projects').textContent = projects.filter(p => p.featured).length;
-            document.getElementById('last-updated').textContent = new Date().toLocaleDateString();
+            
+            const categories = new Set(projects.map(p => p.category));
+            document.getElementById('total-categories').textContent = categories.size;
+            
+            const now = new Date();
+            document.getElementById('last-updated').textContent = now.toLocaleDateString();
+            document.getElementById('last-updated-time').textContent = `Updated ${now.toLocaleTimeString()}`;
         }
 
         // Show toast notification
         function showToast(message, type = 'info') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
+            
+            const icons = {
+                success: 'check-circle',
+                error: 'exclamation-circle',
+                warning: 'exclamation-triangle',
+                info: 'info-circle'
+            };
+            
             toast.innerHTML = `
-                <span class="text-xl">${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}</span>
-                <span class="font-medium">${message}</span>
+                <i class="fas fa-${icons[type] || 'info-circle'} text-xl"></i>
+                <span class="font-medium flex-1">${message}</span>
             `;
+            
             document.body.appendChild(toast);
             
             setTimeout(() => {
@@ -952,7 +1337,7 @@
             document.getElementById('project-date').value = new Date().toISOString().split('T')[0];
         }
 
-        // Search functionality
+        // Search and filter
         document.getElementById('search-projects')?.addEventListener('input', renderProjects);
         document.getElementById('filter-category')?.addEventListener('change', renderProjects);
 
