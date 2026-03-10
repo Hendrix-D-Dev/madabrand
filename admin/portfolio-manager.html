@@ -14,6 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
     
     <style>
+        /* Keep all your existing styles - they're perfect */
         * {
             margin: 0;
             padding: 0;
@@ -376,6 +377,25 @@
             opacity: 0;
             transition: all 0.3s ease;
         }
+
+        /* Debug Panel */
+        .debug-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 10000;
+            font-size: 12px;
+            max-width: 300px;
+            display: none;
+        }
+        
+        .debug-panel.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -411,6 +431,10 @@
                         <p class="text-gray-600 mt-1">Manage and organize your portfolio projects</p>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                        <button onclick="testAPIConnection()" class="px-4 py-2 bg-blue-100 text-blue-900 rounded-xl hover:bg-blue-200 transition-all text-sm flex items-center gap-2">
+                            <i class="fas fa-plug"></i>
+                            <span>Test API</span>
+                        </button>
                         <button onclick="saveAllChanges()" class="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:scale-105 transition-all duration-300 shadow-lg flex items-center justify-center gap-2">
                             <i class="fas fa-cloud-upload-alt"></i>
                             <span>Publish All</span>
@@ -484,6 +508,11 @@
                         <p class="text-xs text-gray-500" id="last-updated-time">Just now</p>
                     </div>
                 </div>
+            </div>
+
+            <!-- API Status Bar -->
+            <div id="api-status" class="mb-4 px-4 py-2 rounded-lg text-sm hidden">
+                <!-- Will be populated by JavaScript -->
             </div>
 
             <!-- Add New Project Section (Collapsible) -->
@@ -670,6 +699,15 @@
         <img id="preview-image" src="" alt="Preview" class="max-w-full max-h-[90vh] object-contain rounded-lg">
     </div>
 
+    <!-- Debug Panel -->
+    <div id="debug-panel" class="debug-panel">
+        <div class="font-bold mb-2 flex justify-between">
+            <span>🔍 Debug Info</span>
+            <button onclick="document.getElementById('debug-panel').classList.remove('show')">✕</button>
+        </div>
+        <div id="debug-content" class="text-xs"></div>
+    </div>
+
     <script>
         // FIXED: Correct API URL (matches your Render instance)
         const API_BASE = 'https://madabrand.onrender.com/api';
@@ -723,6 +761,50 @@
             chevron.style.transform = section.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
         }
 
+        // Test API connection
+        async function testAPIConnection() {
+            const statusDiv = document.getElementById('api-status');
+            statusDiv.classList.remove('hidden');
+            statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Testing connection...';
+            statusDiv.className = 'mb-4 px-4 py-2 rounded-lg text-sm bg-blue-100 text-blue-800';
+            
+            try {
+                // Test health endpoint
+                const healthResponse = await fetch(`${API_BASE}/health`);
+                const healthData = await healthResponse.json();
+                
+                // Test portfolio endpoint with auth
+                const portfolioResponse = await fetch(`${API_BASE}/portfolio`, {
+                    headers: { 'Authorization': 'Bearer MADA2024' }
+                });
+                
+                if (portfolioResponse.ok) {
+                    const portfolioData = await portfolioResponse.json();
+                    const projectCount = portfolioData.projects?.length || 0;
+                    statusDiv.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-check-circle text-green-600"></i>
+                            <span class="font-medium">API Connected!</span>
+                            <span class="text-xs bg-white px-2 py-1 rounded-full">${projectCount} projects</span>
+                        </div>
+                        <div class="text-xs mt-1 opacity-75">Server uptime: ${Math.floor(healthData.uptime / 60)} minutes</div>
+                    `;
+                    statusDiv.className = 'mb-4 px-4 py-2 rounded-lg text-sm bg-green-100 text-green-800';
+                } else {
+                    throw new Error('Portfolio endpoint failed');
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-exclamation-triangle text-red-600"></i>
+                        <span class="font-medium">Connection failed</span>
+                    </div>
+                    <div class="text-xs mt-1">${error.message}</div>
+                `;
+                statusDiv.className = 'mb-4 px-4 py-2 rounded-lg text-sm bg-red-100 text-red-800';
+            }
+        }
+
         // Load existing projects
         async function loadProjects() {
             showLoading(true);
@@ -738,20 +820,38 @@
                     console.log('✅ API Response:', data);
                     projects = data.projects || data || [];
                     
-                    // If API returns empty array, use default data
-                    if (projects.length === 0) {
-                        console.log('📦 Using default portfolio data');
-                        projects = getDefaultPortfolio();
-                    }
+                    // Show success message
+                    testAPIConnection();
                 } else {
                     console.warn('⚠️ API returned:', response.status);
+                    const errorText = await response.text();
+                    console.error('Error details:', errorText);
+                    
                     // Fallback to localStorage
                     const localData = localStorage.getItem('madabrandPortfolio');
                     projects = localData ? JSON.parse(localData) : getDefaultPortfolio();
+                    
+                    document.getElementById('api-status').innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-exclamation-triangle text-yellow-600"></i>
+                            <span class="font-medium">Using local data (API returned ${response.status})</span>
+                        </div>
+                    `;
+                    document.getElementById('api-status').className = 'mb-4 px-4 py-2 rounded-lg text-sm bg-yellow-100 text-yellow-800';
+                    document.getElementById('api-status').classList.remove('hidden');
                 }
             } catch (error) {
                 console.error('❌ Error loading projects:', error);
                 projects = getDefaultPortfolio();
+                
+                document.getElementById('api-status').innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-exclamation-triangle text-red-600"></i>
+                        <span class="font-medium">Connection error: ${error.message}</span>
+                    </div>
+                `;
+                document.getElementById('api-status').className = 'mb-4 px-4 py-2 rounded-lg text-sm bg-red-100 text-red-800';
+                document.getElementById('api-status').classList.remove('hidden');
             }
             
             renderProjects();
@@ -759,7 +859,7 @@
             showLoading(false);
         }
 
-        // Default portfolio data
+        // Default portfolio data (only used as fallback)
         function getDefaultPortfolio() {
             return [
                 {
@@ -816,61 +916,6 @@
                     images: ["/assets/images/photo_4_2025-12-10_09-45-08.jpg"],
                     featured: false,
                     date: "2025-02-10"
-                },
-                {
-                    id: 6,
-                    title: "Social Media Graphics",
-                    category: "graphic",
-                    client: "Various",
-                    industry: "Digital",
-                    description: "Engaging social media visuals and templates.",
-                    images: ["/assets/images/photo_6_2025-12-10_09-49-24.jpg"],
-                    featured: false,
-                    date: "2025-02-09"
-                },
-                {
-                    id: 7,
-                    title: "Print Design Portfolio",
-                    category: "graphic",
-                    client: "Various",
-                    industry: "Print",
-                    description: "Business cards, brochures, and stationery design.",
-                    images: ["/assets/images/photo_7_2025-12-10_09-49-24.jpg"],
-                    featured: false,
-                    date: "2025-02-08"
-                },
-                {
-                    id: 8,
-                    title: "Web Design Projects",
-                    category: "web",
-                    client: "Various",
-                    industry: "Digital",
-                    description: "Modern website designs and UI/UX projects.",
-                    images: ["/assets/images/photo_8_2025-12-10_09-49-24.jpg"],
-                    featured: false,
-                    date: "2025-02-07"
-                },
-                {
-                    id: 9,
-                    title: "Packaging Design",
-                    category: "graphic",
-                    client: "Various",
-                    industry: "Product",
-                    description: "Creative packaging solutions for products.",
-                    images: ["/assets/images/photo_9_2025-12-10_09-49-24.jpg"],
-                    featured: false,
-                    date: "2025-02-06"
-                },
-                {
-                    id: 10,
-                    title: "Brand Identity",
-                    category: "branding",
-                    client: "Tech Startup",
-                    industry: "Technology",
-                    description: "Complete rebrand for a Lagos tech company.",
-                    images: ["/assets/images/photo_10_2025-12-10_09-49-24.jpg"],
-                    featured: false,
-                    date: "2025-02-05"
                 }
             ];
         }
@@ -1091,7 +1136,9 @@
                 description: document.getElementById('project-description').value,
                 images: uploadedImages.map(img => img.preview),
                 featured: document.getElementById('project-featured').checked,
-                date: document.getElementById('project-date').value || new Date().toISOString().split('T')[0]
+                date: document.getElementById('project-date').value || new Date().toISOString().split('T')[0],
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             };
             
             try {
@@ -1108,19 +1155,27 @@
                     const data = await response.json();
                     projects.push(data.project || newProject);
                     localStorage.setItem('madabrandPortfolio', JSON.stringify(projects));
-                    showToast('Project published successfully!', 'success');
+                    showToast('✅ Project published successfully!', 'success');
+                    
+                    // Refresh the project list
+                    await loadProjects();
                 } else {
-                    throw new Error('API Error');
+                    const errorData = await response.text();
+                    console.error('API Error:', errorData);
+                    throw new Error(`API returned ${response.status}`);
                 }
             } catch (error) {
+                console.error('Save error:', error);
                 projects.push(newProject);
                 localStorage.setItem('madabrandPortfolio', JSON.stringify(projects));
-                showToast('Project saved locally', 'warning');
+                showToast('⚠️ Project saved locally only', 'warning');
+                
+                // Still update the UI with local data
+                renderProjects();
+                updateStats();
             }
             
             resetForm();
-            renderProjects();
-            updateStats();
         });
 
         // Edit project
@@ -1197,7 +1252,8 @@
                     title: document.getElementById('edit-project-title').value,
                     category: document.getElementById('edit-project-category').value,
                     description: document.getElementById('edit-project-description').value,
-                    featured: document.getElementById('edit-project-featured').checked
+                    featured: document.getElementById('edit-project-featured').checked,
+                    updatedAt: new Date().toISOString()
                 };
                 
                 try {
@@ -1214,7 +1270,8 @@
                         const index = projects.findIndex(p => p.id == id);
                         projects[index] = updatedProject;
                         localStorage.setItem('madabrandPortfolio', JSON.stringify(projects));
-                        showToast('Project updated successfully!', 'success');
+                        showToast('✅ Project updated successfully!', 'success');
+                        await loadProjects();
                     } else {
                         throw new Error('API Error');
                     }
@@ -1222,12 +1279,12 @@
                     const index = projects.findIndex(p => p.id == id);
                     projects[index] = updatedProject;
                     localStorage.setItem('madabrandPortfolio', JSON.stringify(projects));
-                    showToast('Updated locally', 'warning');
+                    showToast('⚠️ Updated locally', 'warning');
+                    renderProjects();
+                    updateStats();
                 }
                 
                 closeEditModal();
-                renderProjects();
-                updateStats();
             });
         }
 
@@ -1259,18 +1316,18 @@
                     if (response.ok) {
                         projects = projects.filter(p => p.id != id);
                         localStorage.setItem('madabrandPortfolio', JSON.stringify(projects));
-                        showToast('Project deleted successfully!', 'success');
+                        showToast('✅ Project deleted successfully!', 'success');
+                        await loadProjects();
                     } else {
                         throw new Error('API Error');
                     }
                 } catch (error) {
                     projects = projects.filter(p => p.id != id);
                     localStorage.setItem('madabrandPortfolio', JSON.stringify(projects));
-                    showToast('Deleted locally', 'warning');
+                    showToast('⚠️ Deleted locally', 'warning');
+                    renderProjects();
+                    updateStats();
                 }
-                
-                renderProjects();
-                updateStats();
             }
         }
 
@@ -1279,19 +1336,38 @@
             showToast('Publishing changes...', 'info');
             
             try {
-                // Save all projects to API
+                let successCount = 0;
+                let failCount = 0;
+                
                 for (const project of projects) {
-                    await fetch(`${API_BASE}/portfolio`, {
-                        method: project.id ? 'PUT' : 'POST',
-                        headers: {
-                            'Authorization': 'Bearer MADA2024',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(project)
-                    });
+                    try {
+                        const response = await fetch(`${API_BASE}/portfolio`, {
+                            method: project.id ? 'PUT' : 'POST',
+                            headers: {
+                                'Authorization': 'Bearer MADA2024',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(project)
+                        });
+                        
+                        if (response.ok) {
+                            successCount++;
+                        } else {
+                            failCount++;
+                        }
+                    } catch {
+                        failCount++;
+                    }
                 }
                 
-                showToast('✅ All changes published!', 'success');
+                if (failCount === 0) {
+                    showToast(`✅ All ${successCount} projects published!`, 'success');
+                } else {
+                    showToast(`⚠️ ${successCount} published, ${failCount} failed`, 'warning');
+                }
+                
+                // Refresh data
+                await loadProjects();
             } catch (error) {
                 console.error('Publish error:', error);
                 showToast('❌ Failed to publish changes', 'error');
