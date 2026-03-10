@@ -64,6 +64,71 @@
       "date": "2025-02-10",
       "createdAt": "2025-02-10T10:00:00.000Z",
       "updatedAt": "2025-02-10T10:00:00.000Z"
+    },
+    {
+      "id": 6,
+      "title": "Social Media Graphics",
+      "category": "graphic",
+      "client": "Various",
+      "industry": "Digital",
+      "description": "Engaging social media visuals and templates.",
+      "images": ["/assets/images/photo_6_2025-12-10_09-49-24.jpg"],
+      "featured": false,
+      "date": "2025-02-09",
+      "createdAt": "2025-02-09T10:00:00.000Z",
+      "updatedAt": "2025-02-09T10:00:00.000Z"
+    },
+    {
+      "id": 7,
+      "title": "Print Design Portfolio",
+      "category": "graphic",
+      "client": "Various",
+      "industry": "Print",
+      "description": "Business cards, brochures, and stationery design.",
+      "images": ["/assets/images/photo_7_2025-12-10_09-49-24.jpg"],
+      "featured": false,
+      "date": "2025-02-08",
+      "createdAt": "2025-02-08T10:00:00.000Z",
+      "updatedAt": "2025-02-08T10:00:00.000Z"
+    },
+    {
+      "id": 8,
+      "title": "Web Design Projects",
+      "category": "web",
+      "client": "Various",
+      "industry": "Digital",
+      "description": "Modern website designs and UI/UX projects.",
+      "images": ["/assets/images/photo_8_2025-12-10_09-49-24.jpg"],
+      "featured": false,
+      "date": "2025-02-07",
+      "createdAt": "2025-02-07T10:00:00.000Z",
+      "updatedAt": "2025-02-07T10:00:00.000Z"
+    },
+    {
+      "id": 9,
+      "title": "Packaging Design",
+      "category": "graphic",
+      "client": "Various",
+      "industry": "Product",
+      "description": "Creative packaging solutions for products.",
+      "images": ["/assets/images/photo_9_2025-12-10_09-49-24.jpg"],
+      "featured": false,
+      "date": "2025-02-06",
+      "createdAt": "2025-02-06T10:00:00.000Z",
+      "updatedAt": "2025-02-06T10:00:00.000Z"
+    },
+    {
+      "id": 10,
+      "title": "Brand Identity",
+      "category": "branding",
+      "client": "Tech Startup",
+      "industry": "Technology",
+      "description": "Complete rebrand for a Lagos tech company.",
+      "images": ["/assets/images/photo_10_2025-12-10_09-49-24.jpg"],
+      "featured": false,
+      "date": "2025-02-05",
+      "createdAt": "2025-02-05T10:00:00.000Z",
+      "updatedAt": "2025-02-05T10:00:00.000Z"
     }
   ]
 }

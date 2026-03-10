@@ -54,25 +54,12 @@ dirs.forEach(dir => {
   }
 });
 
-// Initialize data files with proper error handling
+// Initialize data files with proper error handling - NEVER overwrite existing data
 const initDataFiles = async () => {
   console.log('📄 Initializing data files...');
   
-  // First, check if we have a seed file to load
-  const seedFile = path.join(__dirname, 'data', 'portfolio.seed.json');
-  let seedData = null;
-  
-  try {
-    if (await fs.pathExists(seedFile)) {
-      seedData = await fs.readJson(seedFile);
-      console.log('✅ Found seed data file');
-    }
-  } catch (error) {
-    console.log('ℹ️ No seed file found, using defaults');
-  }
-
-  const files = {
-    'data/portfolio.json': seedData || { projects: [] },
+  // Default empty data for other files
+  const defaultData = {
     'data/content.json': { home: {}, about: {}, services: {}, global: {} },
     'data/media.json': [],
     'data/settings.json': {
@@ -87,21 +74,44 @@ const initDataFiles = async () => {
     }
   };
 
-  for (const [filePath, defaultContent] of Object.entries(files)) {
+  // Handle portfolio.json separately - ONLY create if it doesn't exist
+  const portfolioPath = path.join(__dirname, 'data', 'portfolio.json');
+  
+  try {
+    if (!await fs.pathExists(portfolioPath)) {
+      // Check if we have a seed file to use
+      const seedFile = path.join(__dirname, 'data', 'portfolio.seed.json');
+      let initialData = { projects: [] };
+      
+      try {
+        if (await fs.pathExists(seedFile)) {
+          initialData = await fs.readJson(seedFile);
+          console.log(`✅ Found seed file with ${initialData.projects?.length || 0} projects`);
+        }
+      } catch (error) {
+        console.log('ℹ️ No seed file found, using empty portfolio');
+      }
+      
+      await fs.writeJson(portfolioPath, initialData, { spaces: 2 });
+      console.log(`✅ Created: data/portfolio.json with ${initialData.projects?.length || 0} projects`);
+    } else {
+      // File exists - read it to verify and show count
+      const existingData = await fs.readJson(portfolioPath);
+      console.log(`📄 Found existing: data/portfolio.json with ${existingData.projects?.length || 0} projects`);
+    }
+  } catch (error) {
+    console.error(`❌ Error with data/portfolio.json:`, error.message);
+  }
+
+  // Handle other files - create if they don't exist
+  for (const [filePath, defaultContent] of Object.entries(defaultData)) {
     const fullPath = path.join(__dirname, filePath);
     try {
       if (!await fs.pathExists(fullPath)) {
         await fs.writeJson(fullPath, defaultContent, { spaces: 2 });
         console.log(`✅ Created: ${filePath}`);
-        
-        // Verify the file was created
-        const stats = await fs.stat(fullPath);
-        console.log(`   📊 Size: ${stats.size} bytes`);
       } else {
-        // Read and validate existing file
-        const content = await fs.readJson(fullPath);
-        const projectCount = content.projects?.length || 0;
-        console.log(`📄 Found existing: ${filePath} (${projectCount} projects)`);
+        console.log(`📄 Found existing: ${filePath}`);
       }
     } catch (error) {
       console.error(`❌ Error with ${filePath}:`, error.message);
@@ -112,7 +122,6 @@ const initDataFiles = async () => {
 // Run initialization with error handling
 initDataFiles().catch(err => {
   console.error('❌ Fatal: Failed to initialize data files:', err);
-  process.exit(1); // Exit if we can't initialize - Render will restart
 });
 
 // Authentication middleware
@@ -190,76 +199,26 @@ app.get('/api/debug/data', async (req, res) => {
       stats = await fs.stat(portfolioFile);
     }
     
-    // Check disk mount
-    const diskMount = '/data';
-    const diskExists = await fs.pathExists(diskMount);
-    let diskFiles = [];
-    if (diskExists) {
-      diskFiles = await fs.readdir(diskMount);
-    }
-    
     res.json({
       timestamp: new Date().toISOString(),
-      environment: {
-        cwd: process.cwd(),
-        nodeVersion: process.version,
-        platform: process.platform,
-        memory: process.memoryUsage(),
-        uptime: process.uptime()
-      },
-      directories: {
-        data: {
-          path: dataDir,
-          exists: await fs.pathExists(dataDir),
-          writable: (() => {
-            try {
-              const testFile = path.join(dataDir, 'test.txt');
-              fs.writeFileSync(testFile, 'test');
-              fs.removeSync(testFile);
-              return true;
-            } catch {
-              return false;
-            }
-          })(),
-          contents: directoryContents
-        },
-        diskMount: {
-          path: diskMount,
-          exists: diskExists,
-          contents: diskFiles,
-          writable: (() => {
-            try {
-              if (!diskExists) return false;
-              const testFile = path.join(diskMount, 'test.txt');
-              fs.writeFileSync(testFile, 'test');
-              fs.removeSync(testFile);
-              return true;
-            } catch {
-              return false;
-            }
-          })()
-        }
-      },
       portfolio: {
         fileExists: dataExists,
         fileSize: stats?.size,
         fileModified: stats?.mtime,
         projectCount: content?.projects?.length || 0,
-        preview: content ? {
-          projects: content.projects?.map(p => ({
-            id: p.id,
-            title: p.title,
-            category: p.category
-          }))
-        } : null
+        projects: content?.projects?.map(p => ({
+          id: p.id,
+          title: p.title,
+          category: p.category
+        }))
       }
     });
   } catch (error) {
-    res.status(500).json({ error: error.message, stack: error.stack });
+    res.status(500).json({ error: error.message });
   }
 });
 
-// Test endpoint with more details
+// Test endpoint
 app.get('/api/test', (req, res) => {
   const dataDir = path.join(__dirname, 'data');
   const portfolioFile = path.join(dataDir, 'portfolio.json');
@@ -280,23 +239,6 @@ app.get('/api/test', (req, res) => {
   res.json({ 
     message: 'API is working!',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV,
-    directories: {
-      data: {
-        exists: fs.existsSync(dataDir),
-        writable: (() => {
-          try {
-            const testFile = path.join(dataDir, 'test.txt');
-            fs.writeFileSync(testFile, 'test');
-            fs.removeSync(testFile);
-            return true;
-          } catch {
-            return false;
-          }
-        })()
-      },
-      uploads: fs.existsSync(path.join(__dirname, 'uploads'))
-    },
     portfolio: {
       exists: portfolioExists,
       projectCount: projectCount
@@ -309,8 +251,7 @@ app.use((err, req, res, next) => {
   console.error(`[${new Date().toISOString()}] ❌ Server error:`, err);
   res.status(500).json({ 
     error: err.message || 'Internal server error',
-    timestamp: new Date().toISOString(),
-    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -325,17 +266,6 @@ app.use((req, res) => {
   });
 });
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('🔄 Received SIGTERM, shutting down gracefully...');
-  process.exit(0);
-});
-
-process.on('SIGINT', () => {
-  console.log('🔄 Received SIGINT, shutting down gracefully...');
-  process.exit(0);
-});
-
 app.listen(PORT, () => {
   console.log(`🚀 MadaBrand backend running on port ${PORT}`);
   console.log(`📁 Data directory: ${path.join(__dirname, 'data')}`);
@@ -343,5 +273,4 @@ app.listen(PORT, () => {
   console.log(`🔗 API URL: https://madabrand.onrender.com/api`);
   console.log(`🌍 CORS enabled for: https://madabrand-e6hw.vercel.app`);
   console.log(`🔍 Debug endpoint: /api/debug/data`);
-  console.log(`💾 Disk mount: /data`);
 });

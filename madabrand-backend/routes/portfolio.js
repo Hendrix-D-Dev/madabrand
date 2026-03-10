@@ -13,22 +13,34 @@ const getPortfolioData = async () => {
     if (!exists) {
       console.log('📄 portfolio.json not found, creating default');
       const defaultData = { projects: [] };
-      await fs.writeFile(DATA_FILE, JSON.stringify(defaultData, null, 2));
+      await fs.writeJson(DATA_FILE, defaultData, { spaces: 2 });
       return defaultData;
     }
-    const data = await fs.readFile(DATA_FILE, 'utf8');
-    return JSON.parse(data);
+    const data = await fs.readJson(DATA_FILE);
+    return data;
   } catch (error) {
     console.error('❌ Error reading portfolio:', error);
     return { projects: [] };
   }
 };
 
-// Helper to save portfolio data
+// Helper to save portfolio data with verification
 const savePortfolioData = async (data) => {
   try {
-    await fs.writeFile(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
+    // Ensure projects array exists
+    if (!data.projects) data.projects = [];
+    
+    // Write the file
+    await fs.writeJson(DATA_FILE, data, { spaces: 2 });
     console.log(`[${new Date().toISOString()}] ✅ Portfolio data saved - ${data.projects.length} projects`);
+    
+    // Verify the write was successful
+    const verify = await fs.readJson(DATA_FILE);
+    if (verify.projects.length !== data.projects.length) {
+      console.error('❌ Data verification failed!');
+      return false;
+    }
+    
     return true;
   } catch (error) {
     console.error(`[${new Date().toISOString()}] ❌ Error saving portfolio:`, error);

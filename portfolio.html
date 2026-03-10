@@ -62,7 +62,24 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s ease;
+            transition: transform 0.5s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .portfolio-card img.loaded {
+            opacity: 1;
+        }
+
+        .portfolio-card .image-wrapper.loading {
+            background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+            background-size: 200% 100%;
+            animation: 1.5s shine linear infinite;
+        }
+
+        @keyframes shine {
+            to {
+                background-position-x: -200%;
+            }
         }
 
         .portfolio-card:hover img {
@@ -303,28 +320,6 @@
 
         ::-webkit-scrollbar-thumb:hover {
             background: #2563eb;
-        }
-
-        /* Image loading animation */
-        .image-loading {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .image-loading::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            animation: loading 1.5s infinite;
-        }
-
-        @keyframes loading {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
         }
 
         /* Empty state styling */
@@ -657,11 +652,15 @@
                     }
                 } else {
                     console.warn('⚠️ API returned:', response.status);
-                    portfolioData = getDefaultPortfolio();
+                    // Try to get from localStorage as fallback
+                    const localData = localStorage.getItem('madabrandPortfolio');
+                    portfolioData = localData ? JSON.parse(localData) : getDefaultPortfolio();
                 }
             } catch (error) {
                 console.error('❌ Error fetching portfolio:', error);
-                portfolioData = getDefaultPortfolio();
+                // Fallback to localStorage
+                const localData = localStorage.getItem('madabrandPortfolio');
+                portfolioData = localData ? JSON.parse(localData) : getDefaultPortfolio();
             }
             
             // Sort by date (newest first) if dates exist
@@ -674,9 +673,24 @@
             updateStats();
             filterAndDisplayProjects();
             showLoading(false);
+            
+            // Optimize images after they load
+            setTimeout(optimizeImages, 100);
         }
 
-        // Default portfolio data
+        // Optimize images with fade-in effect
+        function optimizeImages() {
+            const images = document.querySelectorAll('.portfolio-card img');
+            images.forEach(img => {
+                if (img.complete) {
+                    img.classList.add('loaded');
+                } else {
+                    img.addEventListener('load', () => img.classList.add('loaded'));
+                }
+            });
+        }
+
+        // Default portfolio data (full 10 projects)
         function getDefaultPortfolio() {
             return [
                 {
@@ -842,7 +856,7 @@
                 const imageUrl = project.images?.[0] || project.image || '/assets/images/placeholder.jpg';
                 return `
                 <div class="portfolio-card" data-category="${project.category}">
-                    <div class="image-wrapper">
+                    <div class="image-wrapper loading">
                         <img src="${imageUrl}" 
                              alt="${project.title}"
                              loading="lazy"
@@ -871,6 +885,9 @@
             
             grid.innerHTML = projectsHTML;
             grid.style.opacity = '1';
+            
+            // Optimize images after rendering
+            setTimeout(optimizeImages, 100);
         }
 
         function getCategoryDisplay(category) {
@@ -920,6 +937,7 @@
                         const data = await response.json();
                         const newData = data.projects || data || [];
                         if (JSON.stringify(newData) !== JSON.stringify(portfolioData)) {
+                            console.log('📦 Portfolio updated, refreshing...');
                             portfolioData = newData;
                             updateStats();
                             filterAndDisplayProjects();
