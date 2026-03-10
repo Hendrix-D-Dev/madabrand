@@ -591,8 +591,8 @@
     <script src="/scripts/main.js"></script>
     <!-- 3. Portfolio page script (uses API_BASE from main.js) -->
     <script>
-        // Use window.API_BASE from main.js, with fallback
-        const API_BASE = window.API_BASE || 'https://madabrand.onrender.com/api';
+        // FIXED: Use API_BASE from main.js (no redeclaration)
+        const API_URL = window.API_BASE || 'https://madabrand.onrender.com/api';
         
         // State management
         let portfolioData = [];
@@ -637,8 +637,8 @@
             showLoading(true);
             
             try {
-                console.log('📡 Fetching portfolio from:', `${API_BASE}/portfolio`);
-                const response = await fetch(`${API_BASE}/portfolio`, {
+                console.log('📡 Fetching portfolio from:', `${API_URL}/portfolio`);
+                const response = await fetch(`${API_URL}/portfolio`, {
                     headers: {
                         'Authorization': 'Bearer MADA2024'
                     }
@@ -647,32 +647,36 @@
                 if (response.ok) {
                     const data = await response.json();
                     console.log('✅ Portfolio data received:', data);
-                    // Handle both formats - array or { projects: [] }
                     portfolioData = data.projects || data || [];
                     
-                    // DEBUG: Log the first project to see image path
                     if (portfolioData.length > 0) {
-                        console.log('🔍 Sample project image path:', portfolioData[0].images?.[0] || portfolioData[0].image);
+                        console.log('🔍 First project:', portfolioData[0]);
+                    } else {
+                        console.warn('⚠️ API returned empty data, using defaults');
+                        portfolioData = getDefaultPortfolio();
                     }
                 } else {
                     console.warn('⚠️ API returned:', response.status);
-                    // Fallback to localStorage
-                    const localData = localStorage.getItem('madabrandPortfolio');
-                    portfolioData = localData ? JSON.parse(localData) : getDefaultPortfolio();
+                    portfolioData = getDefaultPortfolio();
                 }
             } catch (error) {
                 console.error('❌ Error fetching portfolio:', error);
-                // Fallback to default data
                 portfolioData = getDefaultPortfolio();
             }
             
-            // Update stats and grid
+            // Sort by date (newest first) if dates exist
+            portfolioData.sort((a, b) => {
+                const dateA = a.createdAt || a.date || 0;
+                const dateB = b.createdAt || b.date || 0;
+                return new Date(dateB) - new Date(dateA);
+            });
+            
             updateStats();
             filterAndDisplayProjects();
             showLoading(false);
         }
 
-        // Default portfolio data (only used as fallback)
+        // Default portfolio data
         function getDefaultPortfolio() {
             return [
                 {
@@ -683,7 +687,8 @@
                     industry: "Construction",
                     description: "Complete brand identity system for a premium construction company.",
                     images: ["/assets/images/photo_1_2025-12-10_09-45-08.jpg"],
-                    featured: true
+                    featured: true,
+                    date: "2025-02-14"
                 },
                 {
                     id: 2,
@@ -693,7 +698,8 @@
                     industry: "Real Estate",
                     description: "Premium brand identity for a real-estate development company.",
                     images: ["/assets/images/photo_3_2025-12-10_09-45-08.jpg"],
-                    featured: true
+                    featured: true,
+                    date: "2025-02-13"
                 },
                 {
                     id: 3,
@@ -703,7 +709,8 @@
                     industry: "Sustainability",
                     description: "Nature-inspired brand identity for sustainable living products.",
                     images: ["/assets/images/photo_5_2025-12-10_09-49-24.jpg"],
-                    featured: true
+                    featured: true,
+                    date: "2025-02-12"
                 },
                 {
                     id: 4,
@@ -713,7 +720,8 @@
                     industry: "Design",
                     description: "Collection of custom logo designs for diverse businesses.",
                     images: ["/assets/images/photo_2_2025-12-10_09-45-08.jpg"],
-                    featured: false
+                    featured: false,
+                    date: "2025-02-11"
                 },
                 {
                     id: 5,
@@ -723,7 +731,8 @@
                     industry: "Design",
                     description: "Comprehensive brand guidelines and style guides.",
                     images: ["/assets/images/photo_4_2025-12-10_09-45-08.jpg"],
-                    featured: false
+                    featured: false,
+                    date: "2025-02-10"
                 },
                 {
                     id: 6,
@@ -733,7 +742,8 @@
                     industry: "Digital",
                     description: "Engaging social media visuals and templates.",
                     images: ["/assets/images/photo_6_2025-12-10_09-49-24.jpg"],
-                    featured: false
+                    featured: false,
+                    date: "2025-02-09"
                 },
                 {
                     id: 7,
@@ -743,7 +753,8 @@
                     industry: "Print",
                     description: "Business cards, brochures, and stationery design.",
                     images: ["/assets/images/photo_7_2025-12-10_09-49-24.jpg"],
-                    featured: false
+                    featured: false,
+                    date: "2025-02-08"
                 },
                 {
                     id: 8,
@@ -753,7 +764,8 @@
                     industry: "Digital",
                     description: "Modern website designs and UI/UX projects.",
                     images: ["/assets/images/photo_8_2025-12-10_09-49-24.jpg"],
-                    featured: false
+                    featured: false,
+                    date: "2025-02-07"
                 },
                 {
                     id: 9,
@@ -763,7 +775,8 @@
                     industry: "Product",
                     description: "Creative packaging solutions for products.",
                     images: ["/assets/images/photo_9_2025-12-10_09-49-24.jpg"],
-                    featured: false
+                    featured: false,
+                    date: "2025-02-06"
                 },
                 {
                     id: 10,
@@ -773,7 +786,8 @@
                     industry: "Technology",
                     description: "Complete rebrand for a Lagos tech company.",
                     images: ["/assets/images/photo_10_2025-12-10_09-49-24.jpg"],
-                    featured: false
+                    featured: false,
+                    date: "2025-02-05"
                 }
             ];
         }
@@ -811,40 +825,28 @@
             const grid = document.getElementById('portfolio-grid');
             const noResults = document.getElementById('no-results');
             
-            // Filter projects based on current filter
             const filtered = currentFilter === 'all' 
                 ? portfolioData 
                 : portfolioData.filter(p => p.category === currentFilter);
             
             if (filtered.length === 0) {
-                // Show no results message
                 grid.innerHTML = '';
                 grid.style.opacity = '0';
                 noResults.classList.remove('hidden');
                 return;
             }
             
-            // Hide no results message
             noResults.classList.add('hidden');
             
-            // Generate HTML for all projects
             const projectsHTML = filtered.map(project => {
-                // Handle both image formats and fix path if needed
-                let imageUrl = project.images && project.images[0] ? project.images[0] : (project.image || '/assets/images/placeholder.jpg');
-                
-                // FIX: If image path starts with /uploads/, change to /assets/images/ for frontend
-                if (imageUrl.includes('/uploads/')) {
-                    const filename = imageUrl.split('/').pop();
-                    imageUrl = `/assets/images/${filename}`;
-                }
-                
+                const imageUrl = project.images?.[0] || project.image || '/assets/images/placeholder.jpg';
                 return `
                 <div class="portfolio-card" data-category="${project.category}">
                     <div class="image-wrapper">
                         <img src="${imageUrl}" 
                              alt="${project.title}"
                              loading="lazy"
-                             onerror="this.src='/assets/images/photo_1_2025-12-10_09-45-08.jpg'; console.log('Image failed to load:', '${imageUrl}')">
+                             onerror="this.src='/assets/images/placeholder.jpg'">
                         <div class="category-badge">
                             ${getCategoryDisplay(project.category)}
                         </div>
@@ -867,12 +869,10 @@
                 </div>
             `}).join('');
             
-            // Update grid
             grid.innerHTML = projectsHTML;
             grid.style.opacity = '1';
         }
 
-        // Helper function to get category display name
         function getCategoryDisplay(category) {
             const displays = {
                 'branding': '🏗️ Brand Identity',
@@ -883,38 +883,25 @@
             return displays[category] || '📁 Design';
         }
 
-        // Show/hide loading state
         function showLoading(show) {
             const loadingState = document.getElementById('loading-state');
             const grid = document.getElementById('portfolio-grid');
-            const noResults = document.getElementById('no-results');
-            
             if (show) {
                 loadingState.style.display = 'block';
                 grid.style.opacity = '0';
-                if (noResults) noResults.classList.add('hidden');
             } else {
                 loadingState.style.display = 'none';
             }
         }
 
-        // Initialize filters
         function initFilters() {
             const filterBtns = document.querySelectorAll('.filter-btn');
-            
             filterBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
-                    // Update active state
                     filterBtns.forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
-                    
-                    // Update filter
                     currentFilter = this.dataset.filter;
-                    
-                    // Show loading
                     showLoading(true);
-                    
-                    // Filter and display projects
                     setTimeout(() => {
                         filterAndDisplayProjects();
                         showLoading(false);
@@ -923,45 +910,30 @@
             });
         }
 
-        // Auto-refresh setup
         function setupAutoRefresh() {
-            if (window.self === window.top && !document.hidden) {
-                setInterval(async () => {
-                    try {
-                        const response = await fetch(`${API_BASE}/portfolio`, {
-                            headers: { 'Authorization': 'Bearer MADA2024' },
-                            cache: 'no-cache'
-                        });
-                        
-                        if (response.ok) {
-                            const data = await response.json();
-                            const newData = data.projects || data || [];
-                            
-                            if (JSON.stringify(newData) !== JSON.stringify(portfolioData)) {
-                                console.log('📦 Portfolio updated, refreshing...');
-                                portfolioData = newData;
-                                updateStats();
-                                filterAndDisplayProjects();
-                            }
+            setInterval(async () => {
+                try {
+                    const response = await fetch(`${API_URL}/portfolio`, {
+                        headers: { 'Authorization': 'Bearer MADA2024' }
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        const newData = data.projects || data || [];
+                        if (JSON.stringify(newData) !== JSON.stringify(portfolioData)) {
+                            portfolioData = newData;
+                            updateStats();
+                            filterAndDisplayProjects();
                         }
-                    } catch (error) {
-                        // Silently fail
                     }
-                }, 30000);
-            }
+                } catch (error) {}
+            }, 30000);
         }
 
-        // Mobile menu
         function initMobileMenu() {
             const menuBtn = document.getElementById('mobile-menu-btn');
             const mobileMenu = document.getElementById('mobile-menu');
-            
             if (menuBtn && mobileMenu) {
-                menuBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    mobileMenu.classList.toggle('hidden');
-                });
-                
+                menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
                 document.addEventListener('click', (e) => {
                     if (!mobileMenu.contains(e.target) && !menuBtn.contains(e.target)) {
                         mobileMenu.classList.add('hidden');
@@ -969,28 +941,6 @@
                 });
             }
         }
-
-        // Image error handling
-        document.addEventListener('error', function(e) {
-            if (e.target.tagName === 'IMG') {
-                console.log('Image failed to load, using fallback:', e.target.src);
-                e.target.src = '/assets/images/photo_1_2025-12-10_09-45-08.jpg';
-            }
-        }, true);
-
-        // Listen for storage events
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'madabrandPortfolio') {
-                console.log('📦 Portfolio updated in another tab, refreshing...');
-                fetchPortfolio();
-            }
-        });
-
-        // Listen for custom events from admin
-        window.addEventListener('portfolio-updated', function() {
-            console.log('📦 Portfolio updated, refreshing...');
-            fetchPortfolio();
-        });
     </script>
 </body>
 </html>

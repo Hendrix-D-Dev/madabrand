@@ -393,7 +393,7 @@
         </button>
         
         <!-- Mobile Navigation -->
-        <div id="mobile-nav" class="fixed inset-0 bg-black/50 z-40 hidden" onclick="toggleMobileNav()">
+        <div id="mobile-nav" class="fixed inset-0 bg-black/50 z-40 hidden">
             <div class="w-64 bg-white h-full overflow-y-auto" onclick="event.stopPropagation()">
                 <div id="mobile-nav-container"></div>
             </div>
@@ -671,7 +671,7 @@
     </div>
 
     <script>
-        // Configuration
+        // FIXED: Correct API URL (matches your Render instance)
         const API_BASE = 'https://madabrand.onrender.com/api';
         let projects = [];
         let uploadedImages = [];
@@ -708,6 +708,13 @@
 
         document.getElementById('mobile-menu-toggle')?.addEventListener('click', toggleMobileNav);
 
+        // Close mobile nav when clicking background
+        document.getElementById('mobile-nav')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('hidden');
+            }
+        });
+
         // Toggle add section
         function toggleAddSection() {
             const section = document.getElementById('add-project-section');
@@ -721,21 +728,29 @@
             showLoading(true);
             
             try {
+                console.log('📡 Fetching from:', `${API_BASE}/portfolio`);
                 const response = await fetch(`${API_BASE}/portfolio`, {
                     headers: { 'Authorization': 'Bearer MADA2024' }
                 });
                 
                 if (response.ok) {
                     const data = await response.json();
+                    console.log('✅ API Response:', data);
                     projects = data.projects || data || [];
+                    
+                    // If API returns empty array, use default data
+                    if (projects.length === 0) {
+                        console.log('📦 Using default portfolio data');
+                        projects = getDefaultPortfolio();
+                    }
                 } else {
-                    console.warn('API returned:', response.status);
+                    console.warn('⚠️ API returned:', response.status);
                     // Fallback to localStorage
                     const localData = localStorage.getItem('madabrandPortfolio');
                     projects = localData ? JSON.parse(localData) : getDefaultPortfolio();
                 }
             } catch (error) {
-                console.error('Error loading projects:', error);
+                console.error('❌ Error loading projects:', error);
                 projects = getDefaultPortfolio();
             }
             
@@ -1090,7 +1105,8 @@
                 });
                 
                 if (response.ok) {
-                    projects.push(newProject);
+                    const data = await response.json();
+                    projects.push(data.project || newProject);
                     localStorage.setItem('madabrandPortfolio', JSON.stringify(projects));
                     showToast('Project published successfully!', 'success');
                 } else {
@@ -1265,16 +1281,14 @@
             try {
                 // Save all projects to API
                 for (const project of projects) {
-                    if (!project._synced) {
-                        await fetch(`${API_BASE}/portfolio`, {
-                            method: project.id ? 'PUT' : 'POST',
-                            headers: {
-                                'Authorization': 'Bearer MADA2024',
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(project)
-                        });
-                    }
+                    await fetch(`${API_BASE}/portfolio`, {
+                        method: project.id ? 'PUT' : 'POST',
+                        headers: {
+                            'Authorization': 'Bearer MADA2024',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(project)
+                    });
                 }
                 
                 showToast('✅ All changes published!', 'success');

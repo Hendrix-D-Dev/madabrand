@@ -1,8 +1,7 @@
 // /admin/admin-api.js
 const AdminAPI = {
-
- // baseUrl: 'http://localhost:3001/api', // Use this for local testing first
-  baseUrl: 'https://madabrand-backend.onrender.com/api', 
+  // FIXED: Correct Render URL (no -backend suffix)
+  baseUrl: 'https://madabrand.onrender.com/api',
   
   // Track if we're using local fallback
   usingLocalFallback: false,
