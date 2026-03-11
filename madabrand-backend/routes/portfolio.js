@@ -66,11 +66,21 @@ router.post('/', async (req, res) => {
   const startTime = Date.now();
   try {
     const projectData = req.body;
+    
+    // Validate required fields
+    if (!projectData.title || !projectData.description) {
+      return res.status(400).json({ 
+        error: 'Missing required fields',
+        required: ['title', 'description']
+      });
+    }
+    
     const data = await getPortfolioData();
     
     const newProject = {
       id: Date.now(),
       ...projectData,
+      // If images are base64 strings, we need to handle them differently
       images: projectData.images || ['/uploads/placeholder.jpg'],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
@@ -100,7 +110,19 @@ router.post('/', async (req, res) => {
     }
   } catch (error) {
     console.error(`[${new Date().toISOString()}] ❌ POST /portfolio error:`, error);
-    res.status(500).json({ error: error.message });
+    
+    // More specific error messages
+    if (error.type === 'entity.too.large') {
+      return res.status(413).json({ 
+        error: 'Image too large. Maximum size is 50MB.',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    res.status(500).json({ 
+      error: error.message || 'Internal server error',
+      timestamp: new Date().toISOString()
+    });
   }
 });
 
