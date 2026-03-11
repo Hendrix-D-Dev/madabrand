@@ -11,7 +11,7 @@
     <meta name="author" content="MadaBrand">
     
     <style>
-        /* Keep all your existing styles - they're perfect */
+        /* Keep all your existing styles */
         * {
             margin: 0;
             padding: 0;
@@ -336,6 +336,8 @@
             margin-bottom: 1rem;
             opacity: 0.5;
         }
+
+        /* REMOVED: Load more button styling */
     </style>
 </head>
 <body class="antialiased">
@@ -360,7 +362,7 @@
                     Explore our transformative brand identity projects for Nigerian businesses and international clients. Each design tells a unique story of innovation and strategic thinking.
                 </p>
                 
-                <!-- Stats Grid - Will be populated dynamically -->
+                <!-- Stats Grid -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto" id="stats-container">
                     <!-- Stats loaded via JavaScript -->
                 </div>
@@ -390,12 +392,12 @@
                 <p class="text-gray-500 text-lg">Loading stunning projects...</p>
             </div>
             
-            <!-- Projects Grid -->
+            <!-- Projects Grid - Shows ALL projects at once (no load more) -->
             <div id="portfolio-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 opacity-0 transition-opacity duration-500">
                 <!-- Projects will be loaded dynamically -->
             </div>
             
-            <!-- No Results Message (hidden by default) -->
+            <!-- No Results Message -->
             <div id="no-results" class="empty-state hidden">
                 <div class="empty-state-icon">🔍</div>
                 <h3 class="text-2xl font-bold text-gray-900 mb-2">No Projects Found</h3>
@@ -404,7 +406,7 @@
         </div>
     </section>
     
-    <!-- Featured Case Study (Static - can be managed via admin later) -->
+    <!-- Featured Case Study (Static) -->
     <section class="py-12 md:py-20 bg-gradient-to-br from-blue-50 via-white to-blue-50">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-8 md:mb-12">
@@ -579,14 +581,14 @@
     <!-- Footer -->
     <div id="footer"></div>
 
-    <!-- Scripts - ORDER MATTERS! -->
+    <!-- Scripts -->
     <!-- 1. Keep-alive first to wake up server -->
     <script src="/scripts/keep-alive.js"></script>
     <!-- 2. Main site script (defines API_BASE) -->
     <script src="/scripts/main.js"></script>
-    <!-- 3. Portfolio page script (uses API_BASE from main.js) -->
+    <!-- 3. Portfolio page script -->
     <script>
-        // FIXED: Use API_BASE from main.js (no redeclaration)
+        // FIXED: Use API_BASE from main.js
         const API_URL = window.API_BASE || 'https://madabrand.onrender.com/api';
         
         // State management
@@ -636,58 +638,55 @@
                 const response = await fetch(`${API_URL}/portfolio`, {
                     headers: {
                         'Authorization': 'Bearer MADA2024'
-                    }
+                    },
+                    cache: 'no-cache' // Prevent caching
                 });
                 
                 if (response.ok) {
                     const data = await response.json();
                     console.log('✅ Portfolio data received:', data);
-                    portfolioData = data.projects || data || [];
                     
-                    if (portfolioData.length > 0) {
-                        console.log('🔍 First project:', portfolioData[0]);
+                    // Handle both formats - array or { projects: [] }
+                    let newData = data.projects || data || [];
+                    
+                    // Check if data actually changed before updating
+                    if (JSON.stringify(newData) !== JSON.stringify(portfolioData)) {
+                        console.log('📦 Portfolio updated, refreshing display...');
+                        portfolioData = newData;
+                        
+                        // Sort by date (newest first)
+                        portfolioData.sort((a, b) => {
+                            const dateA = a.createdAt || a.date || 0;
+                            const dateB = b.createdAt || b.date || 0;
+                            return new Date(dateB) - new Date(dateA);
+                        });
+                        
+                        updateStats();
+                        filterAndDisplayProjects();
                     } else {
-                        console.warn('⚠️ API returned empty data, using defaults');
-                        portfolioData = getDefaultPortfolio();
+                        console.log('📦 No changes in portfolio data');
                     }
                 } else {
                     console.warn('⚠️ API returned:', response.status);
-                    // Try to get from localStorage as fallback
+                    // Try localStorage fallback
                     const localData = localStorage.getItem('madabrandPortfolio');
-                    portfolioData = localData ? JSON.parse(localData) : getDefaultPortfolio();
+                    if (localData) {
+                        portfolioData = JSON.parse(localData);
+                    } else {
+                        portfolioData = getDefaultPortfolio();
+                    }
+                    updateStats();
+                    filterAndDisplayProjects();
                 }
             } catch (error) {
                 console.error('❌ Error fetching portfolio:', error);
-                // Fallback to localStorage
-                const localData = localStorage.getItem('madabrandPortfolio');
-                portfolioData = localData ? JSON.parse(localData) : getDefaultPortfolio();
+                // Fallback to default data
+                portfolioData = getDefaultPortfolio();
+                updateStats();
+                filterAndDisplayProjects();
             }
             
-            // Sort by date (newest first) if dates exist
-            portfolioData.sort((a, b) => {
-                const dateA = a.createdAt || a.date || 0;
-                const dateB = b.createdAt || b.date || 0;
-                return new Date(dateB) - new Date(dateA);
-            });
-            
-            updateStats();
-            filterAndDisplayProjects();
             showLoading(false);
-            
-            // Optimize images after they load
-            setTimeout(optimizeImages, 100);
-        }
-
-        // Optimize images with fade-in effect
-        function optimizeImages() {
-            const images = document.querySelectorAll('.portfolio-card img');
-            images.forEach(img => {
-                if (img.complete) {
-                    img.classList.add('loaded');
-                } else {
-                    img.addEventListener('load', () => img.classList.add('loaded'));
-                }
-            });
         }
 
         // Default portfolio data (full 10 projects)
@@ -834,24 +833,28 @@
             `;
         }
 
-        // Filter and display projects
+        // Filter and display ALL projects (no pagination)
         function filterAndDisplayProjects() {
             const grid = document.getElementById('portfolio-grid');
             const noResults = document.getElementById('no-results');
             
+            // Filter projects based on current filter
             const filtered = currentFilter === 'all' 
                 ? portfolioData 
                 : portfolioData.filter(p => p.category === currentFilter);
             
             if (filtered.length === 0) {
+                // Show no results message
                 grid.innerHTML = '';
                 grid.style.opacity = '0';
                 noResults.classList.remove('hidden');
                 return;
             }
             
+            // Hide no results message
             noResults.classList.add('hidden');
             
+            // Generate HTML for ALL projects at once (no load more)
             const projectsHTML = filtered.map(project => {
                 const imageUrl = project.images?.[0] || project.image || '/assets/images/placeholder.jpg';
                 return `
@@ -860,7 +863,8 @@
                         <img src="${imageUrl}" 
                              alt="${project.title}"
                              loading="lazy"
-                             onerror="this.src='/assets/images/placeholder.jpg'">
+                             onload="this.classList.add('loaded')"
+                             onerror="this.src='/assets/images/placeholder.jpg'; this.classList.add('loaded')">
                         <div class="category-badge">
                             ${getCategoryDisplay(project.category)}
                         </div>
@@ -883,11 +887,11 @@
                 </div>
             `}).join('');
             
+            // Update grid with all projects
             grid.innerHTML = projectsHTML;
             grid.style.opacity = '1';
             
-            // Optimize images after rendering
-            setTimeout(optimizeImages, 100);
+            console.log(`✅ Displayed ${filtered.length} projects`);
         }
 
         function getCategoryDisplay(category) {
@@ -928,22 +932,36 @@
         }
 
         function setupAutoRefresh() {
+            // Check for updates every 30 seconds
             setInterval(async () => {
                 try {
                     const response = await fetch(`${API_URL}/portfolio`, {
-                        headers: { 'Authorization': 'Bearer MADA2024' }
+                        headers: { 'Authorization': 'Bearer MADA2024' },
+                        cache: 'no-cache'
                     });
                     if (response.ok) {
                         const data = await response.json();
                         const newData = data.projects || data || [];
+                        
+                        // Only update if data actually changed
                         if (JSON.stringify(newData) !== JSON.stringify(portfolioData)) {
                             console.log('📦 Portfolio updated, refreshing...');
                             portfolioData = newData;
+                            
+                            // Sort by date (newest first)
+                            portfolioData.sort((a, b) => {
+                                const dateA = a.createdAt || a.date || 0;
+                                const dateB = b.createdAt || b.date || 0;
+                                return new Date(dateB) - new Date(dateA);
+                            });
+                            
                             updateStats();
                             filterAndDisplayProjects();
                         }
                     }
-                } catch (error) {}
+                } catch (error) {
+                    // Silently fail for auto-refresh
+                }
             }, 30000);
         }
 
@@ -959,6 +977,8 @@
                 });
             }
         }
+
+        // REMOVED: All load more functionality
     </script>
 </body>
 </html>
