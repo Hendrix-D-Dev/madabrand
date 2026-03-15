@@ -2,91 +2,93 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Our Portfolio | MadaBrand - Premium Design Studio Lagos</title>
-    <link href="/dist/output.css" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="/assets/icons/favicon.ico">
-    <meta name="description" content="Explore MadaBrand's premium portfolio of brand identity, logo design, and graphic design projects for Nigerian businesses and international clients.">
-    <meta name="keywords" content="portfolio, brand design Nigeria, logo design Lagos, graphic design services Nigeria, Nigerian design studio">
-    <meta name="author" content="MadaBrand">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Portfolio | MadaBrand - Premium Design Studio Lagos</title>
     
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Keep all your existing styles */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
         }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            overflow-x: hidden;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        
+        /* Custom animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
-
-        /* Modern card styles */
+        
+        .animate-fade-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        /* Portfolio cards */
         .portfolio-card {
+            position: relative;
             background: white;
             border-radius: 1.5rem;
             overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(30, 58, 138, 0.1);
             height: 100%;
             display: flex;
             flex-direction: column;
-            border: 1px solid rgba(30, 58, 138, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
-
+        
         .portfolio-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgba(30, 58, 138, 0.2), 0 10px 10px -5px rgba(30, 58, 138, 0.1);
+            box-shadow: 0 25px 30px -12px rgba(30, 58, 138, 0.25);
             border-color: #1e3a8a;
         }
-
-        .portfolio-card .image-wrapper {
+        
+        .card-image-wrapper {
             position: relative;
-            padding-top: 75%; /* 4:3 Aspect Ratio */
+            padding-top: 75%; /* 4:3 aspect ratio */
             overflow: hidden;
-            background: #f1f5f9;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
         }
-
-        .portfolio-card img {
+        
+        .card-image-wrapper img {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s ease, opacity 0.3s ease;
+            transition: transform 0.5s ease;
             opacity: 0;
         }
-
-        .portfolio-card img.loaded {
+        
+        .card-image-wrapper img.loaded {
             opacity: 1;
         }
-
-        .portfolio-card .image-wrapper.loading {
-            background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
-            background-size: 200% 100%;
-            animation: 1.5s shine linear infinite;
-        }
-
-        @keyframes shine {
-            to {
-                background-position-x: -200%;
-            }
-        }
-
+        
         .portfolio-card:hover img {
             transform: scale(1.1);
         }
-
-        .portfolio-card .category-badge {
+        
+        .category-badge {
             position: absolute;
             top: 1rem;
             left: 1rem;
@@ -96,39 +98,29 @@
             border-radius: 2rem;
             font-size: 0.75rem;
             font-weight: 600;
-            letter-spacing: 0.5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            z-index: 10;
-            border: 1px solid #1e3a8a20;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 2;
+            border: 1px solid rgba(30, 58, 138, 0.2);
+            backdrop-filter: blur(4px);
         }
-
-        /* Filter buttons */
-        .filter-btn {
-            padding: 0.75rem 1.5rem;
+        
+        .featured-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+            padding: 0.5rem 1rem;
             border-radius: 2rem;
+            font-size: 0.75rem;
             font-weight: 600;
-            transition: all 0.2s ease;
-            background: white;
-            color: #1e3a8a;
-            border: 2px solid #1e3a8a20;
-            font-size: 0.9rem;
-            cursor: pointer;
-            white-space: nowrap;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
-
-        .filter-btn:hover {
-            background: #1e3a8a;
-            color: white;
-            border-color: #1e3a8a;
-        }
-
-        .filter-btn.active {
-            background: #1e3a8a;
-            color: white;
-            border-color: #1e3a8a;
-        }
-
-        /* Filter container - horizontal scroll on mobile */
+        
+        /* Filter buttons */
         .filter-container {
             display: flex;
             flex-wrap: wrap;
@@ -136,7 +128,34 @@
             gap: 0.75rem;
             padding: 1rem 0;
         }
-
+        
+        .filter-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            background: white;
+            color: #1e3a8a;
+            border: 2px solid rgba(30, 58, 138, 0.2);
+            font-size: 0.9rem;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        .filter-btn:hover {
+            background: #1e3a8a;
+            color: white;
+            border-color: #1e3a8a;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.2);
+        }
+        
+        .filter-btn.active {
+            background: #1e3a8a;
+            color: white;
+            border-color: #1e3a8a;
+        }
+        
         @media (max-width: 640px) {
             .filter-container {
                 flex-wrap: nowrap;
@@ -153,7 +172,7 @@
                 flex: 0 0 auto;
             }
         }
-
+        
         /* Stat cards */
         .stat-card {
             background: white;
@@ -161,15 +180,15 @@
             padding: 1.5rem;
             text-align: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border: 1px solid #1e3a8a10;
+            border: 1px solid rgba(30, 58, 138, 0.1);
             transition: all 0.3s ease;
         }
-
+        
         .stat-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 20px 25px -5px rgba(30, 58, 138, 0.15);
         }
-
+        
         .stat-number {
             font-size: 2.5rem;
             font-weight: 800;
@@ -177,51 +196,45 @@
             line-height: 1;
             margin-bottom: 0.5rem;
         }
-
-        @media (max-width: 768px) {
-            .stat-number {
-                font-size: 2rem;
-            }
+        
+        /* Loading spinner */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #1e3a8a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
-
-        .stat-label {
-            color: #64748b;
-            font-weight: 500;
-            font-size: 0.9rem;
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
-
+        
         /* Testimonial cards */
         .testimonial-card {
             background: white;
             border-radius: 1.5rem;
             padding: 2rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border: 1px solid #1e3a8a10;
+            border: 1px solid rgba(30, 58, 138, 0.1);
             transition: all 0.3s ease;
-            height: 100%;
         }
-
+        
         .testimonial-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 20px 25px -5px rgba(30, 58, 138, 0.15);
         }
-
-        /* Section titles */
+        
+        /* Section title */
         .section-title {
             font-size: 2.5rem;
             font-weight: 800;
             color: #1e3a8a;
-            margin-bottom: 1rem;
             position: relative;
             display: inline-block;
         }
-
-        @media (max-width: 768px) {
-            .section-title {
-                font-size: 2rem;
-            }
-        }
-
+        
         .section-title::after {
             content: '';
             position: absolute;
@@ -232,138 +245,153 @@
             background: linear-gradient(90deg, #1e3a8a, #3b82f6);
             border-radius: 2px;
         }
-
+        
         .text-center .section-title::after {
             left: 50%;
             transform: translateX(-50%);
         }
-
-        /* Loading spinner */
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #e2e8f0;
-            border-top-color: #1e3a8a;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Image error fallback */
-        img {
-            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
-        }
-
-        img[src=""] {
-            opacity: 0;
-        }
-
-        /* Grid responsive gaps */
-        .grid {
-            gap: 1.5rem;
-        }
-
-        @media (min-width: 768px) {
-            .grid {
-                gap: 2rem;
-            }
-        }
-
-        /* Featured case study */
+        
+        /* Case study card */
         .case-study-card {
             background: white;
             border-radius: 2rem;
             overflow: hidden;
-            box-shadow: 0 20px 25px -5px rgba(30, 58, 138, 0.2);
-            border: 1px solid #1e3a8a20;
+            box-shadow: 0 25px 30px -12px rgba(30, 58, 138, 0.3);
+            border: 1px solid rgba(30, 58, 138, 0.2);
+            transition: all 0.3s ease;
         }
-
-        /* Mobile optimizations */
-        @media (max-width: 640px) {
-            .container {
-                padding-left: 1rem;
-                padding-right: 1rem;
-            }
-            
-            h1 {
-                font-size: 2.5rem !important;
-                line-height: 1.2 !important;
-            }
-            
-            .hero-badge {
-                padding: 0.75rem 1.5rem !important;
-                font-size: 0.9rem !important;
-            }
-            
-            .testimonial-card {
-                padding: 1.5rem;
-            }
+        
+        .case-study-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 40px -15px rgba(30, 58, 138, 0.4);
         }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
+        
+        /* Mobile menu */
+        #mobile-menu {
+            transition: all 0.3s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
         }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
+        
+        #mobile-menu.open {
+            max-height: 500px;
+            opacity: 1;
         }
-
-        ::-webkit-scrollbar-thumb {
-            background: #1e3a8a;
-            border-radius: 5px;
+        
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
         }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #2563eb;
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
         }
-
-        /* Empty state styling */
+        
+        /* Empty state */
         .empty-state {
             text-align: center;
             padding: 4rem 2rem;
             background: white;
             border-radius: 2rem;
-            border: 2px dashed #1e3a8a20;
+            border: 2px dashed rgba(30, 58, 138, 0.2);
         }
-
-        .empty-state-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
+        
+        /* Pattern background */
+        .pattern-grid {
+            background-image: 
+                linear-gradient(rgba(30, 58, 138, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(30, 58, 138, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
         }
-
-        /* REMOVED: Load more button styling */
     </style>
 </head>
-<body class="antialiased">
+<body class="bg-white text-gray-900 overflow-x-hidden">
     <!-- Navigation -->
-    <div id="navbar" class="relative z-50"></div>
-    
-    <!-- Hero Section -->
-    <section class="pt-28 md:pt-32 pb-16 md:pb-20 bg-gradient-to-br from-blue-50 via-white to-blue-50">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="max-w-6xl mx-auto text-center">
-                <!-- Badge -->
-                <div class="inline-flex items-center bg-blue-900 text-white font-semibold px-6 py-3 rounded-full mb-6 md:mb-8 shadow-lg">
-                    <span class="mr-2">✨</span>
-                    Premium Design Portfolio
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-blue-900/10 shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <a href="/" class="flex items-center space-x-3 group">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-900 to-blue-700 rounded-2xl flex items-center justify-center text-white text-xl font-bold shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        MB
+                    </div>
+                    <span class="text-xl font-bold text-gray-900">
+                        Mada<span class="text-blue-900">Brand</span>
+                    </span>
+                </a>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="text-gray-700 hover:text-blue-900 font-medium transition relative group">
+                        Home
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-900 group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="/about" class="text-gray-700 hover:text-blue-900 font-medium transition relative group">
+                        About
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-900 group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="/services" class="text-gray-700 hover:text-blue-900 font-medium transition relative group">
+                        Services
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-900 group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="/portfolio" class="text-blue-900 font-medium relative">
+                        Portfolio
+                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-900"></span>
+                    </a>
+                    <a href="/contact" class="bg-blue-900 text-white px-6 py-2.5 rounded-full hover:bg-blue-800 transition-all hover:scale-105 hover:shadow-lg font-medium">
+                        Get Quote
+                    </a>
                 </div>
                 
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-blue-900">
-                    Design Excellence<br>Showcase
+                <!-- Mobile Menu Button -->
+                <button id="menuToggle" class="md:hidden text-gray-700 p-2 hover:bg-blue-50 rounded-lg transition">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="md:hidden mt-4 bg-white rounded-2xl shadow-xl border border-blue-100 p-4">
+                <div class="flex flex-col space-y-3">
+                    <a href="/" class="px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-xl transition font-medium">Home</a>
+                    <a href="/about" class="px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-xl transition font-medium">About</a>
+                    <a href="/services" class="px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-xl transition font-medium">Services</a>
+                    <a href="/portfolio" class="px-4 py-3 bg-blue-50 text-blue-900 rounded-xl font-medium">Portfolio</a>
+                    <a href="/contact" class="px-4 py-3 bg-blue-900 text-white rounded-xl hover:bg-blue-800 transition text-center font-medium">Get Quote</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50 pt-20 pb-16 md:pt-24 md:pb-20">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 pattern-grid opacity-20"></div>
+        <div class="absolute top-20 left-10 w-64 h-64 bg-blue-200/20 rounded-full blur-3xl animate-float"></div>
+        <div class="absolute bottom-20 right-10 w-96 h-96 bg-blue-300/10 rounded-full blur-3xl animate-float" style="animation-delay: 1s;"></div>
+        
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="max-w-4xl mx-auto text-center">
+                <!-- Badge -->
+                <div class="inline-flex items-center bg-blue-900 text-white font-semibold px-6 py-3 rounded-full mb-6 md:mb-8 shadow-lg animate-fade-up">
+                    <i class="fas fa-star mr-2"></i>
+                    <span>Premium Design Portfolio</span>
+                </div>
+                
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-gray-900 animate-fade-up" style="animation-delay: 0.1s;">
+                    Design Excellence<br>
+                    <span class="bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent">Showcase</span>
                 </h1>
                 
-                <p class="text-lg md:text-xl text-gray-600 mb-10 max-w-3xl mx-auto">
+                <p class="text-lg md:text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-up" style="animation-delay: 0.2s;">
                     Explore our transformative brand identity projects for Nigerian businesses and international clients. Each design tells a unique story of innovation and strategic thinking.
                 </p>
                 
                 <!-- Stats Grid -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto" id="stats-container">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto animate-fade-up" style="animation-delay: 0.3s;" id="stats-container">
                     <!-- Stats loaded via JavaScript -->
                 </div>
             </div>
@@ -371,7 +399,7 @@
     </section>
     
     <!-- Filter Section -->
-    <section class="py-8 bg-white border-y border-blue-100 sticky top-16 z-40 shadow-sm">
+    <section class="sticky top-20 z-40 bg-white/95 backdrop-blur-md border-y border-blue-100 shadow-sm">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="filter-container">
                 <button class="filter-btn active" data-filter="all">All Projects</button>
@@ -388,39 +416,39 @@
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Loading State -->
             <div id="loading-state" class="text-center py-20">
-                <div class="loading-spinner mb-4"></div>
+                <div class="loading-spinner mx-auto mb-4"></div>
                 <p class="text-gray-500 text-lg">Loading stunning projects...</p>
             </div>
             
-            <!-- Projects Grid - Shows ALL projects at once (no load more) -->
+            <!-- Projects Grid -->
             <div id="portfolio-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 opacity-0 transition-opacity duration-500">
                 <!-- Projects will be loaded dynamically -->
             </div>
             
             <!-- No Results Message -->
             <div id="no-results" class="empty-state hidden">
-                <div class="empty-state-icon">🔍</div>
+                <div class="text-6xl mb-4 opacity-50">🔍</div>
                 <h3 class="text-2xl font-bold text-gray-900 mb-2">No Projects Found</h3>
                 <p class="text-gray-600">No projects match the selected filter. Try another category.</p>
             </div>
         </div>
     </section>
     
-    <!-- Featured Case Study (Static) -->
+    <!-- Featured Case Study -->
     <section class="py-12 md:py-20 bg-gradient-to-br from-blue-50 via-white to-blue-50">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-8 md:mb-12">
+            <div class="text-center mb-8 md:mb-12 reveal">
                 <div class="inline-flex items-center bg-amber-100 text-amber-800 px-4 py-2 rounded-full mb-4">
-                    <span class="mr-2">🏆</span>
+                    <i class="fas fa-trophy mr-2"></i>
                     Featured Case Study
                 </div>
                 
-                <h2 class="section-title text-center" data-editable="featured-title">NuelArk Construction</h2>
-                <p class="text-gray-600 text-lg" data-editable="featured-subtitle">Where Art Meets Structural Excellence</p>
+                <h2 class="section-title text-center">NuelArk Construction</h2>
+                <p class="text-gray-600 text-lg mt-4">Where Art Meets Structural Excellence</p>
             </div>
             
-            <div class="case-study-card">
-                <div class="grid grid-cols-1 lg:grid-cols-2">
+            <div class="case-study-card reveal">
+                <div class="grid lg:grid-cols-2">
                     <!-- Content -->
                     <div class="p-6 md:p-8 lg:p-12 order-2 lg:order-1">
                         <div class="space-y-6">
@@ -428,7 +456,7 @@
                                 Project Overview
                             </h3>
                             
-                            <p class="text-gray-600 leading-relaxed" data-editable="featured-description">
+                            <p class="text-gray-600 leading-relaxed">
                                 NuelArk Construction Company sought to elevate their brand from a standard construction firm to a premium industry leader. The challenge was to create a visual identity that communicates both structural excellence and artistic sensibility.
                             </p>
                             
@@ -461,22 +489,19 @@
                                 </ul>
                             </div>
                             
-                            <a href="#" class="inline-flex items-center px-6 py-3 bg-blue-900 text-white rounded-full hover:bg-blue-800 transition-all duration-300">
+                            <a href="#" class="inline-flex items-center px-6 py-3 bg-blue-900 text-white rounded-full hover:bg-blue-800 transition-all duration-300 group">
                                 <span class="mr-2">📖</span>
                                 Read Full Case Study
-                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                                </svg>
+                                <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
                             </a>
                         </div>
                     </div>
                     
                     <!-- Image -->
-                    <div class="relative h-64 sm:h-80 lg:h-auto order-1 lg:order-2 overflow-hidden bg-blue-100">
+                    <div class="relative h-64 sm:h-80 lg:h-auto order-1 lg:order-2 overflow-hidden bg-gradient-to-br from-blue-100 to-blue-200">
                         <img src="/assets/images/photo_1_2025-12-10_09-45-08.jpg" 
                              alt="NuelArk Construction Brand Identity" 
                              class="w-full h-full object-cover hover:scale-110 transition-transform duration-700"
-                             data-editable="featured-image"
                              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%231e3a8a20\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%231e3a8a\' font-family=\'Arial\' font-size=\'24\'%3ENuelArk%3C/text%3E%3C/svg%3E'">
                     </div>
                 </div>
@@ -487,17 +512,21 @@
     <!-- Testimonials Section -->
     <section class="py-12 md:py-20 bg-white">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-8 md:mb-12">
-                <h2 class="section-title text-center">Client Experiences</h2>
-                <p class="text-gray-600 text-lg">What Nigerian business owners say about working with us</p>
+            <div class="text-center mb-8 md:mb-12 reveal">
+                <div class="inline-flex items-center bg-blue-900/10 text-blue-900 px-4 py-2 rounded-full mb-4">
+                    <i class="fas fa-comment mr-2"></i>
+                    Client Experiences
+                </div>
+                <h2 class="section-title text-center">What Our Clients Say</h2>
+                <p class="text-gray-600 text-lg mt-4">Trusted by Nigerian businesses and international brands</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 <!-- Testimonial 1 -->
-                <div class="testimonial-card">
+                <div class="testimonial-card reveal">
                     <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 bg-blue-900 rounded-xl flex items-center justify-center text-white text-xl font-bold mr-3">
-                            N
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-900 to-blue-700 rounded-xl flex items-center justify-center text-white font-bold mr-3">
+                            NA
                         </div>
                         <div>
                             <h4 class="font-bold text-gray-900">Nuel Ark</h4>
@@ -508,15 +537,15 @@
                         "MadaBrand perfectly captured our vision. Our new branding has elevated our company's perception in the Lagos construction market."
                     </p>
                     <div class="flex text-yellow-500">
-                        ★★★★★
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                     </div>
                 </div>
                 
                 <!-- Testimonial 2 -->
-                <div class="testimonial-card">
+                <div class="testimonial-card reveal" style="animation-delay: 0.1s;">
                     <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 bg-purple-900 rounded-xl flex items-center justify-center text-white text-xl font-bold mr-3">
-                            H
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-900 to-purple-700 rounded-xl flex items-center justify-center text-white font-bold mr-3">
+                            HB
                         </div>
                         <div>
                             <h4 class="font-bold text-gray-900">Haven Bridge</h4>
@@ -527,15 +556,15 @@
                         "The brand identity perfectly reflects our commitment to quality and modern living. Exceptional attention to detail."
                     </p>
                     <div class="flex text-yellow-500">
-                        ★★★★★
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                     </div>
                 </div>
                 
                 <!-- Testimonial 3 -->
-                <div class="testimonial-card">
+                <div class="testimonial-card reveal" style="animation-delay: 0.2s;">
                     <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 bg-green-900 rounded-xl flex items-center justify-center text-white text-xl font-bold mr-3">
-                            A
+                        <div class="w-12 h-12 bg-gradient-to-br from-green-900 to-green-700 rounded-xl flex items-center justify-center text-white font-bold mr-3">
+                            AV
                         </div>
                         <div>
                             <h4 class="font-bold text-gray-900">Adi Vas</h4>
@@ -546,7 +575,7 @@
                         "Our eco-conscious brand identity exceeded expectations. Perfectly captures our sustainability commitment."
                     </p>
                     <div class="flex text-yellow-500">
-                        ★★★★★
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                     </div>
                 </div>
             </div>
@@ -554,79 +583,139 @@
     </section>
     
     <!-- CTA Section -->
-    <section class="py-12 md:py-20 bg-gradient-to-br from-blue-900 to-blue-800">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto">
-                <h2 class="text-3xl md:text-4xl font-bold mb-6 text-white">
-                    Ready for Your Brand Transformation?
-                </h2>
-                <p class="text-blue-100 text-lg mb-8">
-                    Let's create something exceptional for your Nigerian business or international venture.
-                </p>
-                
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="/contact" class="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-900 rounded-full hover:bg-blue-50 transition-all duration-300 hover:scale-105 font-semibold">
-                        <span class="mr-2">🚀</span>
-                        Start Your Project
-                    </a>
-                    <a href="https://wa.me/2348104902357" target="_blank" class="inline-flex items-center justify-center px-8 py-4 bg-green-600 text-white rounded-full hover:bg-green-700 transition-all duration-300 hover:scale-105 font-semibold">
-                        <span class="mr-2">💬</span>
-                        WhatsApp Consultation
-                    </a>
-                </div>
+    <section class="py-12 md:py-20 bg-gradient-to-r from-blue-900 to-blue-800 text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-10 left-10 w-40 h-40 bg-white/20 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-10 right-10 w-60 h-60 bg-white/10 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready for Your Brand Transformation?</h2>
+            <p class="text-blue-100 text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+                Let's create something exceptional for your Nigerian business or international venture.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/contact" class="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-900 rounded-full hover:bg-blue-50 transition-all hover:scale-105 font-semibold group">
+                    <span class="mr-2">🚀</span>
+                    Start Your Project
+                    <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
+                </a>
+                <a href="https://wa.me/2348104902357" target="_blank" class="inline-flex items-center justify-center px-8 py-4 bg-green-600 text-white rounded-full hover:bg-green-700 transition-all hover:scale-105 font-semibold group">
+                    <span class="mr-2">💬</span>
+                    WhatsApp Consultation
+                </a>
             </div>
         </div>
     </section>
     
     <!-- Footer -->
-    <div id="footer"></div>
+    <footer class="bg-gray-900 text-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div>
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-400 rounded-xl flex items-center justify-center text-white font-bold text-xl mr-3">
+                            MB
+                        </div>
+                        <span class="text-xl font-bold">Mada<span class="text-blue-400">Brand</span></span>
+                    </div>
+                    <p class="text-gray-400 mb-6 leading-relaxed">Creating memorable brand identities where art meets strategic design for businesses worldwide.</p>
+                    <div class="flex space-x-3">
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-900 transition"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-900 transition"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-900 transition"><i class="fab fa-behance"></i></a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-900 transition"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-6">Quick Links</h4>
+                    <ul class="space-y-3">
+                        <li><a href="/" class="text-gray-400 hover:text-white transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Home</a></li>
+                        <li><a href="/about" class="text-gray-400 hover:text-white transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>About Us</a></li>
+                        <li><a href="/services" class="text-gray-400 hover:text-white transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Services</a></li>
+                        <li><a href="/portfolio" class="text-gray-400 hover:text-white transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Portfolio</a></li>
+                        <li><a href="/contact" class="text-gray-400 hover:text-white transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Services -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-6">Services</h4>
+                    <ul class="space-y-3">
+                        <li class="text-gray-400">Brand Identity Design</li>
+                        <li class="text-gray-400">Logo & Visual Systems</li>
+                        <li class="text-gray-400">Brand Guidelines</li>
+                        <li class="text-gray-400">Business Collateral</li>
+                        <li class="text-gray-400">Packaging Design</li>
+                    </ul>
+                </div>
+                
+                <!-- Contact -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-6">Contact Info</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt text-blue-400 mr-3 mt-1"></i>
+                            <span class="text-gray-400">Lagos, Nigeria<br>Serving clients worldwide</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope text-blue-400 mr-3"></i>
+                            <a href="mailto:macaulaymadalene@gmail.com" class="text-gray-400 hover:text-white transition">macaulaymadalene@gmail.com</a>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone-alt text-blue-400 mr-3"></i>
+                            <a href="tel:08104902357" class="text-gray-400 hover:text-white transition">0810 490 2357</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-sm">
+                <p>&copy; 2024 MadaBrand. All rights reserved. Where Art Meets Strategic Design.</p>
+            </div>
+        </div>
+    </footer>
 
     <!-- Scripts -->
-    <!-- 1. Keep-alive first to wake up server -->
-    <script src="/scripts/keep-alive.js"></script>
-    <!-- 2. Main site script (defines API_BASE) -->
-    <script src="/scripts/main.js"></script>
-    <!-- 3. Portfolio page script -->
     <script>
-        // FIXED: Use API_BASE from main.js
+        // API configuration
         const API_URL = window.API_BASE || 'https://madabrand.onrender.com/api';
         
-        // State management
+        // State
         let portfolioData = [];
         let currentFilter = 'all';
-        let isLoading = false;
 
-        // Load navbar and footer
+        // Mobile menu
         document.addEventListener('DOMContentLoaded', function() {
-            // Load navbar
-            fetch('/components/navbar.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('navbar').innerHTML = data;
-                    initMobileMenu();
-                })
-                .catch(() => {
-                    document.getElementById('navbar').innerHTML = '<nav class="bg-blue-900 text-white p-4">Navigation</nav>';
-                });
+            const menuToggle = document.getElementById('menuToggle');
+            const mobileMenu = document.getElementById('mobileMenu');
             
-            // Load footer
-            fetch('/components/footer.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('footer').innerHTML = data;
-                })
-                .catch(() => {
-                    document.getElementById('footer').innerHTML = '<footer class="bg-blue-900 text-white p-4 text-center">Footer</footer>';
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('open');
+                    const icon = menuToggle.querySelector('i');
+                    if (icon.classList.contains('fa-bars')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
                 });
+            }
 
-            // Fetch portfolio data from API
+            // Load portfolio data
             fetchPortfolio();
             
             // Initialize filters
             initFilters();
             
-            // Set up auto-refresh
-            setupAutoRefresh();
+            // Scroll reveal
+            initScrollReveal();
         });
 
         // Fetch portfolio from API
@@ -634,62 +723,37 @@
             showLoading(true);
             
             try {
-                console.log('📡 Fetching portfolio from:', `${API_URL}/portfolio`);
                 const response = await fetch(`${API_URL}/portfolio`, {
-                    headers: {
-                        'Authorization': 'Bearer MADA2024'
-                    },
-                    cache: 'no-cache' // Prevent caching
+                    headers: { 'Authorization': 'Bearer MADA2024' },
+                    cache: 'no-cache'
                 });
                 
                 if (response.ok) {
                     const data = await response.json();
-                    console.log('✅ Portfolio data received:', data);
-                    
-                    // Handle both formats - array or { projects: [] }
-                    let newData = data.projects || data || [];
-                    
-                    // Check if data actually changed before updating
-                    if (JSON.stringify(newData) !== JSON.stringify(portfolioData)) {
-                        console.log('📦 Portfolio updated, refreshing display...');
-                        portfolioData = newData;
-                        
-                        // Sort by date (newest first)
-                        portfolioData.sort((a, b) => {
-                            const dateA = a.createdAt || a.date || 0;
-                            const dateB = b.createdAt || b.date || 0;
-                            return new Date(dateB) - new Date(dateA);
-                        });
-                        
-                        updateStats();
-                        filterAndDisplayProjects();
-                    } else {
-                        console.log('📦 No changes in portfolio data');
-                    }
+                    portfolioData = data.projects || data || [];
                 } else {
-                    console.warn('⚠️ API returned:', response.status);
-                    // Try localStorage fallback
+                    // Fallback to localStorage
                     const localData = localStorage.getItem('madabrandPortfolio');
-                    if (localData) {
-                        portfolioData = JSON.parse(localData);
-                    } else {
-                        portfolioData = getDefaultPortfolio();
-                    }
-                    updateStats();
-                    filterAndDisplayProjects();
+                    portfolioData = localData ? JSON.parse(localData) : getDefaultPortfolio();
                 }
             } catch (error) {
-                console.error('❌ Error fetching portfolio:', error);
-                // Fallback to default data
+                console.error('Error fetching portfolio:', error);
                 portfolioData = getDefaultPortfolio();
-                updateStats();
-                filterAndDisplayProjects();
             }
             
+            // Sort by date (newest first)
+            portfolioData.sort((a, b) => {
+                const dateA = a.createdAt || a.date || 0;
+                const dateB = b.createdAt || b.date || 0;
+                return new Date(dateB) - new Date(dateA);
+            });
+            
+            updateStats();
+            filterAndDisplayProjects();
             showLoading(false);
         }
 
-        // Default portfolio data (full 10 projects)
+        // Default portfolio data
         function getDefaultPortfolio() {
             return [
                 {
@@ -805,7 +869,7 @@
             ];
         }
 
-        // Update stats based on portfolio data
+        // Update stats
         function updateStats() {
             const statsContainer = document.getElementById('stats-container');
             const totalProjects = portfolioData.length;
@@ -833,41 +897,45 @@
             `;
         }
 
-        // Filter and display ALL projects (no pagination)
+        // Filter and display projects
         function filterAndDisplayProjects() {
             const grid = document.getElementById('portfolio-grid');
             const noResults = document.getElementById('no-results');
             
-            // Filter projects based on current filter
             const filtered = currentFilter === 'all' 
                 ? portfolioData 
                 : portfolioData.filter(p => p.category === currentFilter);
             
             if (filtered.length === 0) {
-                // Show no results message
                 grid.innerHTML = '';
                 grid.style.opacity = '0';
                 noResults.classList.remove('hidden');
                 return;
             }
             
-            // Hide no results message
             noResults.classList.add('hidden');
             
-            // Generate HTML for ALL projects at once (no load more)
             const projectsHTML = filtered.map(project => {
                 const imageUrl = project.images?.[0] || project.image || '/assets/images/placeholder.jpg';
+                const categoryDisplay = {
+                    'branding': '🏗️ Brand Identity',
+                    'logo': '✨ Logo Design',
+                    'graphic': '🎨 Graphic Design',
+                    'web': '🌐 Web Design'
+                }[project.category] || '📁 Design';
+                
                 return `
-                <div class="portfolio-card" data-category="${project.category}">
-                    <div class="image-wrapper loading">
+                <div class="portfolio-card reveal">
+                    <div class="card-image-wrapper">
                         <img src="${imageUrl}" 
                              alt="${project.title}"
                              loading="lazy"
                              onload="this.classList.add('loaded')"
                              onerror="this.src='/assets/images/placeholder.jpg'; this.classList.add('loaded')">
                         <div class="category-badge">
-                            ${getCategoryDisplay(project.category)}
+                            ${categoryDisplay}
                         </div>
+                        ${project.featured ? '<div class="featured-badge"><i class="fas fa-star"></i> Featured</div>' : ''}
                     </div>
                     <div class="p-6 flex-1 flex flex-col">
                         <div class="mb-3">
@@ -876,34 +944,23 @@
                         </div>
                         <p class="text-gray-600 text-sm leading-relaxed flex-1">${project.description || 'No description provided.'}</p>
                         <div class="mt-4 pt-4 border-t border-gray-100">
-                            <a href="/portfolio/${project.id}" class="text-blue-900 font-semibold hover:text-blue-700 transition flex items-center text-sm">
+                            <a href="/portfolio/${project.id}" class="text-blue-900 font-semibold hover:text-blue-700 transition flex items-center text-sm group">
                                 View Project
-                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                                </svg>
+                                <i class="fas fa-arrow-right ml-1 group-hover:translate-x-1 transition"></i>
                             </a>
                         </div>
                     </div>
                 </div>
             `}).join('');
             
-            // Update grid with all projects
             grid.innerHTML = projectsHTML;
             grid.style.opacity = '1';
             
-            console.log(`✅ Displayed ${filtered.length} projects`);
+            // Re-run reveal for new items
+            initScrollReveal();
         }
 
-        function getCategoryDisplay(category) {
-            const displays = {
-                'branding': '🏗️ Brand Identity',
-                'logo': '✨ Logo Design',
-                'graphic': '🎨 Graphic Design',
-                'web': '🌐 Web Design'
-            };
-            return displays[category] || '📁 Design';
-        }
-
+        // Show/hide loading
         function showLoading(show) {
             const loadingState = document.getElementById('loading-state');
             const grid = document.getElementById('portfolio-grid');
@@ -915,6 +972,7 @@
             }
         }
 
+        // Initialize filters
         function initFilters() {
             const filterBtns = document.querySelectorAll('.filter-btn');
             filterBtns.forEach(btn => {
@@ -922,63 +980,48 @@
                     filterBtns.forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
                     currentFilter = this.dataset.filter;
-                    showLoading(true);
-                    setTimeout(() => {
-                        filterAndDisplayProjects();
-                        showLoading(false);
-                    }, 300);
+                    filterAndDisplayProjects();
                 });
             });
         }
 
-        function setupAutoRefresh() {
-            // Check for updates every 30 seconds
-            setInterval(async () => {
-                try {
-                    const response = await fetch(`${API_URL}/portfolio`, {
-                        headers: { 'Authorization': 'Bearer MADA2024' },
-                        cache: 'no-cache'
-                    });
-                    if (response.ok) {
-                        const data = await response.json();
-                        const newData = data.projects || data || [];
-                        
-                        // Only update if data actually changed
-                        if (JSON.stringify(newData) !== JSON.stringify(portfolioData)) {
-                            console.log('📦 Portfolio updated, refreshing...');
-                            portfolioData = newData;
-                            
-                            // Sort by date (newest first)
-                            portfolioData.sort((a, b) => {
-                                const dateA = a.createdAt || a.date || 0;
-                                const dateB = b.createdAt || b.date || 0;
-                                return new Date(dateB) - new Date(dateA);
-                            });
-                            
-                            updateStats();
-                            filterAndDisplayProjects();
-                        }
-                    }
-                } catch (error) {
-                    // Silently fail for auto-refresh
-                }
-            }, 30000);
-        }
-
-        function initMobileMenu() {
-            const menuBtn = document.getElementById('mobile-menu-btn');
-            const mobileMenu = document.getElementById('mobile-menu');
-            if (menuBtn && mobileMenu) {
-                menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-                document.addEventListener('click', (e) => {
-                    if (!mobileMenu.contains(e.target) && !menuBtn.contains(e.target)) {
-                        mobileMenu.classList.add('hidden');
+        // Scroll reveal
+        function initScrollReveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
                     }
                 });
-            }
+            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+            
+            reveals.forEach(el => observer.observe(el));
         }
 
-        // REMOVED: All load more functionality
+        // Auto-refresh (every 30 seconds)
+        setInterval(async () => {
+            try {
+                const response = await fetch(`${API_URL}/portfolio`, {
+                    headers: { 'Authorization': 'Bearer MADA2024' },
+                    cache: 'no-cache'
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    const newData = data.projects || data || [];
+                    
+                    if (JSON.stringify(newData) !== JSON.stringify(portfolioData)) {
+                        portfolioData = newData;
+                        portfolioData.sort((a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date));
+                        updateStats();
+                        filterAndDisplayProjects();
+                    }
+                }
+            } catch (error) {
+                // Silently fail for auto-refresh
+            }
+        }, 30000);
     </script>
 </body>
 </html>

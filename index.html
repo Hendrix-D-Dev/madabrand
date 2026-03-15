@@ -2,320 +2,497 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MadaBrand | Premium Design Studio</title>
-    <link href="/dist/output.css" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="/assets/icons/favicon.ico">
-    <meta name="description" content="MadaBrand - Premium brand design, logo design, and graphic design services. Creating memorable brand identities for businesses worldwide.">
-    <meta name="keywords" content="brand design, logo design, graphic design, brand identity, visual identity">
-    <meta name="author" content="MadaBrand">
-    <meta property="og:title" content="MadaBrand | Premium Design Studio">
-    <meta property="og:description" content="Creating memorable brand identities for businesses worldwide.">
-    <meta property="og:type" content="website">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>MadaBrand | Premium Design Studio Lagos</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Tailwind (via CDN for demo, use your local build in production) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Custom animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulseSlow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+        
+        .animate-fade-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        .animate-pulse-slow {
+            animation: pulseSlow 3s ease-in-out infinite;
+        }
+        
+        /* Stagger children */
+        .stagger-children > * {
+            opacity: 0;
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+        
+        .stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
+        .stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
+        .stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
+        
+        /* Service cards */
+        .service-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 40px -20px rgba(30, 58, 138, 0.4);
+        }
+        
+        /* Portfolio cards */
+        .portfolio-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .portfolio-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(30, 58, 138, 0.8) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+        
+        .portfolio-card:hover::before {
+            opacity: 1;
+        }
+        
+        .portfolio-card img {
+            transition: transform 0.5s ease;
+        }
+        
+        .portfolio-card:hover img {
+            transform: scale(1.1);
+        }
+        
+        .portfolio-content {
+            transition: transform 0.3s ease;
+        }
+        
+        .portfolio-card:hover .portfolio-content {
+            transform: translateY(-5px);
+        }
+        
+        /* Background patterns */
+        .pattern-grid {
+            background-image: 
+                linear-gradient(rgba(30, 58, 138, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(30, 58, 138, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        
+        .pattern-dots {
+            background-image: radial-gradient(rgba(30, 58, 138, 0.1) 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+        
+        /* Stats counter */
+        .stat-number {
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover .stat-number {
+            transform: scale(1.1);
+            color: #1e3a8a;
+        }
+        
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Mobile menu */
+        #mobile-menu {
+            transition: all 0.3s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        
+        #mobile-menu.open {
+            max-height: 500px;
+            opacity: 1;
+        }
+    </style>
 </head>
-<body class="font-body bg-white text-gray-800 overflow-x-hidden" data-page="index">
-    <!-- Header -->
-    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-blue-900/20">
-        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-3 lg:py-4">
+<body class="bg-white text-gray-900 overflow-x-hidden">
+    <!-- Navigation -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-blue-900/10 shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex justify-between items-center">
-                <!-- Logo - Professional & Clean -->
-                <a href="/" class="flex items-center">
-                    <img src="/assets/images/photo_10_2025-12-10_09-49-24.jpg" 
-                         alt="MadaBrand Logo" 
-                         class="h-12 w-12 md:h-14 md:w-14 object-cover rounded-full border-3 md:border-4 border-blue-900 shadow-sm hover:scale-105 transition-transform duration-300">
+                <!-- Logo -->
+                <a href="/" class="flex items-center space-x-3 group">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-900 to-blue-700 rounded-2xl flex items-center justify-center text-white text-xl font-bold shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        MB
+                    </div>
+                    <span class="text-xl font-bold text-gray-900">
+                        Mada<span class="text-blue-900">Brand</span>
+                    </span>
                 </a>
                 
                 <!-- Desktop Navigation -->
-                <div class="hidden md:flex space-x-8 items-center">
-                    <a href="/" class="text-gray-700 hover:text-blue-900 font-medium transition border-b-2 border-transparent hover:border-blue-900 pb-1 text-sm lg:text-base">Home</a>
-                    <a href="/about" class="text-gray-700 hover:text-blue-900 font-medium transition border-b-2 border-transparent hover:border-blue-900 pb-1 text-sm lg:text-base">About</a>
-                    <a href="/services" class="text-gray-700 hover:text-blue-900 font-medium transition border-b-2 border-transparent hover:border-blue-900 pb-1 text-sm lg:text-base">Services</a>
-                    <a href="/portfolio" class="text-gray-700 hover:text-blue-900 font-medium transition border-b-2 border-transparent hover:border-blue-900 pb-1 text-sm lg:text-base">Portfolio</a>
-                    <a href="/contact" class="inline-flex items-center justify-center px-5 py-2.5 bg-blue-900 text-white font-medium rounded-lg hover:bg-blue-800 transition-all duration-300 hover:scale-105 shadow-sm text-sm lg:text-base">Get Quote</a>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="text-blue-900 font-medium relative">
+                        Home
+                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-900"></span>
+                    </a>
+                    <a href="/about" class="text-gray-700 hover:text-blue-900 font-medium transition relative group">
+                        About
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-900 group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="/services" class="text-gray-700 hover:text-blue-900 font-medium transition relative group">
+                        Services
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-900 group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="/portfolio" class="text-gray-700 hover:text-blue-900 font-medium transition relative group">
+                        Portfolio
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-900 group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="/contact" class="bg-blue-900 text-white px-6 py-2.5 rounded-full hover:bg-blue-800 transition-all hover:scale-105 hover:shadow-lg font-medium">
+                        Get Quote
+                    </a>
                 </div>
                 
                 <!-- Mobile Menu Button -->
-                <button id="mobile-menu-btn" class="md:hidden text-gray-700 p-1">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
+                <button id="menuToggle" class="md:hidden text-gray-700 p-2 hover:bg-blue-50 rounded-lg transition">
+                    <i class="fas fa-bars text-2xl"></i>
                 </button>
             </div>
             
             <!-- Mobile Menu -->
-            <div id="mobile-menu" class="hidden md:hidden mt-4 space-y-3 bg-white rounded-lg shadow-lg p-4 border border-gray-200">
-                <a href="/" class="block text-gray-700 hover:text-blue-900 font-medium py-2.5 px-4 rounded-lg hover:bg-blue-900/5 transition-colors text-base">Home</a>
-                <a href="/about" class="block text-gray-700 hover:text-blue-900 font-medium py-2.5 px-4 rounded-lg hover:bg-blue-900/5 transition-colors text-base">About</a>
-                <a href="/services" class="block text-gray-700 hover:text-blue-900 font-medium py-2.5 px-4 rounded-lg hover:bg-blue-900/5 transition-colors text-base">Services</a>
-                <a href="/portfolio" class="block text-gray-700 hover:text-blue-900 font-medium py-2.5 px-4 rounded-lg hover:bg-blue-900/5 transition-colors text-base">Portfolio</a>
-                <a href="/contact" class="inline-flex items-center justify-center px-6 py-3 bg-blue-900 text-white font-medium rounded-lg hover:bg-blue-800 transition-all duration-300 hover:scale-105 shadow-sm mt-2 w-full text-base">Get Quote</a>
+            <div id="mobileMenu" class="md:hidden mt-4 bg-white rounded-2xl shadow-xl border border-blue-100 p-4">
+                <div class="flex flex-col space-y-3">
+                    <a href="/" class="px-4 py-3 bg-blue-50 text-blue-900 rounded-xl font-medium">Home</a>
+                    <a href="/about" class="px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-xl transition font-medium">About</a>
+                    <a href="/services" class="px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-xl transition font-medium">Services</a>
+                    <a href="/portfolio" class="px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-xl transition font-medium">Portfolio</a>
+                    <a href="/contact" class="px-4 py-3 bg-blue-900 text-white rounded-xl hover:bg-blue-800 transition text-center font-medium">Get Quote</a>
+                </div>
             </div>
         </nav>
     </header>
-    
-    <!-- Hero Section - Professional & Clean -->
-    <section class="relative overflow-hidden bg-gradient-to-br from-white via-white to-blue-900/5 min-h-[90vh] md:min-h-screen flex items-center">
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(0,51,102,0.05)_0%,transparent_50%)]"></div>
+
+    <!-- Hero Section - Bold & Modern -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-white via-white to-blue-50 min-h-[90vh] flex items-center">
+        <!-- Animated Background Elements -->
+        <div class="absolute inset-0 pattern-grid opacity-20"></div>
+        <div class="absolute top-20 left-10 w-72 h-72 bg-blue-200/20 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div class="absolute bottom-20 right-10 w-96 h-96 bg-blue-300/20 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 1s;"></div>
         
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 relative z-10">
-            <div class="max-w-4xl animate-fade-in">
+        <!-- Floating Shapes -->
+        <div class="absolute top-40 right-20 w-20 h-20 border-2 border-blue-900/10 rounded-2xl rotate-12 animate-float hidden lg:block"></div>
+        <div class="absolute bottom-40 left-20 w-32 h-32 border-2 border-blue-900/10 rounded-full animate-float hidden lg:block" style="animation-delay: 1s;"></div>
+        
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-12 md:py-20">
+            <div class="max-w-4xl">
                 <!-- Badge -->
-                <div class="inline-flex items-center bg-blue-900/10 text-blue-900 font-medium px-4 py-2 rounded-full mb-6 md:mb-8">
-                    <span class="mr-2">✨</span>
-                    Premium Design Studio
+                <div class="inline-flex items-center bg-blue-900/10 text-blue-900 px-5 py-2 rounded-full mb-6 animate-fade-up">
+                    <i class="fas fa-crown mr-2"></i>
+                    <span class="font-semibold">Premium Design Studio</span>
                 </div>
                 
-                <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 md:mb-8 leading-tight tracking-tight">
-                    <span class="text-blue-900 block">Strategic Design</span>
-                    <span class="text-gray-800">That Elevates Brands</span>
+                <h1 class="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-6 leading-tight animate-fade-up" style="animation-delay: 0.1s;">
+                    <span class="text-gray-900 block">Strategic Design</span>
+                    <span class="bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent block">That Elevates Brands</span>
                 </h1>
                 
-                <p class="text-lg md:text-xl text-gray-600 mb-8 md:mb-10 max-w-2xl leading-relaxed">
+                <p class="text-xl md:text-2xl text-gray-600 mb-10 max-w-2xl leading-relaxed animate-fade-up" style="animation-delay: 0.2s;">
                     We craft premium brand identities that merge artistic creativity with strategic thinking. Transforming businesses through design that communicates excellence, innovation, and lasting impact.
                 </p>
                 
-                <!-- CTA Buttons - Professional Layout -->
-                <div class="flex flex-col sm:flex-row gap-4 md:gap-6">
-                    <a href="/contact" class="inline-flex items-center justify-center px-6 py-4 bg-blue-900 text-white font-medium rounded-lg hover:bg-blue-800 transition-all duration-300 hover:scale-105 shadow-lg text-base md:text-lg border-2 border-blue-900 group">
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 md:gap-6 animate-fade-up" style="animation-delay: 0.3s;">
+                    <a href="/contact" class="inline-flex items-center justify-center px-8 py-4 bg-blue-900 text-white font-semibold rounded-xl hover:bg-blue-800 transition-all hover:scale-105 hover:shadow-2xl text-lg group">
                         <span class="mr-2">🚀</span>
                         Start Your Project
-                        <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                        </svg>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
                     </a>
                     
-                    <a href="/portfolio" class="inline-flex items-center justify-center px-6 py-4 bg-white text-blue-900 font-medium rounded-lg hover:bg-gray-50 transition-all duration-300 hover:scale-105 border-2 border-blue-900 text-base md:text-lg group">
+                    <a href="/portfolio" class="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-900 font-semibold rounded-xl hover:bg-blue-50 transition-all hover:scale-105 border-2 border-blue-900 text-lg group">
                         <span class="mr-2">📁</span>
                         View Portfolio
-                        <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                        </svg>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
                     </a>
                 </div>
                 
-                <!-- Stats - Professional Touch -->
-                <div class="mt-12 md:mt-16 pt-8 border-t border-gray-200">
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        <div class="text-center">
-                            <div class="text-2xl md:text-3xl font-bold text-blue-900 mb-1">50+</div>
-                            <div class="text-sm text-gray-600">Projects Completed</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-2xl md:text-3xl font-bold text-blue-900 mb-1">100%</div>
-                            <div class="text-sm text-gray-600">Client Satisfaction</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-2xl md:text-3xl font-bold text-blue-900 mb-1">15+</div>
-                            <div class="text-sm text-gray-600">Industries Served</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-2xl md:text-3xl font-bold text-blue-900 mb-1">3+</div>
-                            <div class="text-sm text-gray-600">Years Experience</div>
-                        </div>
+                <!-- Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mt-12 md:mt-16 pt-8 border-t border-gray-200 animate-fade-up" style="animation-delay: 0.4s;">
+                    <div class="stat-card text-center group">
+                        <div class="stat-number text-3xl md:text-4xl font-bold text-gray-900 mb-1">50+</div>
+                        <div class="text-sm text-gray-600 uppercase tracking-wider">Projects</div>
+                    </div>
+                    <div class="stat-card text-center group">
+                        <div class="stat-number text-3xl md:text-4xl font-bold text-gray-900 mb-1">100%</div>
+                        <div class="text-sm text-gray-600 uppercase tracking-wider">Satisfaction</div>
+                    </div>
+                    <div class="stat-card text-center group">
+                        <div class="stat-number text-3xl md:text-4xl font-bold text-gray-900 mb-1">15+</div>
+                        <div class="text-sm text-gray-600 uppercase tracking-wider">Industries</div>
+                    </div>
+                    <div class="stat-card text-center group">
+                        <div class="stat-number text-3xl md:text-4xl font-bold text-gray-900 mb-1">3+</div>
+                        <div class="text-sm text-gray-600 uppercase tracking-wider">Years</div>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Decorative Elements -->
-        <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent z-0"></div>
     </section>
 
-    <!-- Featured Works - Enhanced Grid -->
-    <section class="bg-white py-12 md:py-20 lg:py-24">
+    <!-- Featured Projects -->
+    <section class="py-16 md:py-24 bg-white">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12 md:mb-16">
-                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-blue-900">Featured Projects</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto text-lg">Premium brand identities that have transformed businesses worldwide</p>
+            <div class="text-center max-w-3xl mx-auto mb-12 reveal">
+                <div class="inline-flex items-center bg-blue-900/10 text-blue-900 px-5 py-2 rounded-full mb-4">
+                    <i class="fas fa-star mr-2"></i>
+                    <span class="font-semibold">Featured Work</span>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-900">Recent Projects</h2>
+                <p class="text-gray-600 text-lg">Premium brand identities that have transformed businesses worldwide</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-children">
                 <!-- Project 1 -->
-                <div class="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-200">
-                    <div class="h-64 md:h-72 overflow-hidden relative">
+                <div class="portfolio-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition group">
+                    <div class="h-64 overflow-hidden relative">
                         <img src="/assets/images/photo_1_2025-12-10_09-45-08.jpg" 
-                             alt="NuelArk Construction Company" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    </div>
-                    <div class="p-6 md:p-8">
-                        <div class="inline-flex items-center bg-blue-900/10 text-blue-900 text-sm font-medium px-3 py-1 rounded-full mb-3">
-                            Construction Industry
+                             alt="NuelArk Construction" 
+                             class="w-full h-full object-cover">
+                        <div class="absolute top-4 right-4 bg-blue-900 text-white px-3 py-1 rounded-full text-sm font-medium z-10">
+                            Featured
                         </div>
-                        <h3 class="text-xl md:text-2xl font-bold mb-3 text-gray-900">NuelArk Construction</h3>
-                        <p class="text-gray-600 mb-4 leading-relaxed">Complete brand identity for a modern construction company blending art with structural precision.</p>
-                        <a href="/portfolio" class="inline-flex items-center text-blue-900 font-semibold hover:underline group-hover:translate-x-2 transition-transform">
+                    </div>
+                    <div class="p-6">
+                        <div class="inline-block bg-blue-100 text-blue-900 text-xs font-semibold px-3 py-1 rounded-full mb-3">
+                            Construction
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">NuelArk Construction</h3>
+                        <p class="text-gray-600 mb-4">Complete brand identity for a modern construction company blending art with structural precision.</p>
+                        <a href="/portfolio" class="inline-flex items-center text-blue-900 font-semibold group-hover:underline">
                             View Case Study
-                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                            </svg>
+                            <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
                         </a>
                     </div>
                 </div>
                 
                 <!-- Project 2 -->
-                <div class="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-200">
-                    <div class="h-64 md:h-72 overflow-hidden relative">
+                <div class="portfolio-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition group">
+                    <div class="h-64 overflow-hidden relative">
                         <img src="/assets/images/photo_3_2025-12-10_09-45-08.jpg" 
                              alt="Havenbridge Development" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                             class="w-full h-full object-cover">
                     </div>
-                    <div class="p-6 md:p-8">
-                        <div class="inline-flex items-center bg-blue-900/10 text-blue-900 text-sm font-medium px-3 py-1 rounded-full mb-3">
+                    <div class="p-6">
+                        <div class="inline-block bg-blue-100 text-blue-900 text-xs font-semibold px-3 py-1 rounded-full mb-3">
                             Real Estate
                         </div>
-                        <h3 class="text-xl md:text-2xl font-bold mb-3 text-gray-900">Havenbridge Development</h3>
-                        <p class="text-gray-600 mb-4 leading-relaxed">Sophisticated identity for premium construction and real-estate development ventures.</p>
-                        <a href="/portfolio" class="inline-flex items-center text-blue-900 font-semibold hover:underline group-hover:translate-x-2 transition-transform">
+                        <h3 class="text-xl font-bold mb-2">Havenbridge Development</h3>
+                        <p class="text-gray-600 mb-4">Sophisticated identity for premium construction and real-estate development ventures.</p>
+                        <a href="/portfolio" class="inline-flex items-center text-blue-900 font-semibold group-hover:underline">
                             View Case Study
-                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                            </svg>
+                            <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
                         </a>
                     </div>
                 </div>
                 
                 <!-- Project 3 -->
-                <div class="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-200">
-                    <div class="h-64 md:h-72 overflow-hidden relative">
+                <div class="portfolio-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition group">
+                    <div class="h-64 overflow-hidden relative">
                         <img src="/assets/images/photo_5_2025-12-10_09-49-24.jpg" 
-                             alt="ADIVAS Eco-Conscious Brand" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                             alt="ADIVAS Eco-Brand" 
+                             class="w-full h-full object-cover">
                     </div>
-                    <div class="p-6 md:p-8">
-                        <div class="inline-flex items-center bg-blue-900/10 text-blue-900 text-sm font-medium px-3 py-1 rounded-full mb-3">
+                    <div class="p-6">
+                        <div class="inline-block bg-blue-100 text-blue-900 text-xs font-semibold px-3 py-1 rounded-full mb-3">
                             Sustainability
                         </div>
-                        <h3 class="text-xl md:text-2xl font-bold mb-3 text-gray-900">ADIVAS Eco-Brand</h3>
-                        <p class="text-gray-600 mb-4 leading-relaxed">Nature-inspired brand identity for sustainable living and wellness products.</p>
-                        <a href="/portfolio" class="inline-flex items-center text-blue-900 font-semibold hover:underline group-hover:translate-x-2 transition-transform">
+                        <h3 class="text-xl font-bold mb-2">ADIVAS Eco-Brand</h3>
+                        <p class="text-gray-600 mb-4">Nature-inspired brand identity for sustainable living and wellness products.</p>
+                        <a href="/portfolio" class="inline-flex items-center text-blue-900 font-semibold group-hover:underline">
                             View Case Study
-                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                            </svg>
+                            <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
                         </a>
                     </div>
                 </div>
             </div>
             
-            <div class="text-center mt-12 md:mt-16">
-                <a href="/portfolio" class="inline-flex items-center justify-center px-8 py-4 bg-transparent text-blue-900 font-semibold hover:bg-blue-900/5 transition-all duration-300 group border-2 border-blue-900 rounded-full text-lg">
+            <div class="text-center mt-12">
+                <a href="/portfolio" class="inline-flex items-center justify-center px-8 py-4 bg-transparent text-blue-900 font-semibold hover:bg-blue-50 transition-all group border-2 border-blue-900 rounded-xl text-lg">
                     Explore All Projects
-                    <svg class="w-5 h-5 ml-3 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                    </svg>
+                    <i class="fas fa-arrow-right ml-3 group-hover:translate-x-2 transition"></i>
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- Services Preview - Enhanced Layout -->
-    <section class="bg-gradient-to-b from-white to-blue-900/5 py-12 md:py-20 lg:py-24">
+    <!-- Services Preview -->
+    <section class="py-16 md:py-24 bg-gradient-to-b from-blue-50 to-white">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12 md:mb-16">
-                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-blue-900">Our Design Services</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto text-lg">Comprehensive solutions crafted to elevate your brand's presence</p>
+            <div class="text-center max-w-3xl mx-auto mb-12 reveal">
+                <div class="inline-flex items-center bg-blue-900/10 text-blue-900 px-5 py-2 rounded-full mb-4">
+                    <i class="fas fa-paint-brush mr-2"></i>
+                    <span class="font-semibold">Our Services</span>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-900">Design Solutions</h2>
+                <p class="text-gray-600 text-lg">Comprehensive brand services tailored to elevate your business</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
-                <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-200 group">
-                    <div class="w-16 h-16 bg-gradient-to-br from-blue-900 to-blue-800 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                        <span class="text-3xl text-white">🎨</span>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="service-card bg-white rounded-2xl p-8 shadow-lg border border-blue-100 group">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-900 to-blue-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+                        <i class="fas fa-palette text-2xl text-white"></i>
                     </div>
-                    <h3 class="text-xl md:text-2xl font-bold mb-4 text-gray-900">Complete Brand Identity</h3>
-                    <p class="text-gray-600 mb-6 leading-relaxed">Full visual systems including logos, color palettes, typography, brand guidelines, and application across all touchpoints.</p>
-                    <a href="/services" class="inline-flex items-center text-blue-900 font-semibold group-hover:text-blue-800">
+                    <h3 class="text-xl font-bold mb-3">Brand Identity</h3>
+                    <p class="text-gray-600 mb-4">Complete visual systems including logos, color palettes, typography, and brand guidelines.</p>
+                    <ul class="space-y-2 text-sm text-gray-500 mb-4">
+                        <li class="flex items-center"><i class="fas fa-check text-blue-900 mr-2 text-xs"></i>Logo Design & Variations</li>
+                        <li class="flex items-center"><i class="fas fa-check text-blue-900 mr-2 text-xs"></i>Color Palette Development</li>
+                        <li class="flex items-center"><i class="fas fa-check text-blue-900 mr-2 text-xs"></i>Typography System</li>
+                    </ul>
+                    <a href="/services" class="inline-flex items-center text-blue-900 font-semibold group-hover:underline">
                         Learn More
-                        <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                        </svg>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
                     </a>
                 </div>
                 
-                <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-200 group md:mt-8">
-                    <div class="w-16 h-16 bg-gradient-to-br from-blue-900 to-blue-800 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                        <span class="text-3xl text-white">✨</span>
+                <!-- Service 2 -->
+                <div class="service-card bg-white rounded-2xl p-8 shadow-lg border border-blue-100 group lg:mt-8">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-900 to-blue-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+                        <i class="fas fa-star text-2xl text-white"></i>
                     </div>
-                    <h3 class="text-xl md:text-2xl font-bold mb-4 text-gray-900">Logo & Visual Identity</h3>
-                    <p class="text-gray-600 mb-6 leading-relaxed">Strategic logo design and comprehensive visual systems that communicate your brand's unique story and values.</p>
-                    <a href="/services" class="inline-flex items-center text-blue-900 font-semibold group-hover:text-blue-800">
+                    <h3 class="text-xl font-bold mb-3">Logo Design</h3>
+                    <p class="text-gray-600 mb-4">Strategic logo design that communicates your brand's unique story and values.</p>
+                    <ul class="space-y-2 text-sm text-gray-500 mb-4">
+                        <li class="flex items-center"><i class="fas fa-check text-blue-900 mr-2 text-xs"></i>Concept Development</li>
+                        <li class="flex items-center"><i class="fas fa-check text-blue-900 mr-2 text-xs"></i>Vector Formats</li>
+                        <li class="flex items-center"><i class="fas fa-check text-blue-900 mr-2 text-xs"></i>Usage Guidelines</li>
+                    </ul>
+                    <a href="/services" class="inline-flex items-center text-blue-900 font-semibold group-hover:underline">
                         Learn More
-                        <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                        </svg>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
                     </a>
                 </div>
                 
-                <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-200 group">
-                    <div class="w-16 h-16 bg-gradient-to-br from-blue-900 to-blue-800 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                        <span class="text-3xl text-white">📱</span>
+                <!-- Service 3 -->
+                <div class="service-card bg-white rounded-2xl p-8 shadow-lg border border-blue-100 group">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-900 to-blue-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+                        <i class="fas fa-mobile-alt text-2xl text-white"></i>
                     </div>
-                    <h3 class="text-xl md:text-2xl font-bold mb-4 text-gray-900">Brand Applications</h3>
-                    <p class="text-gray-600 mb-6 leading-relaxed">Real-world implementation across business cards, stationery, packaging, digital platforms, and marketing materials.</p>
-                    <a href="/services" class="inline-flex items-center text-blue-900 font-semibold group-hover:text-blue-800">
+                    <h3 class="text-xl font-bold mb-3">Brand Applications</h3>
+                    <p class="text-gray-600 mb-4">Real-world implementation across business cards, packaging, and digital platforms.</p>
+                    <ul class="space-y-2 text-sm text-gray-500 mb-4">
+                        <li class="flex items-center"><i class="fas fa-check text-blue-900 mr-2 text-xs"></i>Business Stationery</li>
+                        <li class="flex items-center"><i class="fas fa-check text-blue-900 mr-2 text-xs"></i>Packaging Design</li>
+                        <li class="flex items-center"><i class="fas fa-check text-blue-900 mr-2 text-xs"></i>Digital Assets</li>
+                    </ul>
+                    <a href="/services" class="inline-flex items-center text-blue-900 font-semibold group-hover:underline">
                         Learn More
-                        <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                        </svg>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
                     </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Why Choose Us -->
-    <section class="bg-gradient-to-r from-blue-900 to-blue-800 text-white py-12 md:py-20 lg:py-24">
+    <!-- Why Choose Us - Feature Grid -->
+    <section class="py-16 md:py-24 bg-white">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12 md:mb-16">
-                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Why Choose MadaBrand</h2>
-                <p class="text-white/90 max-w-2xl mx-auto text-lg">Excellence delivered through our unique design philosophy</p>
+            <div class="text-center max-w-3xl mx-auto mb-12 reveal">
+                <div class="inline-flex items-center bg-blue-900/10 text-blue-900 px-5 py-2 rounded-full mb-4">
+                    <i class="fas fa-gem mr-2"></i>
+                    <span class="font-semibold">Why Us</span>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-900">The MadaBrand Difference</h2>
+                <p class="text-gray-600 text-lg">Excellence delivered through our unique design philosophy</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-6xl mx-auto">
-                <div class="text-center p-6 rounded-2xl bg-white/5 hover:bg-white/10 transition-all duration-300 group">
-                    <div class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                        <span class="text-3xl">🏗️</span>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center p-6 rounded-2xl hover:bg-blue-50/50 transition group">
+                    <div class="w-20 h-20 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-900 transition-all group-hover:scale-110">
+                        <i class="fas fa-pen-fancy text-3xl text-blue-900 group-hover:text-white transition"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3">Strategic Foundation</h3>
-                    <p class="text-white/80 text-sm leading-relaxed">Brand systems built with precision thinking and strategic excellence</p>
+                    <p class="text-gray-600">Brand systems built with precision thinking and strategic excellence</p>
                 </div>
                 
-                <div class="text-center p-6 rounded-2xl bg-white/5 hover:bg-white/10 transition-all duration-300 group">
-                    <div class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                        <span class="text-3xl">🎨</span>
+                <div class="text-center p-6 rounded-2xl hover:bg-blue-50/50 transition group">
+                    <div class="w-20 h-20 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-900 transition-all group-hover:scale-110">
+                        <i class="fas fa-lightbulb text-3xl text-blue-900 group-hover:text-white transition"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3">Creative Innovation</h3>
-                    <p class="text-white/80 text-sm leading-relaxed">Unique designs that blend artistic creativity with purposeful execution</p>
+                    <p class="text-gray-600">Unique designs that blend creativity with purposeful execution</p>
                 </div>
                 
-                <div class="text-center p-6 rounded-2xl bg-white/5 hover:bg-white/10 transition-all duration-300 group">
-                    <div class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                        <span class="text-3xl">🏆</span>
+                <div class="text-center p-6 rounded-2xl hover:bg-blue-50/50 transition group">
+                    <div class="w-20 h-20 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-900 transition-all group-hover:scale-110">
+                        <i class="fas fa-trophy text-3xl text-blue-900 group-hover:text-white transition"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3">Premium Quality</h3>
-                    <p class="text-white/80 text-sm leading-relaxed">Uncompromising attention to detail and premium design standards</p>
+                    <p class="text-gray-600">Uncompromising attention to detail and premium design standards</p>
                 </div>
                 
-                <div class="text-center p-6 rounded-2xl bg-white/5 hover:bg-white/10 transition-all duration-300 group">
-                    <div class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                        <span class="text-3xl">🤝</span>
+                <div class="text-center p-6 rounded-2xl hover:bg-blue-50/50 transition group">
+                    <div class="w-20 h-20 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-900 transition-all group-hover:scale-110">
+                        <i class="fas fa-handshake text-3xl text-blue-900 group-hover:text-white transition"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3">Client Partnership</h3>
-                    <p class="text-white/80 text-sm leading-relaxed">Collaborative approach ensuring your vision becomes reality</p>
+                    <p class="text-gray-600">Collaborative approach ensuring your vision becomes reality</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Testimonial -->
-    <section class="bg-white py-12 md:py-20 lg:py-24">
+    <section class="py-16 md:py-24 bg-gradient-to-b from-blue-50 to-white">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="max-w-4xl mx-auto bg-gradient-to-br from-blue-900/5 to-white rounded-3xl p-8 md:p-12 lg:p-16 shadow-lg border border-blue-900/10">
+            <div class="max-w-4xl mx-auto bg-white rounded-3xl p-8 md:p-12 shadow-2xl border border-blue-100 reveal">
                 <div class="flex items-center mb-8">
-                    <div class="w-16 h-16 bg-gradient-to-br from-blue-900 to-blue-800 rounded-full flex items-center justify-center">
-                        <span class="text-2xl text-white">💬</span>
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-900 to-blue-700 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-quote-right text-2xl text-white"></i>
                     </div>
                     <div class="ml-6">
                         <h3 class="text-xl font-bold text-blue-900">Client Testimonial</h3>
@@ -323,13 +500,13 @@
                     </div>
                 </div>
                 
-                <blockquote class="text-xl md:text-2xl font-medium text-gray-800 mb-8 leading-relaxed">
+                <blockquote class="text-xl md:text-2xl text-gray-800 mb-8 leading-relaxed">
                     "MadaBrand created a brand identity that perfectly captures our vision of blending artistic design with structural excellence. The geometric logo and gold-and-black palette elevated our entire company presence."
                 </blockquote>
                 
                 <div class="flex items-center">
-                    <div class="w-12 h-12 bg-blue-900/10 rounded-full flex items-center justify-center">
-                        <span class="text-lg text-blue-900">NA</span>
+                    <div class="w-14 h-14 bg-blue-900/10 rounded-full flex items-center justify-center">
+                        <span class="text-xl font-bold text-blue-900">NA</span>
                     </div>
                     <div class="ml-4">
                         <p class="font-bold text-lg text-blue-900">Nuel Ark</p>
@@ -341,41 +518,47 @@
     </section>
 
     <!-- Final CTA -->
-    <section class="bg-gradient-to-r from-blue-900/5 to-blue-100 py-12 md:py-20 lg:py-24">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="max-w-4xl mx-auto text-center bg-white rounded-3xl p-8 md:p-12 lg:p-16 shadow-2xl border border-blue-900/20">
-                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-blue-900">Ready to Transform Your Brand?</h2>
-                <p class="text-gray-600 text-lg md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed">Let's create something exceptional together. Schedule a free consultation today.</p>
+    <section class="py-16 md:py-24 bg-gradient-to-r from-blue-900 to-blue-800 text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-10 left-10 w-40 h-40 bg-white/20 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-10 right-10 w-60 h-60 bg-white/10 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">Ready to Transform Your Brand?</h2>
+            <p class="text-blue-100 text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+                Let's create something exceptional together. Schedule a free consultation today.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/contact" class="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-900 font-semibold rounded-xl hover:bg-blue-50 transition-all hover:scale-105 shadow-xl text-lg group">
+                    <span class="mr-2">📧</span>
+                    Start Your Project
+                    <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
+                </a>
                 
-                <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-                    <a href="/contact" class="inline-flex items-center justify-center px-8 py-4 bg-blue-900 text-white font-semibold rounded-lg hover:bg-blue-800 transition-all duration-300 hover:scale-105 shadow-lg text-lg group">
-                        <span class="mr-2">📧</span>
-                        Start Your Project
-                        <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                        </svg>
-                    </a>
-                    
-                    <a href="https://wa.me/2348104902357?text=Hello%20MadaBrand!%20I'm%20interested%20in%20your%20design%20services." 
-                       target="_blank"
-                       class="inline-flex items-center justify-center px-8 py-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-300 hover:scale-105 shadow-lg text-lg group">
-                        <span class="mr-2">💬</span>
-                        WhatsApp Us
-                        <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                        </svg>
-                    </a>
-                </div>
-                
-                <!-- Contact Info -->
-                <div class="flex flex-col sm:flex-row gap-6 justify-center items-center text-gray-600">
+                <a href="https://wa.me/2348104902357?text=Hello%20MadaBrand!%20I'm%20interested%20in%20your%20design%20services." 
+                   target="_blank"
+                   class="inline-flex items-center justify-center px-8 py-4 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-all hover:scale-105 shadow-xl text-lg group">
+                    <span class="mr-2">💬</span>
+                    WhatsApp Us
+                </a>
+            </div>
+            
+            <!-- Contact Info -->
+            <div class="mt-10 pt-8 border-t border-white/20">
+                <div class="flex flex-col sm:flex-row gap-6 justify-center items-center text-sm">
                     <div class="flex items-center">
-                        <span class="text-blue-900 mr-2">✉️</span>
-                        <a href="mailto:macaulaymadalene@gmail.com" class="hover:text-blue-900 hover:underline font-medium">macaulaymadalene@gmail.com</a>
+                        <i class="fas fa-envelope text-blue-300 mr-2"></i>
+                        <a href="mailto:macaulaymadalene@gmail.com" class="text-blue-100 hover:text-white transition">macaulaymadalene@gmail.com</a>
                     </div>
                     <div class="flex items-center">
-                        <span class="text-blue-900 mr-2">📱</span>
-                        <a href="tel:08104902357" class="hover:text-blue-900 hover:underline font-medium">0810 490 2357</a>
+                        <i class="fas fa-phone-alt text-blue-300 mr-2"></i>
+                        <a href="tel:08104902357" class="text-blue-100 hover:text-white transition">0810 490 2357</a>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-map-marker-alt text-blue-300 mr-2"></i>
+                        <span class="text-blue-100">Lagos, Nigeria</span>
                     </div>
                 </div>
             </div>
@@ -383,34 +566,23 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gradient-to-b from-blue-900 to-blue-950 text-white">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+    <footer class="bg-gray-900 text-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <!-- Brand -->
-                <div class="lg:col-span-1">
+                <div>
                     <div class="flex items-center mb-6">
-                        <img src="/assets/images/photo_10_2025-12-10_09-49-24.jpg" 
-                             alt="MadaBrand Logo" 
-                             class="h-16 w-16 object-cover rounded-full mr-4 border-4 border-white/30">
-                        <div>
-                            <h3 class="text-2xl font-bold text-white">MadaBrand</h3>
-                            <p class="text-white/70 text-sm">Premium Design Studio</p>
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-400 rounded-xl flex items-center justify-center text-white font-bold text-xl mr-3">
+                            MB
                         </div>
+                        <span class="text-xl font-bold">Mada<span class="text-blue-400">Brand</span></span>
                     </div>
-                    <p class="text-white/80 mb-6 leading-relaxed">Creating memorable brand identities where art meets strategic design for businesses worldwide.</p>
+                    <p class="text-gray-400 mb-6 leading-relaxed">Creating memorable brand identities where art meets strategic design for businesses worldwide.</p>
                     <div class="flex space-x-3">
-                        <a href="#" class="text-white/70 hover:text-white transition bg-white/10 p-2.5 rounded-lg hover:bg-white/20">
-                            <span class="text-lg">📸</span>
-                        </a>
-                        <a href="#" class="text-white/70 hover:text-white transition bg-white/10 p-2.5 rounded-lg hover:bg-white/20">
-                            <span class="text-lg">💼</span>
-                        </a>
-                        <a href="#" class="text-white/70 hover:text-white transition bg-white/10 p-2.5 rounded-lg hover:bg-white/20">
-                            <span class="text-lg">🎨</span>
-                        </a>
-                        <a href="https://wa.me/2348104902357" target="_blank" class="text-white/70 hover:text-white transition bg-white/10 p-2.5 rounded-lg hover:bg-white/20">
-                            <span class="text-lg">💬</span>
-                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-900 transition"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-900 transition"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-900 transition"><i class="fab fa-behance"></i></a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-900 transition"><i class="fab fa-whatsapp"></i></a>
                     </div>
                 </div>
                 
@@ -418,11 +590,11 @@
                 <div>
                     <h4 class="text-lg font-semibold mb-6">Quick Links</h4>
                     <ul class="space-y-3">
-                        <li><a href="/" class="text-white/70 hover:text-white transition hover:underline py-1 block">Home</a></li>
-                        <li><a href="/about" class="text-white/70 hover:text-white transition hover:underline py-1 block">About Us</a></li>
-                        <li><a href="/services" class="text-white/70 hover:text-white transition hover:underline py-1 block">Services</a></li>
-                        <li><a href="/portfolio" class="text-white/70 hover:text-white transition hover:underline py-1 block">Portfolio</a></li>
-                        <li><a href="/contact" class="text-white/70 hover:text-white transition hover:underline py-1 block">Contact</a></li>
+                        <li><a href="/" class="text-gray-400 hover:text-white transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Home</a></li>
+                        <li><a href="/about" class="text-gray-400 hover:text-white transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>About Us</a></li>
+                        <li><a href="/services" class="text-gray-400 hover:text-white transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Services</a></li>
+                        <li><a href="/portfolio" class="text-gray-400 hover:text-white transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Portfolio</a></li>
+                        <li><a href="/contact" class="text-gray-400 hover:text-white transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Contact</a></li>
                     </ul>
                 </div>
                 
@@ -430,11 +602,11 @@
                 <div>
                     <h4 class="text-lg font-semibold mb-6">Services</h4>
                     <ul class="space-y-3">
-                        <li class="text-white/70 hover:text-white transition py-1 cursor-pointer">Brand Identity Design</li>
-                        <li class="text-white/70 hover:text-white transition py-1 cursor-pointer">Logo & Visual Systems</li>
-                        <li class="text-white/70 hover:text-white transition py-1 cursor-pointer">Brand Applications</li>
-                        <li class="text-white/70 hover:text-white transition py-1 cursor-pointer">Brand Guidelines</li>
-                        <li class="text-white/70 hover:text-white transition py-1 cursor-pointer">Business Collateral</li>
+                        <li class="text-gray-400">Brand Identity Design</li>
+                        <li class="text-gray-400">Logo & Visual Systems</li>
+                        <li class="text-gray-400">Brand Guidelines</li>
+                        <li class="text-gray-400">Business Collateral</li>
+                        <li class="text-gray-400">Packaging Design</li>
                     </ul>
                 </div>
                 
@@ -443,72 +615,65 @@
                     <h4 class="text-lg font-semibold mb-6">Contact Info</h4>
                     <ul class="space-y-4">
                         <li class="flex items-start">
-                            <span class="text-white/70 mr-3 mt-1">📍</span>
-                            <span class="text-white/70 leading-relaxed">Lagos, Nigeria<br>Serving clients worldwide</span>
+                            <i class="fas fa-map-marker-alt text-blue-400 mr-3 mt-1"></i>
+                            <span class="text-gray-400">Lagos, Nigeria<br>Serving clients worldwide</span>
                         </li>
                         <li class="flex items-center">
-                            <span class="text-white/70 mr-3">✉️</span>
-                            <a href="mailto:macaulaymadalene@gmail.com" class="text-white/70 hover:text-white transition hover:underline">macaulaymadalene@gmail.com</a>
+                            <i class="fas fa-envelope text-blue-400 mr-3"></i>
+                            <a href="mailto:macaulaymadalene@gmail.com" class="text-gray-400 hover:text-white transition">macaulaymadalene@gmail.com</a>
                         </li>
                         <li class="flex items-center">
-                            <span class="text-white/70 mr-3">📱</span>
-                            <a href="tel:08104902357" class="text-white/70 hover:text-white transition hover:underline">0810 490 2357</a>
-                        </li>
-                        <li class="flex items-center">
-                            <span class="text-white/70 mr-3">💬</span>
-                            <a href="https://wa.me/2348104902357" target="_blank" class="text-white/70 hover:text-white transition hover:underline">WhatsApp Chat</a>
+                            <i class="fas fa-phone-alt text-blue-400 mr-3"></i>
+                            <a href="tel:08104902357" class="text-gray-400 hover:text-white transition">0810 490 2357</a>
                         </li>
                     </ul>
                 </div>
             </div>
             
-            <div class="border-t border-white/20 mt-12 pt-8 text-center text-white/50 text-sm">
-                <p>&copy; 2024 MadaBrand. All rights reserved. <span class="block sm:inline mt-1">Where Art Meets Strategic Design.</span></p>
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-sm">
+                <p>&copy; 2024 MadaBrand. All rights reserved. Where Art Meets Strategic Design.</p>
             </div>
         </div>
     </footer>
 
     <!-- Scripts -->
-    <script src="/scripts/main.js"></script>
-    
-    <!-- Mobile Menu Script -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Mobile menu functionality
-            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-            const mobileMenu = document.getElementById('mobile-menu');
+            // Mobile Menu Toggle
+            const menuToggle = document.getElementById('menuToggle');
+            const mobileMenu = document.getElementById('mobileMenu');
             
-            if (mobileMenuBtn && mobileMenu) {
-                mobileMenuBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    mobileMenu.classList.toggle('hidden');
-                });
-                
-                // Close menu when clicking outside
-                document.addEventListener('click', function(event) {
-                    if (!mobileMenu.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
-                        mobileMenu.classList.add('hidden');
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('open');
+                    const icon = menuToggle.querySelector('i');
+                    if (icon.classList.contains('fa-bars')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
                     }
                 });
             }
             
-            // Smooth scrolling for anchor links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    if (this.getAttribute('href') === '#') return;
+            // Scroll Reveal
+            const reveals = document.querySelectorAll('.reveal');
+            
+            function checkReveals() {
+                reveals.forEach(element => {
+                    const windowHeight = window.innerHeight;
+                    const elementTop = element.getBoundingClientRect().top;
+                    const elementVisible = 150;
                     
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href');
-                    const targetElement = document.querySelector(targetId);
-                    
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetElement.offsetTop - 80,
-                            behavior: 'smooth'
-                        });
+                    if (elementTop < windowHeight - elementVisible) {
+                        element.classList.add('active');
                     }
                 });
-            });
+            }
+            
+            window.addEventListener('scroll', checkReveals);
+            checkReveals(); // Check on initial load
         });
     </script>
 </body>

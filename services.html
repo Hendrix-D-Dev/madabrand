@@ -2,42 +2,339 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Services | MadaBrand - Premium Design Studio Lagos</title>
-    <link href="/dist/output.css" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="/assets/icons/favicon.ico">
-    <meta name="description" content="MadaBrand offers comprehensive design services in Lagos Nigeria including brand identity, logo design, and visual solutions for Nigerian and international businesses.">
-    <meta name="keywords" content="brand design services Nigeria, logo design Lagos, graphic design Nigeria, brand identity services, Nigerian design studio">
-    <meta name="author" content="MadaBrand">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Services | MadaBrand - Premium Design Studio Lagos</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .animate-fade-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        /* Service cards */
+        .service-card {
+            background: white;
+            border-radius: 2rem;
+            padding: 2rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(30, 58, 138, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            height: 100%;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 40px -20px rgba(30, 58, 138, 0.3);
+            border-color: #1e3a8a;
+        }
+        
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            border-radius: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 20px 25px -5px rgba(30, 58, 138, 0.4);
+        }
+        
+        .service-icon i {
+            font-size: 2.5rem;
+            color: white;
+        }
+        
+        /* Feature list */
+        .feature-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(30, 58, 138, 0.1);
+        }
+        
+        .feature-item:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-check {
+            width: 24px;
+            height: 24px;
+            background: rgba(30, 58, 138, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            color: #1e3a8a;
+            font-weight: bold;
+        }
+        
+        /* Process steps */
+        .process-step {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 1.5rem;
+            border: 1px solid rgba(30, 58, 138, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .process-step:hover {
+            transform: translateY(-5px);
+            border-color: #1e3a8a;
+            box-shadow: 0 20px 25px -5px rgba(30, 58, 138, 0.15);
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            color: white;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .process-step:hover .step-number {
+            transform: scale(1.1) rotate(360deg);
+        }
+        
+        /* Application grid */
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .app-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(30, 58, 138, 0.1);
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        
+        .app-item:hover {
+            background: #1e3a8a;
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .app-item i {
+            font-size: 1.5rem;
+            color: #1e3a8a;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s ease;
+        }
+        
+        .app-item:hover i {
+            color: white;
+        }
+        
+        /* Section title */
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1e3a8a;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+            border-radius: 2px;
+        }
+        
+        .text-center .section-title::after {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        /* Badge */
+        .service-badge {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(30, 58, 138, 0.1);
+            color: #1e3a8a;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Mobile menu */
+        #mobile-menu {
+            transition: all 0.3s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        
+        #mobile-menu.open {
+            max-height: 500px;
+            opacity: 1;
+        }
+        
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Pattern background */
+        .pattern-grid {
+            background-image: 
+                linear-gradient(rgba(30, 58, 138, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(30, 58, 138, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        
+        .pattern-dots {
+            background-image: radial-gradient(rgba(30, 58, 138, 0.1) 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+    </style>
 </head>
-<body class="font-body bg-gradient-to-br from-blue-50 via-white to-blue-50">
+<body class="bg-white text-gray-900 overflow-x-hidden">
     <!-- Navigation -->
-    <div id="navbar"></div>
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-blue-900/10 shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <a href="/" class="flex items-center space-x-3 group">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-900 to-blue-700 rounded-2xl flex items-center justify-center text-white text-xl font-bold shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        MB
+                    </div>
+                    <span class="text-xl font-bold text-gray-900">
+                        Mada<span class="text-blue-900">Brand</span>
+                    </span>
+                </a>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="text-gray-700 hover:text-blue-900 font-medium transition relative group">
+                        Home
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-900 group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="/about" class="text-gray-700 hover:text-blue-900 font-medium transition relative group">
+                        About
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-900 group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="/services" class="text-blue-900 font-medium relative">
+                        Services
+                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-900"></span>
+                    </a>
+                    <a href="/portfolio" class="text-gray-700 hover:text-blue-900 font-medium transition relative group">
+                        Portfolio
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-900 group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="/contact" class="bg-blue-900 text-white px-6 py-2.5 rounded-full hover:bg-blue-800 transition-all hover:scale-105 hover:shadow-lg font-medium">
+                        Get Quote
+                    </a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="menuToggle" class="md:hidden text-gray-700 p-2 hover:bg-blue-50 rounded-lg transition">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="md:hidden mt-4 bg-white rounded-2xl shadow-xl border border-blue-100 p-4">
+                <div class="flex flex-col space-y-3">
+                    <a href="/" class="px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-xl transition font-medium">Home</a>
+                    <a href="/about" class="px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-xl transition font-medium">About</a>
+                    <a href="/services" class="px-4 py-3 bg-blue-50 text-blue-900 rounded-xl font-medium">Services</a>
+                    <a href="/portfolio" class="px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-xl transition font-medium">Portfolio</a>
+                    <a href="/contact" class="px-4 py-3 bg-blue-900 text-white rounded-xl hover:bg-blue-800 transition text-center font-medium">Get Quote</a>
+                </div>
+            </div>
+        </nav>
+    </header>
     
     <!-- Hero Section -->
-    <section class="pt-28 md:pt-32 pb-16 md:pb-20 relative overflow-hidden">
+    <section class="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50 pt-20 pb-16 md:pt-24 md:pb-20">
         <!-- Background Elements -->
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/5 via-transparent to-blue-50/30"></div>
-        <div class="absolute top-1/4 right-10 w-64 h-64 bg-blue-200/20 rounded-full blur-3xl"></div>
-        <div class="absolute bottom-1/3 left-10 w-96 h-96 bg-blue-300/10 rounded-full blur-3xl"></div>
+        <div class="absolute inset-0 pattern-grid opacity-20"></div>
+        <div class="absolute top-20 left-10 w-64 h-64 bg-blue-200/20 rounded-full blur-3xl animate-float"></div>
+        <div class="absolute bottom-20 right-10 w-96 h-96 bg-blue-300/10 rounded-full blur-3xl animate-float" style="animation-delay: 1s;"></div>
         
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="max-w-5xl mx-auto text-center">
+            <div class="max-w-4xl mx-auto text-center">
                 <!-- Badge -->
-                <div class="inline-flex items-center bg-gradient-to-r from-blue-900 to-blue-700 text-white font-semibold px-6 py-3 rounded-full mb-6 md:mb-8 shadow-lg">
-                    <span class="mr-2">🎯</span>
+                <div class="inline-flex items-center bg-gradient-to-r from-blue-900 to-blue-700 text-white font-semibold px-6 py-3 rounded-full mb-6 md:mb-8 shadow-lg animate-fade-up">
+                    <i class="fas fa-crown mr-2"></i>
                     Premium Design Services
                 </div>
                 
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-900 to-blue-700 bg-clip-text text-transparent">
-                    Strategic Design Solutions
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-gray-900 animate-fade-up" style="animation-delay: 0.1s;">
+                    Strategic Design<br>
+                    <span class="bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent">Solutions</span>
                 </h1>
-                <p class="text-xl text-gray-700 mb-8 max-w-2xl mx-auto leading-relaxed">
+                
+                <p class="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed animate-fade-up" style="animation-delay: 0.2s;">
                     Comprehensive brand identity, logo design, and visual solutions crafted to elevate Nigerian businesses and international ventures.
                 </p>
                 
-                <!-- Quick Stats -->
-                <div class="flex flex-wrap justify-center gap-6 md:gap-10 mb-8">
+                <!-- Stats -->
+                <div class="flex flex-wrap justify-center gap-6 md:gap-10 mb-8 animate-fade-up" style="animation-delay: 0.3s;">
                     <div class="text-center">
                         <div class="text-3xl font-bold text-blue-900 mb-1">3+</div>
                         <div class="text-gray-600 text-sm">Years Experience</div>
@@ -56,87 +353,71 @@
                     </div>
                 </div>
                 
-                <!-- CTA Button -->
-                <a href="/contact" class="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-blue-900 to-blue-800 text-white font-semibold rounded-lg hover:from-blue-800 hover:to-blue-700 transition-all duration-300 hover:scale-105 shadow-xl text-lg group">
-                    <span class="mr-2">📧</span>
+                <!-- CTA -->
+                <a href="/contact" class="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-blue-900 to-blue-800 text-white font-semibold rounded-xl hover:from-blue-800 hover:to-blue-700 transition-all hover:scale-105 shadow-xl text-lg group animate-fade-up" style="animation-delay: 0.4s;">
+                    <span class="mr-2">📋</span>
                     Get Custom Quote
-                    <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                    </svg>
+                    <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
                 </a>
             </div>
         </div>
-        
-        <!-- Decorative Line -->
-        <div class="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-300 to-transparent"></div>
     </section>
     
     <!-- Main Services Section -->
-    <section class="py-12 md:py-20 relative">
+    <section class="py-12 md:py-20">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Service 1: Complete Brand Identity -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center mb-20 animate-on-scroll">
+            <div class="grid lg:grid-cols-2 gap-8 md:gap-12 items-center mb-20 reveal">
                 <div class="order-2 lg:order-1">
-                    <div class="inline-flex items-center bg-blue-900/10 text-blue-900 font-semibold px-5 py-2 rounded-full mb-6">
-                        <span class="mr-2">🏢</span>
+                    <div class="service-badge">
+                        <i class="fas fa-building mr-2"></i>
                         Complete Brand System
                     </div>
                     <h2 class="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
                         Complete Brand Identity
                     </h2>
-                    <p class="text-gray-600 mb-8 leading-relaxed">
+                    <p class="text-gray-600 mb-8 leading-relaxed text-lg">
                         A comprehensive visual system that communicates your brand's essence, values, and positioning. From Nigerian construction companies to international eco-brands, we create identities that blend artistic creativity with structural excellence.
                     </p>
                     
                     <!-- Features -->
-                    <div class="space-y-4 mb-8">
-                        <div class="flex items-start">
-                            <div class="w-8 h-8 bg-blue-900/10 rounded-lg flex items-center justify-center mr-4 mt-1 flex-shrink-0">
-                                <span class="text-blue-900 font-bold">✓</span>
-                            </div>
+                    <div class="space-y-3 mb-8">
+                        <div class="feature-item">
+                            <div class="feature-check">✓</div>
                             <div>
-                                <h4 class="font-semibold text-gray-900 mb-1">Strategic Logo Design</h4>
-                                <p class="text-gray-600 text-sm">Primary logo, variations, and application guidelines</p>
+                                <span class="font-semibold text-gray-900">Strategic Logo Design</span>
+                                <p class="text-sm text-gray-500">Primary logo, variations, and application guidelines</p>
                             </div>
                         </div>
-                        
-                        <div class="flex items-start">
-                            <div class="w-8 h-8 bg-blue-900/10 rounded-lg flex items-center justify-center mr-4 mt-1 flex-shrink-0">
-                                <span class="text-blue-900 font-bold">✓</span>
-                            </div>
+                        <div class="feature-item">
+                            <div class="feature-check">✓</div>
                             <div>
-                                <h4 class="font-semibold text-gray-900 mb-1">Color System Development</h4>
-                                <p class="text-gray-600 text-sm">Purposeful color palette for brand recognition</p>
+                                <span class="font-semibold text-gray-900">Color System Development</span>
+                                <p class="text-sm text-gray-500">Purposeful color palette for brand recognition</p>
                             </div>
                         </div>
-                        
-                        <div class="flex items-start">
-                            <div class="w-8 h-8 bg-blue-900/10 rounded-lg flex items-center justify-center mr-4 mt-1 flex-shrink-0">
-                                <span class="text-blue-900 font-bold">✓</span>
-                            </div>
+                        <div class="feature-item">
+                            <div class="feature-check">✓</div>
                             <div>
-                                <h4 class="font-semibold text-gray-900 mb-1">Typography System</h4>
-                                <p class="text-gray-600 text-sm">Hierarchy and application across all materials</p>
+                                <span class="font-semibold text-gray-900">Typography System</span>
+                                <p class="text-sm text-gray-500">Hierarchy and application across all materials</p>
                             </div>
                         </div>
-                        
-                        <div class="flex items-start">
-                            <div class="w-8 h-8 bg-blue-900/10 rounded-lg flex items-center justify-center mr-4 mt-1 flex-shrink-0">
-                                <span class="text-blue-900 font-bold">✓</span>
-                            </div>
+                        <div class="feature-item">
+                            <div class="feature-check">✓</div>
                             <div>
-                                <h4 class="font-semibold text-gray-900 mb-1">Brand Guidelines</h4>
-                                <p class="text-gray-600 text-sm">Comprehensive documentation for consistency</p>
+                                <span class="font-semibold text-gray-900">Brand Guidelines</span>
+                                <p class="text-sm text-gray-500">Comprehensive documentation for consistency</p>
                             </div>
                         </div>
                     </div>
                     
                     <!-- CTA -->
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="/contact" class="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-900 to-blue-800 text-white font-semibold rounded-lg hover:from-blue-800 hover:to-blue-700 transition-all duration-300 hover:scale-105 shadow-lg">
+                    <div class="flex gap-4">
+                        <a href="/contact" class="px-6 py-3 bg-blue-900 text-white rounded-xl hover:bg-blue-800 transition-all hover:scale-105 shadow-lg">
                             Get Started
                         </a>
-                        <a href="/portfolio" class="inline-flex items-center justify-center px-6 py-3 bg-white text-blue-900 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-300 border-2 border-blue-900">
+                        <a href="/portfolio" class="px-6 py-3 bg-white text-blue-900 rounded-xl hover:bg-blue-50 transition-all border-2 border-blue-900">
                             View Examples
                         </a>
                     </div>
@@ -144,170 +425,161 @@
                 
                 <!-- Visual -->
                 <div class="order-1 lg:order-2">
-                    <div class="bg-gradient-to-br from-blue-900/10 to-blue-100 rounded-2xl p-8 md:p-12 border border-blue-200 shadow-lg">
-                        <div class="text-center">
-                            <div class="w-24 h-24 bg-gradient-to-br from-blue-900 to-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                                <span class="text-4xl text-white">🏢</span>
+                    <div class="service-card text-center">
+                        <div class="service-icon mx-auto">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4 text-blue-900">Complete Brand System</h3>
+                        <p class="text-gray-600">Where Art Meets Structure</p>
+                        <div class="mt-6 pt-6 border-t border-blue-100">
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <div class="font-bold text-blue-900">50+</div>
+                                    <div class="text-gray-500">Projects</div>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-blue-900">100%</div>
+                                    <div class="text-gray-500">Satisfaction</div>
+                                </div>
                             </div>
-                            <h3 class="text-2xl font-bold mb-4 text-blue-900">Complete Brand System</h3>
-                            <p class="text-gray-600">Where Art Meets Structure</p>
                         </div>
                     </div>
                 </div>
             </div>
             
             <!-- Service 2: Logo Design -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center mb-20 animate-on-scroll">
+            <div class="grid lg:grid-cols-2 gap-8 md:gap-12 items-center mb-20 reveal">
                 <!-- Visual -->
                 <div>
-                    <div class="bg-gradient-to-br from-blue-100 to-blue-900/10 rounded-2xl p-8 md:p-12 border border-blue-200 shadow-lg">
-                        <div class="text-center">
-                            <div class="w-24 h-24 bg-gradient-to-br from-blue-900 to-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                                <span class="text-4xl text-white">✨</span>
+                    <div class="service-card text-center">
+                        <div class="service-icon mx-auto">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4 text-blue-900">Signature Logo Design</h3>
+                        <p class="text-gray-600">Memorable & Strategic</p>
+                        <div class="mt-6 pt-6 border-t border-blue-100">
+                            <div class="flex justify-center gap-4">
+                                <span class="px-3 py-1 bg-blue-100 text-blue-900 rounded-full text-sm">Unlimited Revisions</span>
+                                <span class="px-3 py-1 bg-blue-100 text-blue-900 rounded-full text-sm">All Formats</span>
                             </div>
-                            <h3 class="text-2xl font-bold mb-4 text-blue-900">Signature Logo Design</h3>
-                            <p class="text-gray-600">Memorable & Strategic</p>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Content -->
                 <div>
-                    <div class="inline-flex items-center bg-blue-900/10 text-blue-900 font-semibold px-5 py-2 rounded-full mb-6">
-                        <span class="mr-2">✨</span>
+                    <div class="service-badge">
+                        <i class="fas fa-star mr-2"></i>
                         Most Popular Service
                     </div>
                     <h2 class="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
                         Logo & Visual Identity
                     </h2>
-                    <p class="text-gray-600 mb-8 leading-relaxed">
+                    <p class="text-gray-600 mb-8 leading-relaxed text-lg">
                         Strategic logo design that captures your brand's essence and creates lasting impressions. Our logos blend geometric precision with artistic sensibility for Nigerian and international clients.
                     </p>
                     
                     <!-- Features -->
-                    <div class="space-y-4 mb-8">
-                        <div class="flex items-start">
-                            <div class="w-8 h-8 bg-blue-900/10 rounded-lg flex items-center justify-center mr-4 mt-1 flex-shrink-0">
-                                <span class="text-blue-900 font-bold">✓</span>
-                            </div>
+                    <div class="space-y-3 mb-8">
+                        <div class="feature-item">
+                            <div class="feature-check">✓</div>
                             <div>
-                                <h4 class="font-semibold text-gray-900 mb-1">Multiple Concepts</h4>
-                                <p class="text-gray-600 text-sm">3 strategic initial design concepts</p>
+                                <span class="font-semibold text-gray-900">Multiple Concepts</span>
+                                <p class="text-sm text-gray-500">3 strategic initial design concepts</p>
                             </div>
                         </div>
-                        
-                        <div class="flex items-start">
-                            <div class="w-8 h-8 bg-blue-900/10 rounded-lg flex items-center justify-center mr-4 mt-1 flex-shrink-0">
-                                <span class="text-blue-900 font-bold">✓</span>
-                            </div>
+                        <div class="feature-item">
+                            <div class="feature-check">✓</div>
                             <div>
-                                <h4 class="font-semibold text-gray-900 mb-1">Unlimited Revisions</h4>
-                                <p class="text-gray-600 text-sm">Refinement until perfect satisfaction</p>
+                                <span class="font-semibold text-gray-900">Unlimited Revisions</span>
+                                <p class="text-sm text-gray-500">Refinement until perfect satisfaction</p>
                             </div>
                         </div>
-                        
-                        <div class="flex items-start">
-                            <div class="w-8 h-8 bg-blue-900/10 rounded-lg flex items-center justify-center mr-4 mt-1 flex-shrink-0">
-                                <span class="text-blue-900 font-bold">✓</span>
-                            </div>
+                        <div class="feature-item">
+                            <div class="feature-check">✓</div>
                             <div>
-                                <h4 class="font-semibold text-gray-900 mb-1">All File Formats</h4>
-                                <p class="text-gray-600 text-sm">Industry-standard formats for all uses</p>
+                                <span class="font-semibold text-gray-900">All File Formats</span>
+                                <p class="text-sm text-gray-500">Industry-standard formats for all uses</p>
                             </div>
                         </div>
-                        
-                        <div class="flex items-start">
-                            <div class="w-8 h-8 bg-blue-900/10 rounded-lg flex items-center justify-center mr-4 mt-1 flex-shrink-0">
-                                <span class="text-blue-900 font-bold">✓</span>
-                            </div>
+                        <div class="feature-item">
+                            <div class="feature-check">✓</div>
                             <div>
-                                <h4 class="font-semibold text-gray-900 mb-1">Digital Optimization</h4>
-                                <p class="text-gray-600 text-sm">Social media and web-ready versions</p>
+                                <span class="font-semibold text-gray-900">Digital Optimization</span>
+                                <p class="text-sm text-gray-500">Social media and web-ready versions</p>
                             </div>
                         </div>
                     </div>
                     
                     <!-- CTA -->
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="/contact" class="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-900 to-blue-800 text-white font-semibold rounded-lg hover:from-blue-800 hover:to-blue-700 transition-all duration-300 hover:scale-105 shadow-lg">
-                            Get Started
-                        </a>
-                        <a href="/portfolio" class="inline-flex items-center justify-center px-6 py-3 bg-white text-blue-900 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-300 border-2 border-blue-900">
-                            View Portfolio
-                        </a>
-                    </div>
+                    <a href="/contact" class="inline-flex items-center px-6 py-3 bg-blue-900 text-white rounded-xl hover:bg-blue-800 transition-all hover:scale-105 shadow-lg">
+                        Get Started
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
                 </div>
             </div>
             
             <!-- Service 3: Brand Applications -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center mb-20 animate-on-scroll">
+            <div class="grid lg:grid-cols-2 gap-8 md:gap-12 items-center reveal">
                 <div class="order-2 lg:order-1">
-                    <div class="inline-flex items-center bg-blue-900/10 text-blue-900 font-semibold px-5 py-2 rounded-full mb-6">
-                        <span class="mr-2">🎨</span>
+                    <div class="service-badge">
+                        <i class="fas fa-paint-brush mr-2"></i>
                         Real-World Implementation
                     </div>
                     <h2 class="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
                         Brand Applications & Collateral
                     </h2>
-                    <p class="text-gray-600 mb-8 leading-relaxed">
+                    <p class="text-gray-600 mb-8 leading-relaxed text-lg">
                         Practical implementation of your brand identity across all necessary touchpoints. From business stationery to digital platforms, we ensure consistent brand expression that builds recognition and trust in the Nigerian market and beyond.
                     </p>
                     
                     <!-- Application Grid -->
-                    <div class="grid grid-cols-2 gap-4 mb-8">
-                        <div class="bg-white p-4 rounded-xl border border-blue-100 hover:border-blue-300 hover:shadow-md transition-all">
-                            <div class="w-10 h-10 bg-blue-900/10 rounded-lg flex items-center justify-center mb-3">
-                                <span class="text-blue-900">📇</span>
-                            </div>
-                            <h4 class="font-semibold text-gray-900 mb-1">Business Stationery</h4>
-                            <p class="text-gray-600 text-xs">Cards, letterheads, envelopes</p>
+                    <div class="app-grid mb-8">
+                        <div class="app-item">
+                            <i class="fas fa-id-card"></i>
+                            <div class="text-sm font-medium">Business Cards</div>
                         </div>
-                        
-                        <div class="bg-white p-4 rounded-xl border border-blue-100 hover:border-blue-300 hover:shadow-md transition-all">
-                            <div class="w-10 h-10 bg-blue-900/10 rounded-lg flex items-center justify-center mb-3">
-                                <span class="text-blue-900">💻</span>
-                            </div>
-                            <h4 class="font-semibold text-gray-900 mb-1">Digital Assets</h4>
-                            <p class="text-gray-600 text-xs">Social media, email templates</p>
+                        <div class="app-item">
+                            <i class="fas fa-envelope"></i>
+                            <div class="text-sm font-medium">Letterheads</div>
                         </div>
-                        
-                        <div class="bg-white p-4 rounded-xl border border-blue-100 hover:border-blue-300 hover:shadow-md transition-all">
-                            <div class="w-10 h-10 bg-blue-900/10 rounded-lg flex items-center justify-center mb-3">
-                                <span class="text-blue-900">📄</span>
-                            </div>
-                            <h4 class="font-semibold text-gray-900 mb-1">Marketing Materials</h4>
-                            <p class="text-gray-600 text-xs">Brochures, flyers, banners</p>
+                        <div class="app-item">
+                            <i class="fas fa-laptop"></i>
+                            <div class="text-sm font-medium">Digital Assets</div>
                         </div>
-                        
-                        <div class="bg-white p-4 rounded-xl border border-blue-100 hover:border-blue-300 hover:shadow-md transition-all">
-                            <div class="w-10 h-10 bg-blue-900/10 rounded-lg flex items-center justify-center mb-3">
-                                <span class="text-blue-900">👜</span>
-                            </div>
-                            <h4 class="font-semibold text-gray-900 mb-1">Brand Merchandise</h4>
-                            <p class="text-gray-600 text-xs">Tote bags, packaging, products</p>
+                        <div class="app-item">
+                            <i class="fas fa-box"></i>
+                            <div class="text-sm font-medium">Packaging</div>
+                        </div>
+                        <div class="app-item">
+                            <i class="fas fa-file-alt"></i>
+                            <div class="text-sm font-medium">Brochures</div>
+                        </div>
+                        <div class="app-item">
+                            <i class="fas fa-tag"></i>
+                            <div class="text-sm font-medium">Merchandise</div>
                         </div>
                     </div>
                     
                     <!-- CTA -->
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="/contact" class="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-900 to-blue-800 text-white font-semibold rounded-lg hover:from-blue-800 hover:to-blue-700 transition-all duration-300 hover:scale-105 shadow-lg">
-                            Get Started
-                        </a>
-                        <a href="/contact" class="inline-flex items-center justify-center px-6 py-3 bg-white text-blue-900 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-300 border-2 border-blue-900">
-                            Custom Quote
-                        </a>
-                    </div>
+                    <a href="/contact" class="inline-flex items-center px-6 py-3 bg-blue-900 text-white rounded-xl hover:bg-blue-800 transition-all hover:scale-105 shadow-lg">
+                        Get Custom Quote
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
                 </div>
                 
                 <!-- Visual -->
                 <div class="order-1 lg:order-2">
-                    <div class="bg-gradient-to-br from-blue-900/10 to-blue-50 rounded-2xl p-8 md:p-12 border border-blue-200 shadow-lg">
-                        <div class="text-center">
-                            <div class="w-24 h-24 bg-gradient-to-br from-blue-900 to-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                                <span class="text-4xl text-white">🎨</span>
+                    <div class="service-card text-center">
+                        <div class="service-icon mx-auto">
+                            <i class="fas fa-paint-brush"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4 text-blue-900">Brand Applications</h3>
+                        <p class="text-gray-600">Real-World Implementation</p>
+                        <div class="mt-6 pt-6 border-t border-blue-100">
+                            <div class="text-sm text-gray-500">
+                                <span class="font-bold text-blue-900">12+</span> application types
                             </div>
-                            <h3 class="text-2xl font-bold mb-4 text-blue-900">Brand Applications</h3>
-                            <p class="text-gray-600">Real-World Implementation</p>
                         </div>
                     </div>
                 </div>
@@ -316,70 +588,54 @@
     </section>
     
     <!-- Specialized Services -->
-    <section class="py-12 md:py-20 bg-white relative overflow-hidden">
-        <!-- Background Elements -->
-        <div class="absolute top-10 right-10 w-40 h-40 bg-blue-200/20 rounded-full blur-3xl"></div>
-        <div class="absolute bottom-10 left-10 w-60 h-60 bg-blue-300/10 rounded-full blur-3xl"></div>
-        
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center mb-12 md:mb-16">
-                <div class="inline-flex items-center bg-blue-900/10 text-blue-900 font-semibold px-5 py-2 rounded-full mb-4">
-                    <span class="mr-2">🎯</span>
+    <section class="py-12 md:py-20 bg-gradient-to-br from-blue-50 via-white to-blue-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 reveal">
+                <div class="inline-flex items-center bg-blue-900/10 text-blue-900 px-4 py-2 rounded-full mb-4">
+                    <i class="fas fa-bolt mr-2"></i>
                     Specialized Solutions
                 </div>
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-blue-900">Specialized Services</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto text-lg">Tailored design solutions for specific brand needs in Nigeria and globally</p>
+                <h2 class="section-title text-center">Additional Services</h2>
+                <p class="text-gray-600 text-lg mt-4">Tailored design solutions for specific brand needs</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            <div class="grid md:grid-cols-3 gap-6 md:gap-8">
                 <!-- Service 1 -->
-                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-blue-100 hover:border-blue-300 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                    <div class="w-14 h-14 bg-gradient-to-br from-blue-900/10 to-blue-900/5 rounded-xl flex items-center justify-center mb-6 border border-blue-200">
-                        <span class="text-2xl text-blue-900">🎯</span>
+                <div class="bg-white rounded-2xl p-8 shadow-lg border border-blue-100 hover:border-blue-300 transition-all hover:-translate-y-2 reveal">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-900 to-blue-700 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-bullseye text-2xl text-white"></i>
                     </div>
-                    <h3 class="text-xl md:text-2xl font-bold mb-4 text-gray-900">Brand Strategy</h3>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
-                        Strategic guidance to define your brand's unique positioning, messaging architecture, and competitive advantage in the Nigerian market and beyond.
-                    </p>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">Brand Strategy</h3>
+                    <p class="text-gray-600 mb-4">Strategic guidance to define your brand's unique positioning, messaging architecture, and competitive advantage.</p>
                     <a href="/contact" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group">
                         Learn More
-                        <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                        </svg>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
                     </a>
                 </div>
                 
                 <!-- Service 2 -->
-                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-blue-100 hover:border-blue-300 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                    <div class="w-14 h-14 bg-gradient-to-br from-blue-900/10 to-blue-900/5 rounded-xl flex items-center justify-center mb-6 border border-blue-200">
-                        <span class="text-2xl text-blue-900">📋</span>
+                <div class="bg-white rounded-2xl p-8 shadow-lg border border-blue-100 hover:border-blue-300 transition-all hover:-translate-y-2 reveal" style="animation-delay: 0.1s;">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-900 to-blue-700 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-book text-2xl text-white"></i>
                     </div>
-                    <h3 class="text-xl md:text-2xl font-bold mb-4 text-gray-900">Brand Guidelines</h3>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
-                        Comprehensive brand guideline documents that ensure consistent application of your identity across all platforms and teams.
-                    </p>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">Brand Guidelines</h3>
+                    <p class="text-gray-600 mb-4">Comprehensive brand guideline documents that ensure consistent application across all platforms and teams.</p>
                     <a href="/contact" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group">
                         Learn More
-                        <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                        </svg>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
                     </a>
                 </div>
                 
                 <!-- Service 3 -->
-                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-blue-100 hover:border-blue-300 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                    <div class="w-14 h-14 bg-gradient-to-br from-blue-900/10 to-blue-900/5 rounded-xl flex items-center justify-center mb-6 border border-blue-200">
-                        <span class="text-2xl text-blue-900">🔄</span>
+                <div class="bg-white rounded-2xl p-8 shadow-lg border border-blue-100 hover:border-blue-300 transition-all hover:-translate-y-2 reveal" style="animation-delay: 0.2s;">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-900 to-blue-700 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-sync-alt text-2xl text-white"></i>
                     </div>
-                    <h3 class="text-xl md:text-2xl font-bold mb-4 text-gray-900">Brand Modernization</h3>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
-                        Refresh existing brands to stay relevant, competitive, and aligned with current market trends while preserving brand equity.
-                    </p>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">Brand Modernization</h3>
+                    <p class="text-gray-600 mb-4">Refresh existing brands to stay relevant, competitive, and aligned with current market trends.</p>
                     <a href="/contact" class="inline-flex items-center text-blue-900 font-semibold hover:text-blue-700 group">
                         Learn More
-                        <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                        </svg>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
                     </a>
                 </div>
             </div>
@@ -387,60 +643,44 @@
     </section>
     
     <!-- Process Section -->
-    <section class="py-12 md:py-20 bg-gradient-to-br from-blue-900/5 to-white relative overflow-hidden">
+    <section class="py-12 md:py-20 bg-white">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12 md:mb-16">
-                <div class="inline-flex items-center bg-blue-900/10 text-blue-900 font-semibold px-5 py-2 rounded-full mb-4">
-                    <span class="mr-2">📋</span>
+            <div class="text-center mb-12 reveal">
+                <div class="inline-flex items-center bg-blue-900/10 text-blue-900 px-4 py-2 rounded-full mb-4">
+                    <i class="fas fa-chart-line mr-2"></i>
                     Our Proven Process
                 </div>
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-blue-900">Our Design Process</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto text-lg">A structured approach to ensure exceptional results for every project</p>
+                <h2 class="section-title text-center">How We Work</h2>
+                <p class="text-gray-600 text-lg mt-4">A structured approach that ensures exceptional results</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
                 <!-- Step 1 -->
-                <div class="text-center bg-white rounded-2xl p-6 shadow-lg border border-blue-100 hover:border-blue-300 transition-all duration-300 hover:-translate-y-1">
-                    <div class="w-20 h-20 bg-gradient-to-br from-blue-900/10 to-blue-900/5 rounded-full flex items-center justify-center mx-auto mb-6 border border-blue-200">
-                        <span class="text-3xl font-bold text-blue-900">1</span>
-                    </div>
-                    <h3 class="font-bold text-xl mb-3 text-gray-900">Discovery</h3>
-                    <p class="text-gray-600 text-sm leading-relaxed">
-                        In-depth consultation to understand your business, target audience, and specific goals.
-                    </p>
+                <div class="process-step reveal">
+                    <div class="step-number">01</div>
+                    <h3 class="font-bold text-xl mb-3">Discovery</h3>
+                    <p class="text-gray-600 text-sm">In-depth consultation to understand your business, audience, and goals.</p>
                 </div>
                 
                 <!-- Step 2 -->
-                <div class="text-center bg-white rounded-2xl p-6 shadow-lg border border-blue-100 hover:border-blue-300 transition-all duration-300 hover:-translate-y-1">
-                    <div class="w-20 h-20 bg-gradient-to-br from-blue-900/10 to-blue-900/5 rounded-full flex items-center justify-center mx-auto mb-6 border border-blue-200">
-                        <span class="text-3xl font-bold text-blue-900">2</span>
-                    </div>
-                    <h3 class="font-bold text-xl mb-3 text-gray-900">Strategy</h3>
-                    <p class="text-gray-600 text-sm leading-relaxed">
-                        Developing strategic direction and visual approach tailored to your brand positioning.
-                    </p>
+                <div class="process-step reveal" style="animation-delay: 0.1s;">
+                    <div class="step-number">02</div>
+                    <h3 class="font-bold text-xl mb-3">Strategy</h3>
+                    <p class="text-gray-600 text-sm">Developing strategic direction and visual approach tailored to your brand.</p>
                 </div>
                 
                 <!-- Step 3 -->
-                <div class="text-center bg-white rounded-2xl p-6 shadow-lg border border-blue-100 hover:border-blue-300 transition-all duration-300 hover:-translate-y-1">
-                    <div class="w-20 h-20 bg-gradient-to-br from-blue-900/10 to-blue-900/5 rounded-full flex items-center justify-center mx-auto mb-6 border border-blue-200">
-                        <span class="text-3xl font-bold text-blue-900">3</span>
-                    </div>
-                    <h3 class="font-bold text-xl mb-3 text-gray-900">Design</h3>
-                    <p class="text-gray-600 text-sm leading-relaxed">
-                        Creating and refining visual concepts that align with your strategic direction.
-                    </p>
+                <div class="process-step reveal" style="animation-delay: 0.2s;">
+                    <div class="step-number">03</div>
+                    <h3 class="font-bold text-xl mb-3">Design</h3>
+                    <p class="text-gray-600 text-sm">Creating and refining visual concepts with collaborative feedback.</p>
                 </div>
                 
                 <!-- Step 4 -->
-                <div class="text-center bg-white rounded-2xl p-6 shadow-lg border border-blue-100 hover:border-blue-300 transition-all duration-300 hover:-translate-y-1">
-                    <div class="w-20 h-20 bg-gradient-to-br from-blue-900/10 to-blue-900/5 rounded-full flex items-center justify-center mx-auto mb-6 border border-blue-200">
-                        <span class="text-3xl font-bold text-blue-900">4</span>
-                    </div>
-                    <h3 class="font-bold text-xl mb-3 text-gray-900">Delivery</h3>
-                    <p class="text-gray-600 text-sm leading-relaxed">
-                        Providing all assets and guidelines for successful brand implementation.
-                    </p>
+                <div class="process-step reveal" style="animation-delay: 0.3s;">
+                    <div class="step-number">04</div>
+                    <h3 class="font-bold text-xl mb-3">Delivery</h3>
+                    <p class="text-gray-600 text-sm">Providing all assets and guidelines with ongoing support.</p>
                 </div>
             </div>
         </div>
@@ -448,133 +688,155 @@
     
     <!-- Final CTA -->
     <section class="py-12 md:py-20 bg-gradient-to-r from-blue-900 to-blue-800 text-white relative overflow-hidden">
-        <!-- Background Elements -->
-        <div class="absolute top-10 right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
-        <div class="absolute bottom-10 left-10 w-60 h-60 bg-white/5 rounded-full blur-3xl"></div>
+        <div class="absolute inset-0 opacity-10 pattern-dots"></div>
+        <div class="absolute top-10 left-10 w-40 h-40 bg-white/20 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-10 right-10 w-60 h-60 bg-white/10 rounded-full blur-3xl"></div>
         
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="max-w-4xl mx-auto text-center">
-                <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Transform Your Brand?</h2>
-                <p class="text-blue-100 text-lg md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed">
-                    Every project is unique. Contact us for a custom quote tailored to your specific needs and budget.
-                </p>
-                
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="/contact" class="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-900 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-300 hover:scale-105 shadow-xl text-lg group">
-                        <span class="mr-2">📋</span>
-                        Get Custom Quote
-                    </a>
-                    <a href="tel:08104902357" class="inline-flex items-center justify-center px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-lg transition-all duration-300 hover:scale-105 text-lg border border-white/20 group">
-                        <span class="mr-2">📱</span>
-                        Call: 0810 490 2357
-                    </a>
-                </div>
-                
-                <!-- Additional Contact Info -->
-                <div class="mt-10 pt-8 border-t border-white/20">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-3">
-                                <span class="text-xl">✉️</span>
-                            </div>
-                            <a href="mailto:macaulaymadalene@gmail.com" class="text-blue-100 hover:text-white hover:underline font-medium">
-                                macaulaymadalene@gmail.com
-                            </a>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-3">
-                                <span class="text-xl">💬</span>
-                            </div>
-                            <a href="https://wa.me/2348104902357" target="_blank" class="text-blue-100 hover:text-white hover:underline font-medium">
-                                WhatsApp: 0810 490 2357
-                            </a>
-                        </div>
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Transform Your Brand?</h2>
+            <p class="text-blue-100 text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+                Every project is unique. Contact us for a custom quote tailored to your specific needs and budget.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/contact" class="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-900 font-semibold rounded-xl hover:bg-blue-50 transition-all hover:scale-105 shadow-xl text-lg group">
+                    <span class="mr-2">📋</span>
+                    Get Custom Quote
+                    <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
+                </a>
+                <a href="tel:08104902357" class="inline-flex items-center justify-center px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl transition-all hover:scale-105 text-lg border border-white/20 group">
+                    <span class="mr-2">📱</span>
+                    Call: 0810 490 2357
+                </a>
+            </div>
+            
+            <!-- Contact Info -->
+            <div class="mt-10 pt-8 border-t border-white/20">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+                    <div class="flex items-center justify-center">
+                        <i class="fas fa-envelope text-blue-300 mr-3"></i>
+                        <a href="mailto:macaulaymadalene@gmail.com" class="text-blue-100 hover:text-white transition">
+                            macaulaymadalene@gmail.com
+                        </a>
+                    </div>
+                    <div class="flex items-center justify-center">
+                        <i class="fab fa-whatsapp text-blue-300 mr-3"></i>
+                        <a href="https://wa.me/2348104902357" target="_blank" class="text-blue-100 hover:text-white transition">
+                            WhatsApp: 0810 490 2357
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
     
-    <!-- Footer -->
-    <div id="footer"></div>
-
-    <!-- Scripts -->
-    <script src="/scripts/main.js"></script>
-    
-    <!-- Component Loader & Services Scripts -->
-    <script>
-        // Load navbar and footer
-        document.addEventListener('DOMContentLoaded', function() {
-            // Load navbar
-            fetch('/components/navbar.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('navbar').innerHTML = data;
-                    initMobileMenu();
-                })
-                .catch(error => {
-                    console.error('Error loading navbar:', error);
-                    document.getElementById('navbar').innerHTML = '<div class="p-4 bg-red-900/10 text-red-700 rounded-lg m-4">Navigation loading failed</div>';
-                });
-            
-            // Load footer
-            fetch('/components/footer.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('footer').innerHTML = data;
-                })
-                .catch(error => {
-                    console.error('Error loading footer:', error);
-                    document.getElementById('footer').innerHTML = '<div class="p-4 bg-red-900/10 text-red-700 rounded-lg m-4">Footer loading failed</div>';
-                });
-            
-            // Initialize scroll animations
-            initScrollAnimations();
-        });
-
-        // Initialize mobile menu
-        function initMobileMenu() {
-            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-            const mobileMenu = document.getElementById('mobile-menu');
-            
-            if (mobileMenuBtn && mobileMenu) {
-                mobileMenuBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    mobileMenu.classList.toggle('hidden');
-                });
+    <!-- Footer (same as portfolio page) -->
+    <footer class="bg-gray-900 text-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div>
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-400 rounded-xl flex items-center justify-center text-white font-bold text-xl mr-3">
+                            MB
+                        </div>
+                        <span class="text-xl font-bold">Mada<span class="text-blue-400">Brand</span></span>
+                    </div>
+                    <p class="text-gray-400 mb-6 leading-relaxed">Creating memorable brand identities where art meets strategic design for businesses worldwide.</p>
+                    <div class="flex space-x-3">
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-900 transition"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-900 transition"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-900 transition"><i class="fab fa-behance"></i></a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-900 transition"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
                 
-                // Close menu when clicking outside
-                document.addEventListener('click', function(event) {
-                    if (!mobileMenu.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
-                        mobileMenu.classList.add('hidden');
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-6">Quick Links</h4>
+                    <ul class="space-y-3">
+                        <li><a href="/" class="text-gray-400 hover:text-white transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Home</a></li>
+                        <li><a href="/about" class="text-gray-400 hover:text-white transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>About Us</a></li>
+                        <li><a href="/services" class="text-gray-400 hover:text-white transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Services</a></li>
+                        <li><a href="/portfolio" class="text-gray-400 hover:text-white transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Portfolio</a></li>
+                        <li><a href="/contact" class="text-gray-400 hover:text-white transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Services -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-6">Services</h4>
+                    <ul class="space-y-3">
+                        <li class="text-gray-400">Brand Identity Design</li>
+                        <li class="text-gray-400">Logo & Visual Systems</li>
+                        <li class="text-gray-400">Brand Guidelines</li>
+                        <li class="text-gray-400">Business Collateral</li>
+                        <li class="text-gray-400">Packaging Design</li>
+                    </ul>
+                </div>
+                
+                <!-- Contact -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-6">Contact Info</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt text-blue-400 mr-3 mt-1"></i>
+                            <span class="text-gray-400">Lagos, Nigeria<br>Serving clients worldwide</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope text-blue-400 mr-3"></i>
+                            <a href="mailto:macaulaymadalene@gmail.com" class="text-gray-400 hover:text-white transition">macaulaymadalene@gmail.com</a>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone-alt text-blue-400 mr-3"></i>
+                            <a href="tel:08104902357" class="text-gray-400 hover:text-white transition">0810 490 2357</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-sm">
+                <p>&copy; 2024 MadaBrand. All rights reserved. Where Art Meets Strategic Design.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('open');
+                    const icon = menuToggle.querySelector('i');
+                    if (icon.classList.contains('fa-bars')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
                     }
                 });
             }
-        }
+            
+            // Scroll reveal
+            initScrollReveal();
+        });
 
-        // Scroll animations
-        function initScrollAnimations() {
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
+        function initScrollReveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
+                        entry.target.classList.add('active');
                     }
                 });
-            }, observerOptions);
-
-            // Observe all animate-on-scroll elements
-            document.querySelectorAll('.animate-on-scroll').forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(20px)';
-                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(el);
-            });
+            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+            
+            reveals.forEach(el => observer.observe(el));
         }
     </script>
 </body>
