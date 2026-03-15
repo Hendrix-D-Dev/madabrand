@@ -2,13 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Content Editor | MadaBrand Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Content Editor · MadaBrand Admin</title>
     <link href="/dist/output.css" rel="stylesheet">
     
-    <!-- Three.js and Vanta.js -->
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Three.js & Vanta -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
     
     <style>
@@ -20,7 +22,7 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #0f172a;
+            background: #f8fafc;
             overflow-x: hidden;
         }
 
@@ -31,133 +33,440 @@
             width: 100%;
             height: 100%;
             z-index: 0;
-            opacity: 0.8;
+            opacity: 0.3;
         }
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(30, 58, 138, 0.1);
-            box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 25px 40px -12px rgba(30, 58, 138, 0.3);
-            border-color: rgba(30, 58, 138, 0.3);
-        }
-
-        .editor-tab {
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .editor-tab::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .editor-tab:hover::before,
-        .editor-tab.active::before {
-            transform: scaleX(1);
-        }
-
-        .editor-tab.active {
-            color: #1e3a8a;
-            font-weight: 600;
-        }
-
-        .field-group {
-            transition: all 0.3s ease;
-            background: white;
-            border-radius: 1rem;
-            padding: 1.5rem;
-            border: 1px solid #e2e8f0;
-        }
-
-        .field-group:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.2);
-            border-color: #1e3a8a;
-        }
-
-        .character-count {
-            font-size: 0.75rem;
-            color: #6b7280;
-            transition: color 0.2s ease;
-        }
-
-        .character-count.warning {
-            color: #f59e0b;
-        }
-
-        .character-count.danger {
-            color: #ef4444;
-        }
-
-        .preview-mode {
-            background-color: #f9fafb;
-        }
-
-        .auto-save-indicator {
-            transition: all 0.3s ease;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .saving {
-            animation: pulse 1s ease-in-out infinite;
-            background: #f59e0b !important;
-        }
-
-        .main-content {
-            margin-left: 288px;
-            padding: 2rem;
+        /* Layout */
+        .app-wrapper {
+            display: flex;
+            min-height: 100vh;
             position: relative;
             z-index: 10;
-            min-height: 100vh;
         }
 
-        @media (max-width: 1024px) {
-            .main-content {
-                margin-left: 0;
-            }
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid rgba(30, 58, 138, 0.1);
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 30;
+            overflow-y: auto;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.02);
         }
 
-        .modern-input {
-            border: 1px solid #e2e8f0;
-            border-radius: 0.75rem;
-            padding: 0.75rem 1rem;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid #eef2f6;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .sidebar-logo-text {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #1e293b;
+        }
+        .sidebar-logo-text span {
+            color: #1e3a8a;
+        }
+
+        .sidebar-nav {
+            padding: 24px 16px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: #64748b;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+            text-decoration: none;
+        }
+        .nav-item i {
+            width: 20px;
+            font-size: 1.1rem;
+        }
+        .nav-item:hover {
+            background: #f1f5f9;
+            color: #1e3a8a;
+        }
+        .nav-item.active {
+            background: #eef2ff;
+            color: #1e3a8a;
+            font-weight: 500;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: #eef2f6;
+            margin: 20px 0;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 24px 32px;
+            position: relative;
+            z-index: 20;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: white;
+            border-radius: 20px;
+            padding: 16px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-title h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .page-title p {
+            color: #64748b;
+            font-size: 0.875rem;
+            margin-top: 4px;
+        }
+
+        .save-indicator {
+            background: #10b981;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .save-indicator.saving {
+            background: #f59e0b;
+        }
+
+        /* Tabs */
+        .tabs-container {
+            background: white;
+            border-radius: 16px 16px 0 0;
+            border-bottom: 1px solid #eef2f6;
+            padding: 0 16px;
+        }
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .tab {
+            padding: 16px 24px;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tab:hover {
+            color: #1e3a8a;
+        }
+        .tab.active {
+            color: #1e3a8a;
+            border-bottom-color: #1e3a8a;
+        }
+
+        /* Editor Panel */
+        .editor-panel {
+            background: white;
+            border-radius: 0 0 20px 20px;
+            padding: 32px;
+        }
+
+        .editor-section {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid #eef2f6;
+        }
+        .editor-section h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #475569;
+            margin-bottom: 6px;
+        }
+        .form-control {
             width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+            background: white;
         }
-
-        .modern-input:focus {
+        .form-control:focus {
             border-color: #1e3a8a;
             box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
             outline: none;
         }
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
 
+        .char-counter {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            text-align: right;
+            margin-top: 4px;
+        }
+        .char-counter.warning {
+            color: #f59e0b;
+        }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .service-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid #eef2f6;
+            position: relative;
+        }
+        .service-card:hover {
+            border-color: #1e3a8a;
+        }
+        .service-remove {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: #fee2e2;
+            color: #b91c1c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .service-card:hover .service-remove {
+            opacity: 1;
+        }
+
+        .add-service-btn {
+            padding: 16px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            background: #f8fafc;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+        .add-service-btn:hover {
+            border-color: #1e3a8a;
+            color: #1e3a8a;
+            background: #f1f5f9;
+        }
+
+        /* Save Bar */
+        .save-bar {
+            position: sticky;
+            bottom: 24px;
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 32px;
+        }
+        .save-btn {
+            background: #10b981;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 40px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+        .save-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 30px -5px rgba(16, 185, 129, 0.5);
+        }
+
+        /* Preview Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 16px;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #eef2f6;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .modal-header h3 {
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .modal-close {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #94a3b8;
+            transition: color 0.2s;
+        }
+        .modal-close:hover {
+            color: #1e3a8a;
+        }
+        .modal-body {
+            padding: 24px;
+        }
+
+        /* Mobile Menu Button */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 40;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 24px 16px;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+                display: flex;
+                flex-wrap: nowrap;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .top-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .editor-panel {
+                padding: 20px 16px;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Toast */
         .toast {
             position: fixed;
             top: 24px;
             right: 24px;
             padding: 16px 24px;
             background: white;
-            border-radius: 12px;
+            border-radius: 16px;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
             display: flex;
             align-items: center;
@@ -166,12 +475,7 @@
             animation: slideIn 0.3s ease;
             border-left: 4px solid;
         }
-
         .toast.success { border-color: #10b981; }
-        .toast.error { border-color: #ef4444; }
-        .toast.warning { border-color: #f59e0b; }
-        .toast.info { border-color: #3b82f6; }
-
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
@@ -182,421 +486,347 @@
     <!-- Vanta Background -->
     <div id="vanta-bg"></div>
 
-    <!-- Admin Layout -->
-    <div class="flex">
-        <!-- Navigation Sidebar -->
-        <div id="nav-container" class="fixed left-0 top-0 h-full z-20"></div>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+        <i class="fas fa-bars text-xl text-blue-900"></i>
+    </button>
 
-        <!-- Main Content -->
-        <main class="main-content flex-1">
-            <!-- Top Bar -->
-            <div class="glass-card rounded-2xl p-4 mb-8 sticky top-4 z-10">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent">Content Editor</h1>
-                        <p class="text-gray-600 mt-1">Edit your website content</p>
+    <div class="app-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="sidebar-logo-icon">
+                        <i class="fas fa-pen-fancy"></i>
                     </div>
-                    <div class="flex items-center space-x-4">
-                        <span id="auto-save-indicator" class="px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl text-sm font-medium auto-save-indicator">
-                            💾 All changes saved
-                        </span>
+                    <div class="sidebar-logo-text">
+                        Mada<span>Brand</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Page Tabs -->
-            <div class="glass-card rounded-t-2xl border-b-0 p-2">
-                <div class="flex flex-wrap">
-                    <button class="editor-tab active px-6 py-3 text-sm font-medium text-blue-900" data-tab="home">
-                        🏠 Home Page
-                    </button>
-                    <button class="editor-tab px-6 py-3 text-sm font-medium text-gray-700 hover:text-blue-900 transition" data-tab="about">
-                        👤 About Page
-                    </button>
-                    <button class="editor-tab px-6 py-3 text-sm font-medium text-gray-700 hover:text-blue-900 transition" data-tab="services">
-                        🎯 Services Page
-                    </button>
-                    <button class="editor-tab px-6 py-3 text-sm font-medium text-gray-700 hover:text-blue-900 transition" data-tab="global">
-                        🌐 Global Settings
-                    </button>
+            <nav class="sidebar-nav">
+                <a href="/admin/" class="nav-item">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/admin/portfolio-manager.html" class="nav-item">
+                    <i class="fas fa-folder-open"></i>
+                    <span>Portfolio</span>
+                </a>
+                <a href="/admin/media-library.html" class="nav-item">
+                    <i class="fas fa-images"></i>
+                    <span>Media Library</span>
+                </a>
+                <a href="/admin/content-editor.html" class="nav-item active">
+                    <i class="fas fa-edit"></i>
+                    <span>Content Editor</span>
+                </a>
+                <a href="/admin/settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+
+                <div class="nav-divider"></div>
+
+                <a href="#" class="nav-item" onclick="logoutAdmin()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="page-title">
+                    <h1>Content Editor</h1>
+                    <p>Edit your website content</p>
+                </div>
+                <div class="save-indicator" id="saveIndicator">
+                    <i class="fas fa-check-circle"></i>
+                    <span>All changes saved</span>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs-container">
+                <div class="tabs">
+                    <div class="tab active" data-tab="home">
+                        <i class="fas fa-home"></i>
+                        Home Page
+                    </div>
+                    <div class="tab" data-tab="about">
+                        <i class="fas fa-user"></i>
+                        About Page
+                    </div>
+                    <div class="tab" data-tab="services">
+                        <i class="fas fa-cog"></i>
+                        Services Page
+                    </div>
+                    <div class="tab" data-tab="global">
+                        <i class="fas fa-globe"></i>
+                        Global Settings
+                    </div>
                 </div>
             </div>
 
             <!-- Editor Panels -->
-            <div class="glass-card rounded-b-2xl rounded-t-none p-8">
-                <!-- HOME PAGE EDITOR -->
-                <div id="panel-home" class="editor-panel active space-y-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
-                            <span class="w-1 h-6 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
-                            Home Page Content
-                        </h2>
-                        <div class="flex gap-2">
-                            <button onclick="previewPage('home')" class="px-4 py-2 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-xl hover:scale-105 transition-all text-sm font-medium">
-                                👁️ Preview
-                            </button>
-                            <button onclick="resetSection('home')" class="px-4 py-2 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-xl hover:scale-105 transition-all text-sm font-medium">
-                                ↩️ Reset
-                            </button>
+            <div class="editor-panel">
+                <!-- HOME PANEL -->
+                <div id="panel-home" class="tab-panel">
+                    <!-- Hero Section -->
+                    <div class="editor-section">
+                        <h3>
+                            <i class="fas fa-bullseye text-blue-900"></i>
+                            Hero Section
+                        </h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Badge Text</label>
+                                <input type="text" id="homeBadge" class="form-control" value="Lagos Premier Design Studio" maxlength="50">
+                                <div class="char-counter" id="homeBadgeCounter">0/50</div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Heading Line 1</label>
+                                <input type="text" id="homeLine1" class="form-control" value="Start Your">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Heading Line 2</label>
+                                <input type="text" id="homeLine2" class="form-control" value="Brand Journey">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <textarea id="homeDesc" class="form-control" maxlength="200">Based in Lagos, serving Nigeria and the world. Get in touch for a personalized consultation with transparent pricing.</textarea>
+                            <div class="char-counter" id="homeDescCounter">0/200</div>
                         </div>
                     </div>
 
-                    <div class="space-y-4">
-                        <!-- Hero Section -->
-                        <div class="field-group">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-2xl">🎯</span>
-                                Hero Section
-                            </h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Badge Text</label>
-                                    <input type="text" id="home-hero-badge" class="modern-input" value="Lagos Premier Design Studio" maxlength="50">
-                                    <div class="character-count text-right mt-1">
-                                        <span id="home-hero-badge-count">0</span>/50
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Heading Line 1</label>
-                                    <input type="text" id="home-hero-line1" class="modern-input" value="Start Your" maxlength="30">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Heading Line 2</label>
-                                    <input type="text" id="home-hero-line2" class="modern-input" value="Brand Journey" maxlength="30">
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                                    <textarea id="home-hero-description" rows="3" class="modern-input" maxlength="200">Based in Lagos, serving Nigeria and the world. Get in touch for a personalized consultation with transparent pricing.</textarea>
-                                    <div class="character-count text-right mt-1">
-                                        <span id="home-hero-description-count">0</span>/200
-                                    </div>
-                                </div>
+                    <!-- CTA Section -->
+                    <div class="editor-section">
+                        <h3>
+                            <i class="fas fa-bolt text-blue-900"></i>
+                            Call to Action
+                        </h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Primary Button Text</label>
+                                <input type="text" id="homeCtaPrimary" class="form-control" value="Email Us">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Primary Button Link</label>
+                                <input type="text" id="homeCtaPrimaryLink" class="form-control" value="mailto:macaulaymadalene@gmail.com">
                             </div>
                         </div>
-
-                        <!-- CTA Buttons -->
-                        <div class="field-group">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-2xl">🚀</span>
-                                Call-to-Action Buttons
-                            </h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Primary Button Text</label>
-                                    <input type="text" id="home-cta-primary" class="modern-input" value="Email Us">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Primary Button Link</label>
-                                    <input type="text" id="home-cta-primary-link" class="modern-input" value="mailto:macaulaymadalene@gmail.com">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Secondary Button Text</label>
-                                    <input type="text" id="home-cta-secondary" class="modern-input" value="Call Now">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Secondary Button Link</label>
-                                    <input type="text" id="home-cta-secondary-link" class="modern-input" value="tel:08104902357">
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">WhatsApp Button Text</label>
-                                    <input type="text" id="home-cta-whatsapp" class="modern-input" value="WhatsApp">
-                                </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Secondary Button Text</label>
+                                <input type="text" id="homeCtaSecondary" class="form-control" value="Call Now">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Secondary Button Link</label>
+                                <input type="text" id="homeCtaSecondaryLink" class="form-control" value="tel:08104902357">
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Stats -->
-                        <div class="field-group">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-2xl">📊</span>
-                                Statistics
-                            </h3>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Stat 1 Value</label>
-                                    <input type="text" id="home-stat1-value" class="modern-input" value="50+">
-                                    <input type="text" id="home-stat1-label" class="modern-input mt-2" value="Projects Completed">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Stat 2 Value</label>
-                                    <input type="text" id="home-stat2-value" class="modern-input" value="100%">
-                                    <input type="text" id="home-stat2-label" class="modern-input mt-2" value="Client Satisfaction">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Stat 3 Value</label>
-                                    <input type="text" id="home-stat3-value" class="modern-input" value="15+">
-                                    <input type="text" id="home-stat3-label" class="modern-input mt-2" value="Industries Served">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Stat 4 Value</label>
-                                    <input type="text" id="home-stat4-value" class="modern-input" value="3+">
-                                    <input type="text" id="home-stat4-label" class="modern-input mt-2" value="Years Experience">
-                                </div>
+                    <!-- Stats Section -->
+                    <div class="editor-section">
+                        <h3>
+                            <i class="fas fa-chart-bar text-blue-900"></i>
+                            Statistics
+                        </h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Stat 1 Value</label>
+                                <input type="text" id="homeStat1Val" class="form-control" value="50+">
+                                <label class="form-label mt-2">Stat 1 Label</label>
+                                <input type="text" id="homeStat1Label" class="form-control" value="Projects">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Stat 2 Value</label>
+                                <input type="text" id="homeStat2Val" class="form-control" value="100%">
+                                <label class="form-label mt-2">Stat 2 Label</label>
+                                <input type="text" id="homeStat2Label" class="form-control" value="Satisfaction">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Stat 3 Value</label>
+                                <input type="text" id="homeStat3Val" class="form-control" value="15+">
+                                <label class="form-label mt-2">Stat 3 Label</label>
+                                <input type="text" id="homeStat3Label" class="form-control" value="Industries">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Stat 4 Value</label>
+                                <input type="text" id="homeStat4Val" class="form-control" value="3+">
+                                <label class="form-label mt-2">Stat 4 Label</label>
+                                <input type="text" id="homeStat4Label" class="form-control" value="Years">
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Testimonial -->
-                        <div class="field-group">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-2xl">💬</span>
-                                Testimonial
-                            </h3>
-                            <div class="space-y-3">
-                                <textarea id="home-testimonial-text" rows="3" class="modern-input" maxlength="300">"MadaBrand created a brand identity that perfectly captures our vision. The geometric logo and gold-and-black palette elevated our entire company presence."</textarea>
-                                <div class="character-count text-right">
-                                    <span id="home-testimonial-count">0</span>/300
-                                </div>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <input type="text" id="home-testimonial-author" class="modern-input" value="Nuel Ark" placeholder="Author Name">
-                                    <input type="text" id="home-testimonial-title" class="modern-input" value="CEO, NuelArk Construction" placeholder="Author Title">
-                                </div>
+                    <!-- Testimonial -->
+                    <div class="editor-section">
+                        <h3>
+                            <i class="fas fa-quote-right text-blue-900"></i>
+                            Testimonial
+                        </h3>
+                        <div class="form-group">
+                            <label class="form-label">Testimonial Text</label>
+                            <textarea id="homeTestimonial" class="form-control" maxlength="300">"MadaBrand created a brand identity that perfectly captures our vision."</textarea>
+                            <div class="char-counter" id="homeTestimonialCounter">0/300</div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Author</label>
+                                <input type="text" id="homeTestAuthor" class="form-control" value="Nuel Ark">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Author Title</label>
+                                <input type="text" id="homeTestTitle" class="form-control" value="CEO, NuelArk Construction">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- ABOUT PAGE EDITOR -->
-                <div id="panel-about" class="editor-panel hidden space-y-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
-                            <span class="w-1 h-6 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
-                            About Page Content
-                        </h2>
-                        <div class="flex gap-2">
-                            <button onclick="previewPage('about')" class="px-4 py-2 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-xl hover:scale-105 transition-all text-sm font-medium">
-                                👁️ Preview
-                            </button>
-                            <button onclick="resetSection('about')" class="px-4 py-2 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-xl hover:scale-105 transition-all text-sm font-medium">
-                                ↩️ Reset
-                            </button>
+                <!-- ABOUT PANEL -->
+                <div id="panel-about" class="tab-panel hidden">
+                    <div class="editor-section">
+                        <h3>
+                            <i class="fas fa-book-open text-blue-900"></i>
+                            Our Story
+                        </h3>
+                        <div class="form-group">
+                            <label class="form-label">Title</label>
+                            <input type="text" id="aboutTitle" class="form-control" value="From Passion to Premium Design Studio">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Paragraph 1</label>
+                            <textarea id="aboutPara1" class="form-control" rows="3">Founded in Lagos with a vision to transform how Nigerian businesses present themselves to the world...</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Paragraph 2</label>
+                            <textarea id="aboutPara2" class="form-control" rows="3">Our journey has been marked by a relentless pursuit of design excellence...</textarea>
                         </div>
                     </div>
 
-                    <div class="space-y-4">
-                        <!-- Story Section -->
-                        <div class="field-group">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-2xl">📖</span>
-                                Our Story
-                            </h3>
-                            <div class="space-y-3">
-                                <input type="text" id="about-title" class="modern-input" value="From Passion to Premium Design Studio">
-                                <textarea id="about-paragraph1" rows="3" class="modern-input">Founded in Lagos with a vision to transform how Nigerian businesses present themselves to the world, MadaBrand has evolved into a premier brand identity agency trusted by industry leaders across Africa and beyond.</textarea>
-                                <textarea id="about-paragraph2" rows="3" class="modern-input">Our journey has been marked by a relentless pursuit of design excellence, cultural authenticity, and client success. We believe that great design goes beyond aesthetics — it solves problems, communicates values, and creates lasting impressions.</textarea>
-                            </div>
+                    <div class="editor-section">
+                        <h3>
+                            <i class="fas fa-quote-left text-blue-900"></i>
+                            Founder's Quote
+                        </h3>
+                        <div class="form-group">
+                            <textarea id="aboutQuote" class="form-control" rows="2">Every brand has a unique story waiting to be told.</textarea>
                         </div>
-
-                        <!-- Founder Quote -->
-                        <div class="field-group">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-2xl">💭</span>
-                                Founder's Quote
-                            </h3>
-                            <div class="space-y-3">
-                                <textarea id="about-quote" rows="3" class="modern-input">Every brand has a unique story waiting to be told. Our mission is to tell that story through design that resonates, connects, and endures.</textarea>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <input type="text" id="about-quote-author" class="modern-input" value="Macaulay Madalene">
-                                    <input type="text" id="about-quote-title" class="modern-input" value="Founder & Creative Director">
-                                </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Author</label>
+                                <input type="text" id="aboutQuoteAuthor" class="form-control" value="Macaulay Madalene">
                             </div>
-                        </div>
-
-                        <!-- Stats -->
-                        <div class="field-group">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-2xl">📊</span>
-                                Company Stats
-                            </h3>
-                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                <div>
-                                    <input type="text" id="about-stat1-year" class="modern-input" value="2018" placeholder="Year">
-                                    <input type="text" id="about-stat1-label" class="modern-input mt-2" value="Founded">
-                                </div>
-                                <div>
-                                    <input type="text" id="about-stat2-value" class="modern-input" value="50+">
-                                    <input type="text" id="about-stat2-label" class="modern-input mt-2" value="Projects">
-                                </div>
-                                <div>
-                                    <input type="text" id="about-stat3-value" class="modern-input" value="100%">
-                                    <input type="text" id="about-stat3-label" class="modern-input mt-2" value="Satisfaction">
-                                </div>
+                            <div class="form-group">
+                                <label class="form-label">Title</label>
+                                <input type="text" id="aboutQuoteTitle" class="form-control" value="Founder & Creative Director">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- SERVICES PAGE EDITOR -->
-                <div id="panel-services" class="editor-panel hidden space-y-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
-                            <span class="w-1 h-6 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
-                            Services Page Content
-                        </h2>
-                        <div class="flex gap-2">
-                            <button onclick="previewPage('services')" class="px-4 py-2 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-xl hover:scale-105 transition-all text-sm font-medium">
-                                👁️ Preview
-                            </button>
-                            <button onclick="resetSection('services')" class="px-4 py-2 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-xl hover:scale-105 transition-all text-sm font-medium">
-                                ↩️ Reset
-                            </button>
-                        </div>
+                <!-- SERVICES PANEL -->
+                <div id="panel-services" class="tab-panel hidden">
+                    <div class="services-grid" id="servicesGrid">
+                        <!-- Services will be injected here -->
                     </div>
-
-                    <!-- Service Cards Editor -->
-                    <div id="services-container" class="space-y-4">
-                        <!-- Service 1 -->
-                        <div class="field-group">
-                            <div class="flex justify-between items-center mb-3">
-                                <h3 class="font-semibold text-gray-800 flex items-center gap-2">
-                                    <span class="service-icon-display">🎨</span>
-                                    Service 1
-                                </h3>
-                                <button onclick="deleteService(0)" class="text-red-600 hover:text-red-800 hover:scale-110 transition-all">🗑️</button>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <input type="text" class="service-title modern-input" value="Complete Brand Identity" placeholder="Service Title">
-                                <input type="text" class="service-icon modern-input" value="🎨" placeholder="Icon">
-                                <div class="md:col-span-2">
-                                    <textarea class="service-description modern-input" rows="3" placeholder="Service description...">Full visual systems including logos, color palettes, typography, brand guidelines, and application across all touchpoints.</textarea>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Service 2 -->
-                        <div class="field-group">
-                            <div class="flex justify-between items-center mb-3">
-                                <h3 class="font-semibold text-gray-800 flex items-center gap-2">
-                                    <span class="service-icon-display">✨</span>
-                                    Service 2
-                                </h3>
-                                <button onclick="deleteService(1)" class="text-red-600 hover:text-red-800 hover:scale-110 transition-all">🗑️</button>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <input type="text" class="service-title modern-input" value="Logo & Visual Identity" placeholder="Service Title">
-                                <input type="text" class="service-icon modern-input" value="✨" placeholder="Icon">
-                                <div class="md:col-span-2">
-                                    <textarea class="service-description modern-input" rows="3" placeholder="Service description...">Strategic logo design and comprehensive visual systems that communicate your brand's unique story and values.</textarea>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Service 3 -->
-                        <div class="field-group">
-                            <div class="flex justify-between items-center mb-3">
-                                <h3 class="font-semibold text-gray-800 flex items-center gap-2">
-                                    <span class="service-icon-display">📱</span>
-                                    Service 3
-                                </h3>
-                                <button onclick="deleteService(2)" class="text-red-600 hover:text-red-800 hover:scale-110 transition-all">🗑️</button>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <input type="text" class="service-title modern-input" value="Brand Applications" placeholder="Service Title">
-                                <input type="text" class="service-icon modern-input" value="📱" placeholder="Icon">
-                                <div class="md:col-span-2">
-                                    <textarea class="service-description modern-input" rows="3" placeholder="Service description...">Real-world implementation across business cards, stationery, packaging, digital platforms, and marketing materials.</textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <button onclick="addService()" class="px-4 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-900 rounded-xl hover:scale-105 transition-all font-medium">
-                        + Add New Service
+                    <button class="add-service-btn" onclick="addService()">
+                        <i class="fas fa-plus"></i>
+                        Add New Service
                     </button>
                 </div>
 
-                <!-- GLOBAL SETTINGS EDITOR -->
-                <div id="panel-global" class="editor-panel hidden space-y-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
-                            <span class="w-1 h-6 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
-                            Global Site Settings
-                        </h2>
+                <!-- GLOBAL PANEL -->
+                <div id="panel-global" class="tab-panel hidden">
+                    <div class="editor-section">
+                        <h3>
+                            <i class="fas fa-search text-blue-900"></i>
+                            SEO Settings
+                        </h3>
+                        <div class="form-group">
+                            <label class="form-label">Site Title</label>
+                            <input type="text" id="globalSiteTitle" class="form-control" value="MadaBrand | Premium Design Studio Lagos">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Meta Description</label>
+                            <textarea id="globalMetaDesc" class="form-control" maxlength="160">Premium brand design, logo design, and graphic design services in Lagos, Nigeria.</textarea>
+                            <div class="char-counter" id="globalMetaCounter">0/160</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Keywords</label>
+                            <input type="text" id="globalKeywords" class="form-control" value="brand design, logo design, graphic design, Nigeria, Lagos">
+                        </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- SEO Settings -->
-                        <div class="field-group">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-2xl">🔍</span>
-                                SEO Settings
-                            </h3>
-                            <div class="space-y-3">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Site Title</label>
-                                    <input type="text" id="global-site-title" class="modern-input" value="MadaBrand | Premium Design Studio Lagos">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Meta Description</label>
-                                    <textarea id="global-meta-description" rows="3" class="modern-input" maxlength="160">Premium brand design, logo design, and graphic design services in Lagos, Nigeria. Creating memorable brand identities for businesses worldwide.</textarea>
-                                    <div class="character-count text-right mt-1">
-                                        <span id="global-meta-count">0</span>/160
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Keywords (comma separated)</label>
-                                    <input type="text" id="global-keywords" class="modern-input" value="brand design, logo design, graphic design, Nigeria, Lagos, premium design">
-                                </div>
+                    <div class="editor-section">
+                        <h3>
+                            <i class="fas fa-phone text-blue-900"></i>
+                            Contact Information
+                        </h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" id="globalEmail" class="form-control" value="macaulaymadalene@gmail.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Phone</label>
+                                <input type="text" id="globalPhone" class="form-control" value="08104902357">
                             </div>
                         </div>
-
-                        <!-- Contact Information -->
-                        <div class="field-group">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-2xl">📞</span>
-                                Contact Information
-                            </h3>
-                            <div class="space-y-3">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                                    <input type="email" id="global-email" class="modern-input" value="macaulaymadalene@gmail.com">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                                    <input type="text" id="global-phone" class="modern-input" value="08104902357">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">WhatsApp</label>
-                                    <input type="text" id="global-whatsapp" class="modern-input" value="2348104902357">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
-                                    <textarea id="global-address" rows="2" class="modern-input">No 6, Simeon Edun Street, Iyana Era, Lagos, Nigeria</textarea>
-                                </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">WhatsApp</label>
+                                <input type="text" id="globalWhatsapp" class="form-control" value="2348104902357">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Address</label>
+                                <input type="text" id="globalAddress" class="form-control" value="No 6, Simeon Edun Street, Iyana Era, Lagos">
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Social Media Links -->
-                        <div class="field-group md:col-span-2">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-2xl">🌐</span>
-                                Social Media Links
-                            </h3>
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Instagram</label>
-                                    <input type="text" id="social-instagram" class="modern-input" placeholder="https://instagram.com/...">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">LinkedIn</label>
-                                    <input type="text" id="social-linkedin" class="modern-input" placeholder="https://linkedin.com/...">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Behance</label>
-                                    <input type="text" id="social-behance" class="modern-input" placeholder="https://behance.net/...">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Dribbble</label>
-                                    <input type="text" id="social-dribbble" class="modern-input" placeholder="https://dribbble.com/...">
-                                </div>
+                    <div class="editor-section">
+                        <h3>
+                            <i class="fas fa-share-alt text-blue-900"></i>
+                            Social Media
+                        </h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Instagram</label>
+                                <input type="text" id="socialInstagram" class="form-control" placeholder="https://instagram.com/...">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">LinkedIn</label>
+                                <input type="text" id="socialLinkedin" class="form-control" placeholder="https://linkedin.com/...">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Behance</label>
+                                <input type="text" id="socialBehance" class="form-control" placeholder="https://behance.net/...">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Dribbble</label>
+                                <input type="text" id="socialDribbble" class="form-control" placeholder="https://dribbble.com/...">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Save Button -->
-                <div class="sticky bottom-4 mt-8 flex justify-end">
-                    <button onclick="saveAllContent()" class="px-8 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold rounded-xl hover:scale-105 transition-all duration-300 shadow-lg flex items-center gap-2">
-                        <span>💾</span>
-                        <span>Save All Changes</span>
+                <!-- Save Bar -->
+                <div class="save-bar">
+                    <button class="save-btn" onclick="saveAllContent()">
+                        <i class="fas fa-save"></i>
+                        Save All Changes
                     </button>
                 </div>
             </div>
@@ -604,591 +834,304 @@
     </div>
 
     <!-- Preview Modal -->
-    <div id="preview-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto transform scale-95 transition-all duration-300" id="modal-content">
-            <div class="sticky top-0 bg-gradient-to-r from-blue-900 to-blue-800 text-white px-6 py-4 flex justify-between items-center">
-                <h3 class="text-xl font-bold">Preview Mode</h3>
-                <button onclick="closePreview()" class="text-white/80 hover:text-white text-2xl transition-transform hover:scale-110">×</button>
+    <div id="previewModal" class="modal hidden" onclick="if(event.target === this) closePreviewModal()">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Preview</h3>
+                <span class="modal-close" onclick="closePreviewModal()">&times;</span>
             </div>
-            <div class="p-6" id="preview-content">
-                <!-- Preview content will be injected here -->
+            <div class="modal-body" id="previewContent">
+                <!-- Preview content -->
             </div>
         </div>
     </div>
 
     <script>
-        const API_BASE = '/api';
-        let autoSaveTimer;
-        const autoSaveIndicator = document.getElementById('auto-save-indicator');
-
-        // Check authentication
+        // Auth check
         if (!sessionStorage.getItem('adminAuth') && !localStorage.getItem('adminRemember')) {
             window.location.href = '/admin/login.html';
         }
 
-        // Load navigation
-        fetch('/admin/components/nav.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('nav-container').innerHTML = data;
+        // Vanta
+        VANTA.WAVES({
+            el: "#vanta-bg",
+            color: 0x1e3a8a,
+            backgroundColor: 0xf8fafc,
+            waveHeight: 20,
+            waveSpeed: 1
+        });
+
+        // Sidebar toggle
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            if (window.innerWidth <= 1024 && 
+                !sidebar.contains(e.target) && 
+                !menuBtn.contains(e.target) && 
+                sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+            }
+        });
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
                 
-                // Initialize Vanta
-                VANTA.WAVES({
-                    el: "#vanta-bg",
-                    color: 0x1e3a8a,
-                    waveHeight: 20,
-                    shininess: 30,
-                    waveSpeed: 1,
-                    zoom: 0.8
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+                document.getElementById(`panel-${this.dataset.tab}`).classList.remove('hidden');
+            });
+        });
+
+        // Services data
+        let services = [
+            { icon: '🎨', title: 'Complete Brand Identity', desc: 'Full visual systems including logos, color palettes, and brand guidelines.' },
+            { icon: '✨', title: 'Logo & Visual Identity', desc: 'Strategic logo design that communicates your brand\'s unique story.' },
+            { icon: '📱', title: 'Brand Applications', desc: 'Real-world implementation across business cards, packaging, and digital platforms.' }
+        ];
+
+        // Render services
+        function renderServices() {
+            const grid = document.getElementById('servicesGrid');
+            grid.innerHTML = services.map((s, index) => `
+                <div class="service-card">
+                    <div class="service-remove" onclick="removeService(${index})">
+                        <i class="fas fa-times"></i>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Icon</label>
+                        <input type="text" class="form-control service-icon" value="${s.icon}" data-index="${index}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Title</label>
+                        <input type="text" class="form-control service-title" value="${s.title}" data-index="${index}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control service-desc" data-index="${index}" rows="2">${s.desc}</textarea>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add event listeners to update services array
+            document.querySelectorAll('.service-icon, .service-title, .service-desc').forEach(input => {
+                input.addEventListener('input', function() {
+                    const index = this.dataset.index;
+                    if (this.classList.contains('service-icon')) services[index].icon = this.value;
+                    if (this.classList.contains('service-title')) services[index].title = this.value;
+                    if (this.classList.contains('service-desc')) services[index].desc = this.value;
+                    triggerAutoSave();
                 });
             });
+        }
 
-        // Auto-save functionality
+        // Add service
+        window.addService = function() {
+            services.push({ icon: '✨', title: 'New Service', desc: 'Description here' });
+            renderServices();
+            triggerAutoSave();
+        };
+
+        // Remove service
+        window.removeService = function(index) {
+            services.splice(index, 1);
+            renderServices();
+            triggerAutoSave();
+        };
+
+        // Character counters
+        function setupCounters() {
+            const counters = [
+                { input: 'homeBadge', counter: 'homeBadgeCounter', max: 50 },
+                { input: 'homeDesc', counter: 'homeDescCounter', max: 200 },
+                { input: 'homeTestimonial', counter: 'homeTestimonialCounter', max: 300 },
+                { input: 'globalMetaDesc', counter: 'globalMetaCounter', max: 160 }
+            ];
+
+            counters.forEach(c => {
+                const input = document.getElementById(c.input);
+                const counter = document.getElementById(c.counter);
+                
+                function update() {
+                    const len = input.value.length;
+                    counter.textContent = `${len}/${c.max}`;
+                    counter.classList.toggle('warning', len > c.max * 0.9);
+                }
+                
+                input.addEventListener('input', update);
+                update();
+            });
+        }
+
+        // Auto-save
+        let saveTimer;
         function triggerAutoSave() {
-            autoSaveIndicator.textContent = '⏳ Saving changes...';
-            autoSaveIndicator.classList.add('saving');
+            const indicator = document.getElementById('saveIndicator');
+            indicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            indicator.classList.add('saving');
             
-            clearTimeout(autoSaveTimer);
-            autoSaveTimer = setTimeout(() => {
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(() => {
                 saveAllContent(true);
             }, 2000);
         }
 
-        // Add input listeners for auto-save
-        document.querySelectorAll('input, textarea, select').forEach(element => {
-            element.addEventListener('input', triggerAutoSave);
+        // Add input listeners
+        document.querySelectorAll('input, textarea').forEach(el => {
+            el.addEventListener('input', triggerAutoSave);
         });
 
-        // Tab switching
-        document.querySelectorAll('.editor-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.editor-tab').forEach(t => {
-                    t.classList.remove('active', 'text-blue-900');
-                    t.classList.add('text-gray-700');
-                });
-                this.classList.add('active', 'text-blue-900');
-                
-                const tabName = this.dataset.tab;
-                document.querySelectorAll('.editor-panel').forEach(panel => panel.classList.add('hidden'));
-                document.getElementById(`panel-${tabName}`).classList.remove('hidden');
-            });
-        });
-
-        // Character counters
-        function updateCharCount(elementId, countId) {
-            const element = document.getElementById(elementId);
-            const countSpan = document.getElementById(countId);
-            if (element && countSpan) {
-                countSpan.textContent = element.value.length;
-                element.addEventListener('input', function() {
-                    const length = this.value.length;
-                    countSpan.textContent = length;
-                    
-                    // Update warning class
-                    const max = parseInt(this.maxLength) || 0;
-                    if (max > 0) {
-                        if (length > max * 0.9) {
-                            countSpan.classList.add('warning');
-                        } else {
-                            countSpan.classList.remove('warning');
-                        }
-                        if (length >= max) {
-                            countSpan.classList.add('danger');
-                        } else {
-                            countSpan.classList.remove('danger');
-                        }
+        // Save all content
+        window.saveAllContent = function(isAutoSave = false) {
+            const content = {
+                home: {
+                    badge: document.getElementById('homeBadge').value,
+                    line1: document.getElementById('homeLine1').value,
+                    line2: document.getElementById('homeLine2').value,
+                    desc: document.getElementById('homeDesc').value,
+                    ctaPrimary: document.getElementById('homeCtaPrimary').value,
+                    ctaPrimaryLink: document.getElementById('homeCtaPrimaryLink').value,
+                    ctaSecondary: document.getElementById('homeCtaSecondary').value,
+                    ctaSecondaryLink: document.getElementById('homeCtaSecondaryLink').value,
+                    stats: [
+                        { val: document.getElementById('homeStat1Val').value, label: document.getElementById('homeStat1Label').value },
+                        { val: document.getElementById('homeStat2Val').value, label: document.getElementById('homeStat2Label').value },
+                        { val: document.getElementById('homeStat3Val').value, label: document.getElementById('homeStat3Label').value },
+                        { val: document.getElementById('homeStat4Val').value, label: document.getElementById('homeStat4Label').value }
+                    ],
+                    testimonial: {
+                        text: document.getElementById('homeTestimonial').value,
+                        author: document.getElementById('homeTestAuthor').value,
+                        title: document.getElementById('homeTestTitle').value
                     }
-                });
-            }
-        }
-
-        updateCharCount('home-hero-description', 'home-hero-description-count');
-        updateCharCount('home-hero-badge', 'home-hero-badge-count');
-        updateCharCount('home-testimonial-text', 'home-testimonial-count');
-        updateCharCount('global-meta-description', 'global-meta-count');
-
-        // Services management
-        function addService() {
-            const container = document.getElementById('services-container');
-            const serviceDiv = document.createElement('div');
-            serviceDiv.className = 'field-group';
-            serviceDiv.innerHTML = `
-                <div class="flex justify-between items-center mb-3">
-                    <h3 class="font-semibold text-gray-800 flex items-center gap-2">
-                        <span class="service-icon-display">✨</span>
-                        New Service
-                    </h3>
-                    <button onclick="this.closest('.field-group').remove()" class="text-red-600 hover:text-red-800 hover:scale-110 transition-all">🗑️</button>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input type="text" class="service-title modern-input" value="New Service" placeholder="Service Title">
-                    <input type="text" class="service-icon modern-input" value="✨" placeholder="Icon">
-                    <div class="md:col-span-2">
-                        <textarea class="service-description modern-input" rows="3" placeholder="Service description..."></textarea>
-                    </div>
-                </div>
-            `;
-            container.appendChild(serviceDiv);
-            
-            // Add auto-save listeners to new inputs
-            serviceDiv.querySelectorAll('input, textarea').forEach(el => {
-                el.addEventListener('input', triggerAutoSave);
-            });
-        }
-
-        function deleteService(index) {
-            if (confirm('Delete this service?')) {
-                const services = document.querySelectorAll('#services-container .field-group');
-                if (services[index]) {
-                    services[index].remove();
-                    triggerAutoSave();
-                }
-            }
-        }
-
-        // Save all content to API
-        async function saveAllContent(isAutoSave = false) {
-            // Collect home page data
-            const homeData = {
-                hero: {
-                    badge: document.getElementById('home-hero-badge')?.value || '',
-                    line1: document.getElementById('home-hero-line1')?.value || '',
-                    line2: document.getElementById('home-hero-line2')?.value || '',
-                    description: document.getElementById('home-hero-description')?.value || ''
                 },
-                cta: {
-                    primary: document.getElementById('home-cta-primary')?.value || '',
-                    primaryLink: document.getElementById('home-cta-primary-link')?.value || '',
-                    secondary: document.getElementById('home-cta-secondary')?.value || '',
-                    secondaryLink: document.getElementById('home-cta-secondary-link')?.value || '',
-                    whatsapp: document.getElementById('home-cta-whatsapp')?.value || ''
+                about: {
+                    title: document.getElementById('aboutTitle').value,
+                    para1: document.getElementById('aboutPara1').value,
+                    para2: document.getElementById('aboutPara2').value,
+                    quote: document.getElementById('aboutQuote').value,
+                    quoteAuthor: document.getElementById('aboutQuoteAuthor').value,
+                    quoteTitle: document.getElementById('aboutQuoteTitle').value
                 },
-                stats: [
-                    { value: document.getElementById('home-stat1-value')?.value || '', label: document.getElementById('home-stat1-label')?.value || '' },
-                    { value: document.getElementById('home-stat2-value')?.value || '', label: document.getElementById('home-stat2-label')?.value || '' },
-                    { value: document.getElementById('home-stat3-value')?.value || '', label: document.getElementById('home-stat3-label')?.value || '' },
-                    { value: document.getElementById('home-stat4-value')?.value || '', label: document.getElementById('home-stat4-label')?.value || '' }
-                ],
-                testimonial: {
-                    text: document.getElementById('home-testimonial-text')?.value || '',
-                    author: document.getElementById('home-testimonial-author')?.value || '',
-                    title: document.getElementById('home-testimonial-title')?.value || ''
-                }
-            };
-
-            // Collect about page data
-            const aboutData = {
-                title: document.getElementById('about-title')?.value || '',
-                paragraph1: document.getElementById('about-paragraph1')?.value || '',
-                paragraph2: document.getElementById('about-paragraph2')?.value || '',
-                quote: {
-                    text: document.getElementById('about-quote')?.value || '',
-                    author: document.getElementById('about-quote-author')?.value || '',
-                    title: document.getElementById('about-quote-title')?.value || ''
+                services: services,
+                global: {
+                    siteTitle: document.getElementById('globalSiteTitle').value,
+                    metaDesc: document.getElementById('globalMetaDesc').value,
+                    keywords: document.getElementById('globalKeywords').value,
+                    email: document.getElementById('globalEmail').value,
+                    phone: document.getElementById('globalPhone').value,
+                    whatsapp: document.getElementById('globalWhatsapp').value,
+                    address: document.getElementById('globalAddress').value,
+                    social: {
+                        instagram: document.getElementById('socialInstagram').value,
+                        linkedin: document.getElementById('socialLinkedin').value,
+                        behance: document.getElementById('socialBehance').value,
+                        dribbble: document.getElementById('socialDribbble').value
+                    }
                 },
-                stats: [
-                    { value: document.getElementById('about-stat1-year')?.value || '', label: document.getElementById('about-stat1-label')?.value || '' },
-                    { value: document.getElementById('about-stat2-value')?.value || '', label: document.getElementById('about-stat2-label')?.value || '' },
-                    { value: document.getElementById('about-stat3-value')?.value || '', label: document.getElementById('about-stat3-label')?.value || '' }
-                ]
-            };
-
-            // Collect services data
-            const servicesData = [];
-            document.querySelectorAll('#services-container .field-group').forEach(service => {
-                servicesData.push({
-                    title: service.querySelector('.service-title')?.value || '',
-                    icon: service.querySelector('.service-icon')?.value || '',
-                    description: service.querySelector('.service-description')?.value || ''
-                });
-            });
-
-            // Collect global settings
-            const globalData = {
-                siteTitle: document.getElementById('global-site-title')?.value || '',
-                metaDescription: document.getElementById('global-meta-description')?.value || '',
-                keywords: document.getElementById('global-keywords')?.value || '',
-                email: document.getElementById('global-email')?.value || '',
-                phone: document.getElementById('global-phone')?.value || '',
-                whatsapp: document.getElementById('global-whatsapp')?.value || '',
-                address: document.getElementById('global-address')?.value || '',
-                social: {
-                    instagram: document.getElementById('social-instagram')?.value || '',
-                    linkedin: document.getElementById('social-linkedin')?.value || '',
-                    behance: document.getElementById('social-behance')?.value || '',
-                    dribbble: document.getElementById('social-dribbble')?.value || ''
-                }
-            };
-
-            const contentData = {
-                home: homeData,
-                about: aboutData,
-                services: servicesData,
-                global: globalData,
                 lastUpdated: new Date().toISOString()
             };
 
-            try {
-                // Save to API
-                const response = await fetch(`${API_BASE}/content`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': 'Bearer MADA2024',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(contentData)
-                });
+            localStorage.setItem('madabrandContent', JSON.stringify(content));
 
-                if (response.ok) {
-                    // Trigger rebuild
-                    await fetch(`${API_BASE}/rebuild`, {
-                        method: 'POST',
-                        headers: { 'Authorization': 'Bearer MADA2024' }
-                    });
+            const indicator = document.getElementById('saveIndicator');
+            indicator.innerHTML = '<i class="fas fa-check-circle"></i> All changes saved';
+            indicator.classList.remove('saving');
 
-                    // Save to localStorage as backup
-                    localStorage.setItem('madabrandContent', JSON.stringify(contentData));
-                    
-                    // Update indicator
-                    autoSaveIndicator.textContent = '💾 All changes saved';
-                    autoSaveIndicator.classList.remove('saving');
-                    autoSaveIndicator.classList.add('bg-gradient-to-r', 'from-green-600', 'to-green-700');
-
-                    if (!isAutoSave) {
-                        showToast('✅ All content saved successfully!', 'success');
-                    }
-                } else {
-                    throw new Error('API Error');
-                }
-            } catch (error) {
-                // Fallback to localStorage
-                localStorage.setItem('madabrandContent', JSON.stringify(contentData));
-                autoSaveIndicator.textContent = '💾 Saved locally';
-                autoSaveIndicator.classList.remove('saving');
-                
-                if (!isAutoSave) {
-                    showToast('Saved locally only', 'warning');
-                }
+            if (!isAutoSave) {
+                showToast('Content saved!', 'success');
             }
-        }
+        };
 
-        // Load saved content from API
-        async function loadSavedContent() {
-            try {
-                const response = await fetch(`${API_BASE}/content`, {
-                    headers: { 'Authorization': 'Bearer MADA2024' }
-                });
-                const data = await response.json();
-
-                if (data.home) {
-                    // Load home page data
-                    document.getElementById('home-hero-badge').value = data.home.hero?.badge || '';
-                    document.getElementById('home-hero-line1').value = data.home.hero?.line1 || '';
-                    document.getElementById('home-hero-line2').value = data.home.hero?.line2 || '';
-                    document.getElementById('home-hero-description').value = data.home.hero?.description || '';
-                    
-                    document.getElementById('home-cta-primary').value = data.home.cta?.primary || '';
-                    document.getElementById('home-cta-primary-link').value = data.home.cta?.primaryLink || '';
-                    document.getElementById('home-cta-secondary').value = data.home.cta?.secondary || '';
-                    document.getElementById('home-cta-secondary-link').value = data.home.cta?.secondaryLink || '';
-                    document.getElementById('home-cta-whatsapp').value = data.home.cta?.whatsapp || '';
-                    
-                    if (data.home.stats) {
-                        document.getElementById('home-stat1-value').value = data.home.stats[0]?.value || '';
-                        document.getElementById('home-stat1-label').value = data.home.stats[0]?.label || '';
-                        document.getElementById('home-stat2-value').value = data.home.stats[1]?.value || '';
-                        document.getElementById('home-stat2-label').value = data.home.stats[1]?.label || '';
-                        document.getElementById('home-stat3-value').value = data.home.stats[2]?.value || '';
-                        document.getElementById('home-stat3-label').value = data.home.stats[2]?.label || '';
-                        document.getElementById('home-stat4-value').value = data.home.stats[3]?.value || '';
-                        document.getElementById('home-stat4-label').value = data.home.stats[3]?.label || '';
-                    }
-                    
-                    if (data.home.testimonial) {
-                        document.getElementById('home-testimonial-text').value = data.home.testimonial.text || '';
-                        document.getElementById('home-testimonial-author').value = data.home.testimonial.author || '';
-                        document.getElementById('home-testimonial-title').value = data.home.testimonial.title || '';
-                    }
-                }
-
-                if (data.about) {
-                    document.getElementById('about-title').value = data.about.title || '';
-                    document.getElementById('about-paragraph1').value = data.about.paragraph1 || '';
-                    document.getElementById('about-paragraph2').value = data.about.paragraph2 || '';
-                    
-                    if (data.about.quote) {
-                        document.getElementById('about-quote').value = data.about.quote.text || '';
-                        document.getElementById('about-quote-author').value = data.about.quote.author || '';
-                        document.getElementById('about-quote-title').value = data.about.quote.title || '';
-                    }
-                    
-                    if (data.about.stats) {
-                        document.getElementById('about-stat1-year').value = data.about.stats[0]?.value || '';
-                        document.getElementById('about-stat1-label').value = data.about.stats[0]?.label || '';
-                        document.getElementById('about-stat2-value').value = data.about.stats[1]?.value || '';
-                        document.getElementById('about-stat2-label').value = data.about.stats[1]?.label || '';
-                        document.getElementById('about-stat3-value').value = data.about.stats[2]?.value || '';
-                        document.getElementById('about-stat3-label').value = data.about.stats[2]?.label || '';
-                    }
-                }
-
-                if (data.services && data.services.length > 0) {
-                    const container = document.getElementById('services-container');
-                    container.innerHTML = ''; // Clear existing
-                    
-                    data.services.forEach((service, index) => {
-                        const serviceDiv = document.createElement('div');
-                        serviceDiv.className = 'field-group';
-                        serviceDiv.innerHTML = `
-                            <div class="flex justify-between items-center mb-3">
-                                <h3 class="font-semibold text-gray-800 flex items-center gap-2">
-                                    <span class="service-icon-display">${service.icon || '✨'}</span>
-                                    Service ${index + 1}
-                                </h3>
-                                <button onclick="deleteService(${index})" class="text-red-600 hover:text-red-800 hover:scale-110 transition-all">🗑️</button>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <input type="text" class="service-title modern-input" value="${service.title || ''}" placeholder="Service Title">
-                                <input type="text" class="service-icon modern-input" value="${service.icon || ''}" placeholder="Icon">
-                                <div class="md:col-span-2">
-                                    <textarea class="service-description modern-input" rows="3" placeholder="Service description...">${service.description || ''}</textarea>
-                                </div>
-                            </div>
-                        `;
-                        container.appendChild(serviceDiv);
-                    });
-                }
-
-                if (data.global) {
-                    document.getElementById('global-site-title').value = data.global.siteTitle || '';
-                    document.getElementById('global-meta-description').value = data.global.metaDescription || '';
-                    document.getElementById('global-keywords').value = data.global.keywords || '';
-                    document.getElementById('global-email').value = data.global.email || '';
-                    document.getElementById('global-phone').value = data.global.phone || '';
-                    document.getElementById('global-whatsapp').value = data.global.whatsapp || '';
-                    document.getElementById('global-address').value = data.global.address || '';
-                    
-                    if (data.global.social) {
-                        document.getElementById('social-instagram').value = data.global.social.instagram || '';
-                        document.getElementById('social-linkedin').value = data.global.social.linkedin || '';
-                        document.getElementById('social-behance').value = data.global.social.behance || '';
-                        document.getElementById('social-dribbble').value = data.global.social.dribbble || '';
-                    }
-                }
-
-                // Update character counts
-                ['home-hero-description', 'home-hero-badge', 'home-testimonial-text', 'global-meta-description'].forEach(id => {
-                    const element = document.getElementById(id);
-                    if (element) {
-                        const event = new Event('input');
-                        element.dispatchEvent(event);
-                    }
-                });
-
-            } catch (error) {
-                console.error('Error loading from API, using localStorage fallback:', error);
-                loadLocalContent();
-            }
-        }
-
-        // Load from localStorage as fallback
-        function loadLocalContent() {
+        // Load saved content
+        function loadContent() {
             const saved = localStorage.getItem('madabrandContent');
             if (saved) {
                 try {
                     const data = JSON.parse(saved);
                     
-                    // Populate fields (similar to API load)
+                    // Home
                     if (data.home) {
-                        document.getElementById('home-hero-badge').value = data.home.hero?.badge || '';
-                        document.getElementById('home-hero-line1').value = data.home.hero?.line1 || '';
-                        document.getElementById('home-hero-line2').value = data.home.hero?.line2 || '';
-                        document.getElementById('home-hero-description').value = data.home.hero?.description || '';
-                        
-                        document.getElementById('home-cta-primary').value = data.home.cta?.primary || '';
-                        document.getElementById('home-cta-primary-link').value = data.home.cta?.primaryLink || '';
-                        document.getElementById('home-cta-secondary').value = data.home.cta?.secondary || '';
-                        document.getElementById('home-cta-secondary-link').value = data.home.cta?.secondaryLink || '';
+                        document.getElementById('homeBadge').value = data.home.badge || '';
+                        document.getElementById('homeLine1').value = data.home.line1 || '';
+                        document.getElementById('homeLine2').value = data.home.line2 || '';
+                        document.getElementById('homeDesc').value = data.home.desc || '';
+                        document.getElementById('homeCtaPrimary').value = data.home.ctaPrimary || '';
+                        document.getElementById('homeCtaPrimaryLink').value = data.home.ctaPrimaryLink || '';
+                        document.getElementById('homeCtaSecondary').value = data.home.ctaSecondary || '';
+                        document.getElementById('homeCtaSecondaryLink').value = data.home.ctaSecondaryLink || '';
                         
                         if (data.home.stats) {
-                            document.getElementById('home-stat1-value').value = data.home.stats[0]?.value || '';
-                            document.getElementById('home-stat1-label').value = data.home.stats[0]?.label || '';
-                            document.getElementById('home-stat2-value').value = data.home.stats[1]?.value || '';
-                            document.getElementById('home-stat2-label').value = data.home.stats[1]?.label || '';
-                            document.getElementById('home-stat3-value').value = data.home.stats[2]?.value || '';
-                            document.getElementById('home-stat3-label').value = data.home.stats[2]?.label || '';
-                            document.getElementById('home-stat4-value').value = data.home.stats[3]?.value || '';
-                            document.getElementById('home-stat4-label').value = data.home.stats[3]?.label || '';
+                            document.getElementById('homeStat1Val').value = data.home.stats[0]?.val || '';
+                            document.getElementById('homeStat1Label').value = data.home.stats[0]?.label || '';
+                            document.getElementById('homeStat2Val').value = data.home.stats[1]?.val || '';
+                            document.getElementById('homeStat2Label').value = data.home.stats[1]?.label || '';
+                            document.getElementById('homeStat3Val').value = data.home.stats[2]?.val || '';
+                            document.getElementById('homeStat3Label').value = data.home.stats[2]?.label || '';
+                            document.getElementById('homeStat4Val').value = data.home.stats[3]?.val || '';
+                            document.getElementById('homeStat4Label').value = data.home.stats[3]?.label || '';
                         }
                         
                         if (data.home.testimonial) {
-                            document.getElementById('home-testimonial-text').value = data.home.testimonial.text || '';
-                            document.getElementById('home-testimonial-author').value = data.home.testimonial.author || '';
-                            document.getElementById('home-testimonial-title').value = data.home.testimonial.title || '';
+                            document.getElementById('homeTestimonial').value = data.home.testimonial.text || '';
+                            document.getElementById('homeTestAuthor').value = data.home.testimonial.author || '';
+                            document.getElementById('homeTestTitle').value = data.home.testimonial.title || '';
                         }
                     }
-                    
+
+                    // About
                     if (data.about) {
-                        document.getElementById('about-title').value = data.about.title || '';
-                        document.getElementById('about-paragraph1').value = data.about.paragraph1 || '';
-                        document.getElementById('about-paragraph2').value = data.about.paragraph2 || '';
-                        
-                        if (data.about.quote) {
-                            document.getElementById('about-quote').value = data.about.quote.text || '';
-                            document.getElementById('about-quote-author').value = data.about.quote.author || '';
-                            document.getElementById('about-quote-title').value = data.about.quote.title || '';
-                        }
-                        
-                        if (data.about.stats) {
-                            document.getElementById('about-stat1-year').value = data.about.stats[0]?.value || '';
-                            document.getElementById('about-stat1-label').value = data.about.stats[0]?.label || '';
-                            document.getElementById('about-stat2-value').value = data.about.stats[1]?.value || '';
-                            document.getElementById('about-stat2-label').value = data.about.stats[1]?.label || '';
-                            document.getElementById('about-stat3-value').value = data.about.stats[2]?.value || '';
-                            document.getElementById('about-stat3-label').value = data.about.stats[2]?.label || '';
-                        }
+                        document.getElementById('aboutTitle').value = data.about.title || '';
+                        document.getElementById('aboutPara1').value = data.about.para1 || '';
+                        document.getElementById('aboutPara2').value = data.about.para2 || '';
+                        document.getElementById('aboutQuote').value = data.about.quote || '';
+                        document.getElementById('aboutQuoteAuthor').value = data.about.quoteAuthor || '';
+                        document.getElementById('aboutQuoteTitle').value = data.about.quoteTitle || '';
                     }
-                    
+
+                    // Services
+                    if (data.services) {
+                        services = data.services;
+                        renderServices();
+                    }
+
+                    // Global
                     if (data.global) {
-                        document.getElementById('global-site-title').value = data.global.siteTitle || '';
-                        document.getElementById('global-meta-description').value = data.global.metaDescription || '';
-                        document.getElementById('global-keywords').value = data.global.keywords || '';
-                        document.getElementById('global-email').value = data.global.email || '';
-                        document.getElementById('global-phone').value = data.global.phone || '';
-                        document.getElementById('global-whatsapp').value = data.global.whatsapp || '';
-                        document.getElementById('global-address').value = data.global.address || '';
+                        document.getElementById('globalSiteTitle').value = data.global.siteTitle || '';
+                        document.getElementById('globalMetaDesc').value = data.global.metaDesc || '';
+                        document.getElementById('globalKeywords').value = data.global.keywords || '';
+                        document.getElementById('globalEmail').value = data.global.email || '';
+                        document.getElementById('globalPhone').value = data.global.phone || '';
+                        document.getElementById('globalWhatsapp').value = data.global.whatsapp || '';
+                        document.getElementById('globalAddress').value = data.global.address || '';
                         
                         if (data.global.social) {
-                            document.getElementById('social-instagram').value = data.global.social.instagram || '';
-                            document.getElementById('social-linkedin').value = data.global.social.linkedin || '';
-                            document.getElementById('social-behance').value = data.global.social.behance || '';
-                            document.getElementById('social-dribbble').value = data.global.social.dribbble || '';
+                            document.getElementById('socialInstagram').value = data.global.social.instagram || '';
+                            document.getElementById('socialLinkedin').value = data.global.social.linkedin || '';
+                            document.getElementById('socialBehance').value = data.global.social.behance || '';
+                            document.getElementById('socialDribbble').value = data.global.social.dribbble || '';
                         }
                     }
-                    
-                    // Update character counts
-                    ['home-hero-description', 'home-hero-badge', 'home-testimonial-text', 'global-meta-description'].forEach(id => {
-                        const element = document.getElementById(id);
-                        if (element) {
-                            const event = new Event('input');
-                            element.dispatchEvent(event);
-                        }
-                    });
-                    
                 } catch (e) {
-                    console.error('Error loading saved content:', e);
+                    console.error('Error loading content:', e);
                 }
             }
         }
 
-        // Preview functionality
-        function previewPage(page) {
-            const modal = document.getElementById('preview-modal');
-            const previewContent = document.getElementById('preview-content');
-            
-            let html = '<div class="prose max-w-none">';
-            
-            if (page === 'home') {
-                html += `
-                    <h1 class="text-3xl font-bold text-blue-900 mb-6">Home Page Preview</h1>
-                    <div class="space-y-4">
-                        <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl">
-                            <p class="text-sm text-blue-600 font-medium mb-2">Badge</p>
-                            <p class="text-lg">${document.getElementById('home-hero-badge').value}</p>
-                        </div>
-                        <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl">
-                            <p class="text-sm text-blue-600 font-medium mb-2">Heading</p>
-                            <p class="text-2xl font-bold">${document.getElementById('home-hero-line1').value} ${document.getElementById('home-hero-line2').value}</p>
-                        </div>
-                        <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl">
-                            <p class="text-sm text-blue-600 font-medium mb-2">Description</p>
-                            <p>${document.getElementById('home-hero-description').value}</p>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl">
-                                <p class="text-sm text-green-600 font-medium mb-2">Primary CTA</p>
-                                <p>${document.getElementById('home-cta-primary').value}</p>
-                            </div>
-                            <div class="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl">
-                                <p class="text-sm text-purple-600 font-medium mb-2">Secondary CTA</p>
-                                <p>${document.getElementById('home-cta-secondary').value}</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (page === 'about') {
-                html += `
-                    <h1 class="text-3xl font-bold text-blue-900 mb-6">About Page Preview</h1>
-                    <div class="space-y-4">
-                        <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl">
-                            <p class="text-sm text-blue-600 font-medium mb-2">Title</p>
-                            <p class="text-xl font-bold">${document.getElementById('about-title').value}</p>
-                        </div>
-                        <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl">
-                            <p class="text-sm text-blue-600 font-medium mb-2">Story</p>
-                            <p>${document.getElementById('about-paragraph1').value}</p>
-                        </div>
-                        <div class="p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl">
-                            <p class="text-sm text-amber-600 font-medium mb-2">Quote</p>
-                            <p class="italic">"${document.getElementById('about-quote').value}"</p>
-                            <p class="mt-2 font-medium">- ${document.getElementById('about-quote-author').value}</p>
-                        </div>
-                    </div>
-                `;
-            } else if (page === 'services') {
-                html += `
-                    <h1 class="text-3xl font-bold text-blue-900 mb-6">Services Page Preview</h1>
-                    <div class="space-y-4">
-                `;
-                document.querySelectorAll('#services-container .field-group').forEach(service => {
-                    const title = service.querySelector('.service-title').value;
-                    const icon = service.querySelector('.service-icon').value;
-                    const desc = service.querySelector('.service-description').value;
-                    html += `
-                        <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl">
-                            <p class="text-2xl mb-2">${icon}</p>
-                            <p class="text-lg font-bold text-blue-900 mb-2">${title}</p>
-                            <p class="text-gray-600">${desc}</p>
-                        </div>
-                    `;
-                });
-                html += '</div>';
-            }
-            
-            html += '</div>';
-            previewContent.innerHTML = html;
-            
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                document.getElementById('modal-content').classList.remove('scale-95');
-                document.getElementById('modal-content').classList.add('scale-100');
-            }, 10);
-        }
-
-        function closePreview() {
-            document.getElementById('modal-content').classList.remove('scale-100');
-            document.getElementById('modal-content').classList.add('scale-95');
-            setTimeout(() => {
-                document.getElementById('preview-modal').classList.add('hidden');
-            }, 300);
-        }
-
-        function resetSection(page) {
-            if (confirm(`Reset ${page} page content to default?`)) {
-                localStorage.removeItem('madabrandContent');
-                location.reload();
-            }
-        }
-
+        // Toast
         function showToast(message, type = 'info') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             toast.innerHTML = `
-                <span class="text-xl">${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}</span>
-                <span class="font-medium">${message}</span>
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i>
+                <span>${message}</span>
             `;
             document.body.appendChild(toast);
-            
             setTimeout(() => {
                 toast.style.transform = 'translateX(100%)';
                 toast.style.opacity = '0';
@@ -1196,8 +1139,19 @@
             }, 3000);
         }
 
-        // Load saved content on page load
-        document.addEventListener('DOMContentLoaded', loadSavedContent);
+        // Logout
+        function logoutAdmin() {
+            sessionStorage.removeItem('adminAuth');
+            localStorage.removeItem('adminRemember');
+            window.location.href = '/admin/login.html';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderServices();
+            loadContent();
+            setupCounters();
+        });
     </script>
 </body>
 </html>

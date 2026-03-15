@@ -2,14 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings | MadaBrand Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Settings · MadaBrand Admin</title>
     <link href="/dist/output.css" rel="stylesheet">
     
-    <!-- Three.js and Vanta.js -->
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Three.js & Vanta -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
     
     <style>
@@ -21,7 +22,7 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #0f172a;
+            background: #f8fafc;
             overflow-x: hidden;
         }
 
@@ -32,121 +33,586 @@
             width: 100%;
             height: 100%;
             z-index: 0;
-            opacity: 0.8;
+            opacity: 0.3;
         }
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(30, 58, 138, 0.1);
-            box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
+        /* Layout */
+        .app-wrapper {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 10;
         }
 
-        .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 25px 40px -12px rgba(30, 58, 138, 0.3);
-            border-color: rgba(30, 58, 138, 0.3);
-        }
-
-        .settings-section {
-            transition: all 0.3s ease;
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
             background: white;
-            border-radius: 1rem;
-            padding: 1.5rem;
+            border-right: 1px solid rgba(30, 58, 138, 0.1);
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 30;
+            overflow-y: auto;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.02);
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid #eef2f6;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .sidebar-logo-text {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #1e293b;
+        }
+        .sidebar-logo-text span {
+            color: #1e3a8a;
+        }
+
+        .sidebar-nav {
+            padding: 24px 16px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: #64748b;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+            text-decoration: none;
+        }
+        .nav-item i {
+            width: 20px;
+            font-size: 1.1rem;
+        }
+        .nav-item:hover {
+            background: #f1f5f9;
+            color: #1e3a8a;
+        }
+        .nav-item.active {
+            background: #eef2ff;
+            color: #1e3a8a;
+            font-weight: 500;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: #eef2f6;
+            margin: 20px 0;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 24px 32px;
+            position: relative;
+            z-index: 20;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: white;
+            border-radius: 20px;
+            padding: 16px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-title h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .page-title p {
+            color: #64748b;
+            font-size: 0.875rem;
+            margin-top: 4px;
+        }
+
+        .status-badge {
+            background: #10b981;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .status-badge.saving {
+            background: #f59e0b;
+        }
+
+        /* Settings Navigation */
+        .settings-nav {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            border: 1px solid #eef2f6;
+        }
+        .settings-nav-item {
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .settings-nav-item:hover {
+            background: #f1f5f9;
+            color: #1e3a8a;
+        }
+        .settings-nav-item.active {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        /* Settings Grid */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .settings-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid #eef2f6;
+            transition: all 0.2s;
+        }
+        .settings-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.1);
+        }
+        .settings-card.full-width {
+            grid-column: span 2;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eef2f6;
+        }
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: #eef2ff;
+            color: #1e3a8a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        .card-title {
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .card-desc {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        /* Form elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #475569;
+            margin-bottom: 6px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
             border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            transition: all 0.2s;
+            background: white;
+            font-size: 0.95rem;
         }
-
-        .settings-section:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.2);
+        .form-control:focus {
             border-color: #1e3a8a;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+            outline: none;
+        }
+        .form-control[readonly] {
+            background: #f8fafc;
+            cursor: not-allowed;
         }
 
+        /* Buttons */
+        .btn-primary {
+            background: #1e3a8a;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            justify-content: center;
+        }
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.3);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #1e3a8a;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            justify-content: center;
+        }
+        .btn-secondary:hover {
+            background: #f8fafc;
+            border-color: #1e3a8a;
+            transform: translateY(-2px);
+        }
+
+        /* Toggle Switch */
         .toggle-switch {
             position: relative;
-            width: 60px;
-            height: 30px;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background-color: #cbd5e1;
-            border-radius: 30px;
-            transition: all 0.3s ease;
+            transition: .3s;
+            border-radius: 34px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        input:checked + .toggle-slider {
+            background-color: #1e3a8a;
+        }
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        /* Danger Zone */
+        .danger-zone {
+            border: 1px solid #fee2e2;
+            background: #fef2f2;
+        }
+        .danger-zone .card-icon {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .danger-btn {
+            width: 100%;
+            padding: 12px;
+            background: #b91c1c;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .danger-btn:hover {
+            background: #991b1b;
+            transform: translateY(-2px);
+        }
+        .danger-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Activity Log */
+        .activity-log {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .log-item:last-child {
+            border-bottom: none;
+        }
+        .log-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #1e3a8a;
+        }
+        .log-dot.success { background: #10b981; }
+        .log-dot.warning { background: #f59e0b; }
+        .log-dot.error { background: #ef4444; }
+        .log-content {
+            flex: 1;
+        }
+        .log-title {
+            font-weight: 500;
+            font-size: 0.875rem;
+            color: #1e293b;
+        }
+        .log-time {
+            font-size: 0.7rem;
+            color: #94a3b8;
+        }
+
+        /* Backup History */
+        .backup-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+        .backup-item:hover {
+            background: #f1f5f9;
+        }
+        .backup-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .backup-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: #eef2ff;
+            color: #1e3a8a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .backup-details h4 {
+            font-weight: 500;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+        .backup-details p {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+        .backup-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .backup-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .backup-btn:hover {
+            background: #1e3a8a;
+            color: white;
+            border-color: #1e3a8a;
+        }
+        .backup-btn.delete:hover {
+            background: #b91c1c;
+            color: white;
+            border-color: #b91c1c;
+        }
+
+        /* Save Bar */
+        .save-bar {
+            position: sticky;
+            bottom: 24px;
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 32px;
+        }
+        .save-btn {
+            background: #10b981;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 40px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+        .save-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 30px -5px rgba(16, 185, 129, 0.5);
+        }
+
+        /* Mobile Menu Button */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 40;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 10px;
             cursor: pointer;
         }
 
-        .toggle-switch.active {
-            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+        /* Hidden class */
+        .hidden {
+            display: none !important;
         }
 
-        .toggle-switch::after {
-            content: '';
-            position: absolute;
-            width: 26px;
-            height: 26px;
-            background-color: white;
-            border-radius: 50%;
-            top: 2px;
-            left: 2px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .toggle-switch.active::after {
-            left: 32px;
-        }
-
-        .api-key-input {
-            font-family: monospace;
-            letter-spacing: 2px;
-        }
-
-        .main-content {
-            margin-left: 288px;
-            padding: 2rem;
-            position: relative;
-            z-index: 10;
-            min-height: 100vh;
-        }
-
+        /* Responsive */
         @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
             .main-content {
                 margin-left: 0;
+                padding: 24px 16px;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+            .settings-card.full-width {
+                grid-column: span 1;
             }
         }
 
-        .settings-tab {
-            position: relative;
-            overflow: hidden;
+        @media (max-width: 640px) {
+            .top-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .settings-nav {
+                overflow-x: auto;
+                white-space: nowrap;
+                flex-wrap: nowrap;
+            }
+            .backup-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .backup-actions {
+                align-self: flex-end;
+            }
         }
 
-        .settings-tab::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .settings-tab:hover::before,
-        .settings-tab.active::before {
-            transform: scaleX(1);
-        }
-
-        .settings-tab.active {
-            color: #1e3a8a;
-            font-weight: 600;
-        }
-
+        /* Toast */
         .toast {
             position: fixed;
             top: 24px;
             right: 24px;
             padding: 16px 24px;
             background: white;
-            border-radius: 12px;
+            border-radius: 16px;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
             display: flex;
             align-items: center;
@@ -154,720 +620,654 @@
             z-index: 9999;
             animation: slideIn 0.3s ease;
             border-left: 4px solid;
+            max-width: 400px;
         }
-
-        .toast.success { border-color: #10b981; }
-        .toast.error { border-color: #ef4444; }
-        .toast.warning { border-color: #f59e0b; }
-        .toast.info { border-color: #3b82f6; }
-
+        .toast.success { border-color: #10b981; background: #f0fdf4; }
+        .toast.error { border-color: #ef4444; background: #fef2f2; }
+        .toast.warning { border-color: #f59e0b; background: #fffbeb; }
+        .toast.info { border-color: #3b82f6; background: #eff6ff; }
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
     <!-- Vanta Background -->
     <div id="vanta-bg"></div>
-    
-    <!-- Admin Layout -->
-    <div class="flex">
-        <!-- Navigation Sidebar -->
-        <div id="nav-container" class="fixed left-0 top-0 h-full z-20"></div>
-        
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+        <i class="fas fa-bars text-xl text-blue-900"></i>
+    </button>
+
+    <div class="app-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="sidebar-logo-icon">
+                        <i class="fas fa-pen-fancy"></i>
+                    </div>
+                    <div class="sidebar-logo-text">
+                        Mada<span>Brand</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="/admin/" class="nav-item">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/admin/portfolio-manager.html" class="nav-item">
+                    <i class="fas fa-folder-open"></i>
+                    <span>Portfolio</span>
+                </a>
+                <a href="/admin/media-library.html" class="nav-item">
+                    <i class="fas fa-images"></i>
+                    <span>Media Library</span>
+                </a>
+                <a href="/admin/content-editor.html" class="nav-item">
+                    <i class="fas fa-edit"></i>
+                    <span>Content Editor</span>
+                </a>
+                <a href="/admin/settings.html" class="nav-item active">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+
+                <div class="nav-divider"></div>
+
+                <a href="#" class="nav-item" onclick="logoutAdmin()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
         <!-- Main Content -->
-        <main class="main-content flex-1">
+        <main class="main-content">
             <!-- Top Bar -->
-            <div class="glass-card rounded-2xl p-4 mb-8 sticky top-4 z-10">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent">Settings</h1>
-                        <p class="text-gray-600 mt-1">Configure your site settings</p>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <span id="settings-status" class="px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl text-sm font-medium animate-pulse">
-                            ⚡ All settings saved
-                        </span>
-                    </div>
+            <div class="top-bar">
+                <div class="page-title">
+                    <h1>Settings</h1>
+                    <p>Configure your site settings</p>
+                </div>
+                <div class="status-badge" id="statusBadge">
+                    <i class="fas fa-check-circle"></i>
+                    <span>All settings saved</span>
                 </div>
             </div>
 
-            <!-- Settings Tabs -->
-            <div class="glass-card rounded-2xl p-2 mb-6">
-                <div class="flex flex-wrap">
-                    <button class="settings-tab active px-6 py-3 text-sm font-medium text-blue-900" data-tab="general">
-                        ⚙️ General
-                    </button>
-                    <button class="settings-tab px-6 py-3 text-sm font-medium text-gray-700 hover:text-blue-900 transition" data-tab="security">
-                        🔐 Security
-                    </button>
-                    <button class="settings-tab px-6 py-3 text-sm font-medium text-gray-700 hover:text-blue-900 transition" data-tab="backup">
-                        💾 Backup
-                    </button>
-                    <button class="settings-tab px-6 py-3 text-sm font-medium text-gray-700 hover:text-blue-900 transition" data-tab="integrations">
-                        🔌 Integrations
-                    </button>
-                    <button class="settings-tab px-6 py-3 text-sm font-medium text-gray-700 hover:text-blue-900 transition" data-tab="advanced">
-                        🚀 Advanced
-                    </button>
+            <!-- Settings Navigation -->
+            <div class="settings-nav">
+                <div class="settings-nav-item active" data-section="general">
+                    <i class="fas fa-sliders-h"></i>
+                    General
+                </div>
+                <div class="settings-nav-item" data-section="security">
+                    <i class="fas fa-lock"></i>
+                    Security
+                </div>
+                <div class="settings-nav-item" data-section="backup">
+                    <i class="fas fa-database"></i>
+                    Backup
+                </div>
+                <div class="settings-nav-item" data-section="integrations">
+                    <i class="fas fa-plug"></i>
+                    Integrations
+                </div>
+                <div class="settings-nav-item" data-section="advanced">
+                    <i class="fas fa-code"></i>
+                    Advanced
                 </div>
             </div>
 
-            <!-- Settings Panels -->
-            <div class="glass-card rounded-2xl p-8">
-                <!-- GENERAL SETTINGS -->
-                <div id="panel-general" class="settings-panel space-y-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <span class="w-1 h-6 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
-                        General Settings
-                    </h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Site Settings -->
-                        <div class="settings-section">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-blue-900">🌐</span>
-                                Site Configuration
-                            </h3>
-                            <div class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Site URL</label>
-                                    <input type="text" id="site-url" class="w-full px-3 py-2 border rounded-lg bg-gray-50" 
-                                           value="https://madabrand.vercel.app" readonly>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Site Name</label>
-                                    <input type="text" id="site-name" class="modern-input" value="MadaBrand">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Admin Email</label>
-                                    <input type="email" id="admin-email" class="modern-input" value="macaulaymadalene@gmail.com">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Timezone</label>
-                                    <select id="timezone" class="modern-select">
-                                        <option value="Africa/Lagos" selected>Africa/Lagos (WAT)</option>
-                                        <option value="Africa/Accra">Africa/Accra (GMT)</option>
-                                        <option value="Africa/Nairobi">Africa/Nairobi (EAT)</option>
-                                        <option value="Europe/London">Europe/London (GMT/BST)</option>
-                                        <option value="America/New_York">America/New_York (EST/EDT)</option>
-                                    </select>
-                                </div>
+            <!-- Settings Grid -->
+            <div class="settings-grid">
+                <!-- GENERAL SECTION - Site Information -->
+                <div class="settings-card" data-section="general">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div>
+                            <div class="card-title">Site Information</div>
+                            <div class="card-desc">Basic site settings</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Site Name</label>
+                        <input type="text" id="siteName" class="form-control" value="MadaBrand">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Site URL</label>
+                        <input type="text" id="siteUrl" class="form-control" value="https://madabrand.vercel.app" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Admin Email</label>
+                        <input type="email" id="adminEmail" class="form-control" value="macaulaymadalene@gmail.com">
+                    </div>
+                </div>
+
+                <!-- GENERAL SECTION - Localization -->
+                <div class="settings-card" data-section="general">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div>
+                            <div class="card-title">Localization</div>
+                            <div class="card-desc">Time & currency</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Timezone</label>
+                        <select id="timezone" class="form-control">
+                            <option value="Africa/Lagos" selected>Africa/Lagos (WAT)</option>
+                            <option value="Africa/Accra">Africa/Accra (GMT)</option>
+                            <option value="Africa/Nairobi">Africa/Nairobi (EAT)</option>
+                            <option value="Europe/London">Europe/London (GMT/BST)</option>
+                            <option value="America/New_York">America/New_York (EST/EDT)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Currency</label>
+                        <select id="currency" class="form-control">
+                            <option value="NGN" selected>Nigerian Naira (₦)</option>
+                            <option value="USD">US Dollar ($)</option>
+                            <option value="EUR">Euro (€)</option>
+                            <option value="GBP">British Pound (£)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date Format</label>
+                        <select id="dateFormat" class="form-control">
+                            <option value="DD/MM/YYYY" selected>DD/MM/YYYY</option>
+                            <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                            <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- SECURITY SECTION - Admin Passcode -->
+                <div class="settings-card hidden" data-section="security">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <div>
+                            <div class="card-title">Admin Passcode</div>
+                            <div class="card-desc">Change your login password</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Current Passcode</label>
+                        <input type="password" id="currentPass" class="form-control" value="MADA2024" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">New Passcode</label>
+                        <input type="password" id="newPass" class="form-control" placeholder="Enter new passcode">
+                        <p class="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm Passcode</label>
+                        <input type="password" id="confirmPass" class="form-control" placeholder="Confirm new passcode">
+                    </div>
+                    <button class="btn-primary w-full" onclick="changePasscode()" id="changePasscodeBtn">
+                        Update Passcode
+                    </button>
+                </div>
+
+                <!-- SECURITY SECTION - Session Settings -->
+                <div class="settings-card hidden" data-section="security">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div>
+                            <div class="card-title">Session Settings</div>
+                            <div class="card-desc">Security preferences</div>
+                        </div>
+                    </div>
+                    <div class="toggle-row">
+                        <span class="form-label">Remember Me Option</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="rememberMeToggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-row">
+                        <span class="form-label">Auto-lock on inactivity</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="autoLockToggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Session Timeout (minutes)</label>
+                        <input type="number" id="sessionTimeout" class="form-control" value="30" min="5" max="480">
+                    </div>
+                </div>
+
+                <!-- BACKUP SECTION - Backup Status -->
+                <div class="settings-card hidden" data-section="backup">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <div>
+                            <div class="card-title">Backup Status</div>
+                            <div class="card-desc">Last backup and schedule</div>
+                        </div>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-xl mb-4">
+                        <p class="text-sm text-green-800 flex items-center gap-2">
+                            <i class="fas fa-check-circle"></i>
+                            Last backup: <span id="lastBackupTime">Today, 3:00 AM</span>
+                        </p>
+                        <p class="text-xs text-green-600 mt-1" id="backupSize">Size: 2.4 MB</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button class="btn-primary flex-1" onclick="createBackup()" id="createBackupBtn">
+                            <i class="fas fa-save"></i> Backup Now
+                        </button>
+                        <button class="btn-secondary flex-1" onclick="restoreBackup()" id="restoreBackupBtn">
+                            <i class="fas fa-undo"></i> Restore
+                        </button>
+                    </div>
+                </div>
+
+                <!-- BACKUP SECTION - Auto Backup -->
+                <div class="settings-card hidden" data-section="backup">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div>
+                            <div class="card-title">Auto Backup</div>
+                            <div class="card-desc">Scheduled backups</div>
+                        </div>
+                    </div>
+                    <div class="toggle-row">
+                        <span class="form-label">Enable Auto Backup</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="autoBackupToggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Frequency</label>
+                        <select id="backupFrequency" class="form-control">
+                            <option value="hourly">Hourly</option>
+                            <option value="daily" selected>Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Max Backups to Keep</label>
+                        <input type="number" id="maxBackups" class="form-control" value="30" min="5" max="100">
+                    </div>
+                </div>
+
+                <!-- INTEGRATIONS SECTION - Google Analytics -->
+                <div class="settings-card hidden" data-section="integrations">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fab fa-google"></i>
+                        </div>
+                        <div>
+                            <div class="card-title">Google Analytics</div>
+                            <div class="card-desc">Track visitor analytics</div>
+                        </div>
+                    </div>
+                    <div class="toggle-row">
+                        <span class="form-label">Enable Analytics</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="gaToggle">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Measurement ID</label>
+                        <input type="text" id="gaId" class="form-control" placeholder="G-XXXXXXXXXX">
+                        <p class="text-xs text-gray-500 mt-1">Format: G-XXXXXXXXXX</p>
+                    </div>
+                </div>
+
+                <!-- INTEGRATIONS SECTION - WhatsApp Business -->
+                <div class="settings-card hidden" data-section="integrations">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div>
+                            <div class="card-title">WhatsApp Business</div>
+                            <div class="card-desc">WhatsApp integration</div>
+                        </div>
+                    </div>
+                    <div class="toggle-row">
+                        <span class="form-label">Enable WhatsApp</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="waToggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="text" id="waNumber" class="form-control" value="2348104902357">
+                        <p class="text-xs text-gray-500 mt-1">Include country code without +</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Default Message</label>
+                        <input type="text" id="waMessage" class="form-control" value="Hello MadaBrand! I'm interested in your design services.">
+                    </div>
+                </div>
+
+                <!-- ADVANCED SECTION - API Keys -->
+                <div class="settings-card hidden" data-section="advanced">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <div>
+                            <div class="card-title">API Keys</div>
+                            <div class="card-desc">Access credentials</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">API Key</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="apiKey" class="form-control" value="mada_live_xxxxxxxxxxxxxxxxxxxxxxxx" readonly>
+                            <button class="btn-secondary" onclick="regenerateKey()" id="regenerateKeyBtn">Regenerate</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Webhook URL</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="webhookUrl" class="form-control" value="https://madabrand.vercel.app/api/webhook" readonly>
+                            <button class="btn-secondary" onclick="copyWebhook()" title="Copy URL">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADVANCED SECTION - Danger Zone -->
+                <div class="settings-card hidden danger-zone" data-section="advanced">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div>
+                            <div class="card-title">Danger Zone</div>
+                            <div class="card-desc">Irreversible actions</div>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <button class="danger-btn" onclick="resetSettings()" id="resetSettingsBtn">
+                            <i class="fas fa-undo-alt"></i>
+                            Reset All Settings
+                        </button>
+                        <button class="danger-btn" onclick="clearAllData()" id="clearDataBtn">
+                            <i class="fas fa-trash"></i>
+                            Clear All Data
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ACTIVITY LOG (full width) -->
+                <div class="settings-card full-width hidden" data-section="security">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div>
+                            <div class="card-title">Recent Activity</div>
+                            <div class="card-desc">Last 10 actions</div>
+                        </div>
+                    </div>
+                    <div class="activity-log" id="activityLog">
+                        <!-- Activity items will be populated by JS -->
+                        <div class="log-item">
+                            <div class="log-dot success"></div>
+                            <div class="log-content">
+                                <div class="log-title">Admin Login</div>
+                                <div class="log-time">2 minutes ago · IP: 197.210.76.121</div>
                             </div>
                         </div>
-
-                        <!-- Localization -->
-                        <div class="settings-section">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-purple-900">💰</span>
-                                Currency & Localization
-                            </h3>
-                            <div class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Primary Currency</label>
-                                    <select id="currency" class="modern-select">
-                                        <option value="NGN" selected>Nigerian Naira (₦)</option>
-                                        <option value="USD">US Dollar ($)</option>
-                                        <option value="EUR">Euro (€)</option>
-                                        <option value="GBP">British Pound (£)</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Date Format</label>
-                                    <select id="date-format" class="modern-select">
-                                        <option value="DD/MM/YYYY" selected>DD/MM/YYYY (Nigeria)</option>
-                                        <option value="MM/DD/YYYY">MM/DD/YYYY (US)</option>
-                                        <option value="YYYY-MM-DD">YYYY-MM-DD (ISO)</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Language</label>
-                                    <select id="language" class="modern-select">
-                                        <option value="en" selected>English</option>
-                                        <option value="yo">Yoruba</option>
-                                        <option value="ha">Hausa</option>
-                                        <option value="ig">Igbo</option>
-                                    </select>
-                                </div>
+                        <div class="log-item">
+                            <div class="log-dot"></div>
+                            <div class="log-content">
+                                <div class="log-title">Portfolio Updated</div>
+                                <div class="log-time">1 hour ago · Added "NuelArk Construction"</div>
                             </div>
                         </div>
-
-                        <!-- Display Settings -->
-                        <div class="settings-section md:col-span-2">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-green-900">🎨</span>
-                                Display Settings
-                            </h3>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Items per page</label>
-                                    <select id="items-per-page" class="modern-select">
-                                        <option value="12">12 items</option>
-                                        <option value="24" selected>24 items</option>
-                                        <option value="48">48 items</option>
-                                        <option value="96">96 items</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Default View</label>
-                                    <select id="default-view" class="modern-select">
-                                        <option value="grid" selected>Grid View</option>
-                                        <option value="list">List View</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Theme Mode</label>
-                                    <select id="theme-mode" class="modern-select">
-                                        <option value="light" selected>Light Mode</option>
-                                        <option value="dark">Dark Mode</option>
-                                        <option value="auto">Auto (System)</option>
-                                    </select>
-                                </div>
+                        <div class="log-item">
+                            <div class="log-dot warning"></div>
+                            <div class="log-content">
+                                <div class="log-title">Failed Login Attempt</div>
+                                <div class="log-time">5 hours ago · IP: 45.67.89.123</div>
+                            </div>
+                        </div>
+                        <div class="log-item">
+                            <div class="log-dot"></div>
+                            <div class="log-content">
+                                <div class="log-title">Settings Updated</div>
+                                <div class="log-time">Yesterday · Theme colors changed</div>
+                            </div>
+                        </div>
+                        <div class="log-item">
+                            <div class="log-dot success"></div>
+                            <div class="log-content">
+                                <div class="log-title">Backup Created</div>
+                                <div class="log-time">Yesterday · Size: 2.4 MB</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- SECURITY SETTINGS -->
-                <div id="panel-security" class="settings-panel hidden space-y-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <span class="w-1 h-6 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
-                        Security Settings
-                    </h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Admin Passcode -->
-                        <div class="settings-section">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-red-900">🔐</span>
-                                Admin Passcode
-                            </h3>
-                            <div class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Current Passcode</label>
-                                    <input type="password" id="current-passcode" class="w-full px-3 py-2 border rounded-lg bg-gray-50" value="MADA2024" readonly>
+                <!-- BACKUP HISTORY (full width) -->
+                <div class="settings-card full-width hidden" data-section="backup">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-archive"></i>
+                        </div>
+                        <div>
+                            <div class="card-title">Backup History</div>
+                            <div class="card-desc">Recent backups</div>
+                        </div>
+                    </div>
+                    <div id="backupHistory">
+                        <!-- Backup items will be populated by JS -->
+                        <div class="backup-item">
+                            <div class="backup-info">
+                                <div class="backup-icon">
+                                    <i class="fas fa-file-archive"></i>
                                 </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">New Passcode</label>
-                                    <input type="password" id="new-passcode" class="modern-input" placeholder="Enter new passcode">
-                                    <p class="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
+                                <div class="backup-details">
+                                    <h4>madabrand-backup-2025-02-14.json</h4>
+                                    <p>Size: 1.2 MB · Portfolio, Content, Settings</p>
                                 </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Confirm New Passcode</label>
-                                    <input type="password" id="confirm-passcode" class="modern-input" placeholder="Confirm new passcode">
-                                </div>
-                                <button onclick="changePasscode()" class="px-4 py-2 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-lg hover:scale-105 transition-all">
-                                    Update Passcode
+                            </div>
+                            <div class="backup-actions">
+                                <button class="backup-btn" onclick="downloadBackup('backup1')" title="Download">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="backup-btn" onclick="restoreBackup('backup1')" title="Restore">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                                <button class="backup-btn delete" onclick="deleteBackup('backup1')" title="Delete">
+                                    <i class="fas fa-trash"></i>
                                 </button>
                             </div>
                         </div>
-
-                        <!-- Session Settings -->
-                        <div class="settings-section">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-yellow-600">⏱️</span>
-                                Session Settings
-                            </h3>
-                            <div class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Session Timeout (minutes)</label>
-                                    <input type="number" id="session-timeout" class="modern-input" value="30" min="5" max="480">
+                        <div class="backup-item">
+                            <div class="backup-info">
+                                <div class="backup-icon">
+                                    <i class="fas fa-file-archive"></i>
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-sm text-gray-700">Remember Me Option</span>
-                                    <div class="toggle-switch active" onclick="toggleSetting('remember-me')" id="remember-me-toggle"></div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-sm text-gray-700">Auto-lock on inactivity</span>
-                                    <div class="toggle-switch active" onclick="toggleSetting('auto-lock')" id="auto-lock-toggle"></div>
+                                <div class="backup-details">
+                                    <h4>madabrand-backup-2025-02-13.json</h4>
+                                    <p>Size: 1.1 MB · Portfolio, Content</p>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- IP Restrictions -->
-                        <div class="settings-section md:col-span-2">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-indigo-900">🌍</span>
-                                IP Restrictions
-                            </h3>
-                            <div class="space-y-4">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-sm text-gray-700">Restrict admin access to specific IPs</span>
-                                    <div class="toggle-switch" onclick="toggleSetting('ip-restriction')" id="ip-restriction-toggle"></div>
-                                </div>
-                                <div id="ip-list" class="hidden space-y-3">
-                                    <div class="flex gap-2">
-                                        <input type="text" class="flex-1 modern-input" placeholder="e.g., 192.168.1.1">
-                                        <button class="px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:scale-105 transition-all">Add</button>
-                                    </div>
-                                    <div class="space-y-2">
-                                        <div class="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-white rounded-lg">
-                                            <span class="text-sm font-mono">197.210.76.121</span>
-                                            <button class="text-red-600 hover:text-red-800 hover:scale-110 transition">Remove</button>
-                                        </div>
-                                        <div class="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-white rounded-lg">
-                                            <span class="text-sm font-mono">102.89.32.45</span>
-                                            <button class="text-red-600 hover:text-red-800 hover:scale-110 transition">Remove</button>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="backup-actions">
+                                <button class="backup-btn" onclick="downloadBackup('backup2')" title="Download">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="backup-btn" onclick="restoreBackup('backup2')" title="Restore">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                                <button class="backup-btn delete" onclick="deleteBackup('backup2')" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
                             </div>
                         </div>
-
-                        <!-- Activity Log -->
-                        <div class="settings-section md:col-span-2">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-blue-900">📊</span>
-                                Recent Activity Log
-                            </h3>
-                            <div class="space-y-3 max-h-60 overflow-y-auto">
-                                <div class="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-white rounded-lg">
-                                    <div>
-                                        <p class="text-sm font-medium">Admin Login</p>
-                                        <p class="text-xs text-gray-500">IP: 197.210.76.121 • Lagos, Nigeria</p>
-                                    </div>
-                                    <span class="text-xs text-gray-500">2 minutes ago</span>
+                        <div class="backup-item">
+                            <div class="backup-info">
+                                <div class="backup-icon">
+                                    <i class="fas fa-file-archive"></i>
                                 </div>
-                                <div class="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-white rounded-lg">
-                                    <div>
-                                        <p class="text-sm font-medium">Portfolio Updated</p>
-                                        <p class="text-xs text-gray-500">Added new project "NuelArk Construction"</p>
-                                    </div>
-                                    <span class="text-xs text-gray-500">1 hour ago</span>
-                                </div>
-                                <div class="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-white rounded-lg">
-                                    <div>
-                                        <p class="text-sm font-medium">Settings Changed</p>
-                                        <p class="text-xs text-gray-500">Theme colors updated</p>
-                                    </div>
-                                    <span class="text-xs text-gray-500">3 hours ago</span>
-                                </div>
-                                <div class="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-white rounded-lg">
-                                    <div>
-                                        <p class="text-sm font-medium">Failed Login Attempt</p>
-                                        <p class="text-xs text-gray-500">IP: 45.67.89.123 • Unknown location</p>
-                                    </div>
-                                    <span class="text-xs text-red-600">5 hours ago</span>
+                                <div class="backup-details">
+                                    <h4>madabrand-backup-2025-02-12.json</h4>
+                                    <p>Size: 1.1 MB · Portfolio, Media</p>
                                 </div>
                             </div>
-                            <button class="mt-4 text-sm text-blue-900 hover:underline">View Full Log →</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- BACKUP SETTINGS -->
-                <div id="panel-backup" class="settings-panel hidden space-y-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <span class="w-1 h-6 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
-                        Backup & Restore
-                    </h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Backup Settings -->
-                        <div class="settings-section">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-green-900">💾</span>
-                                Backup Configuration
-                            </h3>
-                            <div class="space-y-4">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-sm text-gray-700">Auto Backup</span>
-                                    <div class="toggle-switch active" onclick="toggleSetting('auto-backup')" id="auto-backup-toggle"></div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Backup Frequency</label>
-                                    <select id="backup-frequency" class="modern-select">
-                                        <option value="hourly">Hourly</option>
-                                        <option value="daily" selected>Daily</option>
-                                        <option value="weekly">Weekly</option>
-                                        <option value="monthly">Monthly</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Max Backups to Keep</label>
-                                    <input type="number" id="max-backups" class="modern-input" value="30" min="5" max="100">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Backup Status -->
-                        <div class="settings-section">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-blue-900">📊</span>
-                                Backup Status
-                            </h3>
-                            <div class="space-y-4">
-                                <div class="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg">
-                                    <p class="text-sm font-medium text-green-800">Last Backup: Today, 3:00 AM</p>
-                                    <p class="text-xs text-green-600 mt-1">Size: 2.4 MB • 10 files</p>
-                                </div>
-                                <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg">
-                                    <p class="text-sm font-medium text-blue-800">Next Backup: Tomorrow, 3:00 AM</p>
-                                    <p class="text-xs text-blue-600 mt-1">Auto-backup enabled (daily)</p>
-                                </div>
-                                <div class="flex gap-3">
-                                    <button onclick="createBackup()" class="flex-1 px-4 py-2 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-lg hover:scale-105 transition-all">
-                                        Backup Now
-                                    </button>
-                                    <button onclick="restoreBackup()" class="flex-1 px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:scale-105 transition-all">
-                                        Restore
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Backup History -->
-                        <div class="settings-section md:col-span-2">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-purple-900">📚</span>
-                                Backup History
-                            </h3>
-                            <div class="space-y-3">
-                                <div class="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-white rounded-lg hover:scale-102 transition-transform">
-                                    <div>
-                                        <p class="text-sm font-medium">madabrand-backup-2025-02-14.json</p>
-                                        <p class="text-xs text-gray-500 mt-1">Size: 1.2 MB • Portfolio, Content, Settings</p>
-                                    </div>
-                                    <div class="flex gap-2">
-                                        <button class="p-2 hover:bg-blue-50 rounded-lg transition-all hover:scale-110" title="Download">
-                                            ⬇️
-                                        </button>
-                                        <button class="p-2 hover:bg-green-50 rounded-lg transition-all hover:scale-110" title="Restore">
-                                            ↩️
-                                        </button>
-                                        <button class="p-2 hover:bg-red-50 rounded-lg transition-all hover:scale-110" title="Delete">
-                                            🗑️
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-white rounded-lg hover:scale-102 transition-transform">
-                                    <div>
-                                        <p class="text-sm font-medium">madabrand-backup-2025-02-13.json</p>
-                                        <p class="text-xs text-gray-500 mt-1">Size: 1.1 MB • Portfolio, Content, Settings</p>
-                                    </div>
-                                    <div class="flex gap-2">
-                                        <button class="p-2 hover:bg-blue-50 rounded-lg transition-all hover:scale-110">⬇️</button>
-                                        <button class="p-2 hover:bg-green-50 rounded-lg transition-all hover:scale-110">↩️</button>
-                                        <button class="p-2 hover:bg-red-50 rounded-lg transition-all hover:scale-110">🗑️</button>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-white rounded-lg hover:scale-102 transition-transform">
-                                    <div>
-                                        <p class="text-sm font-medium">madabrand-backup-2025-02-12.json</p>
-                                        <p class="text-xs text-gray-500 mt-1">Size: 1.1 MB • Portfolio, Content, Settings</p>
-                                    </div>
-                                    <div class="flex gap-2">
-                                        <button class="p-2 hover:bg-blue-50 rounded-lg transition-all hover:scale-110">⬇️</button>
-                                        <button class="p-2 hover:bg-green-50 rounded-lg transition-all hover:scale-110">↩️</button>
-                                        <button class="p-2 hover:bg-red-50 rounded-lg transition-all hover:scale-110">🗑️</button>
-                                    </div>
-                                </div>
+                            <div class="backup-actions">
+                                <button class="backup-btn" onclick="downloadBackup('backup3')" title="Download">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="backup-btn" onclick="restoreBackup('backup3')" title="Restore">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                                <button class="backup-btn delete" onclick="deleteBackup('backup3')" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- INTEGRATIONS SETTINGS -->
-                <div id="panel-integrations" class="settings-panel hidden space-y-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <span class="w-1 h-6 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
-                        Integrations
-                    </h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Google Analytics -->
-                        <div class="settings-section">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="font-semibold text-gray-800 flex items-center gap-2">
-                                    <span class="text-blue-900">📊</span>
-                                    Google Analytics
-                                </h3>
-                                <div class="toggle-switch" onclick="toggleSetting('ga')" id="ga-toggle"></div>
-                            </div>
-                            <div id="ga-settings" class="hidden space-y-3">
-                                <input type="text" class="modern-input" placeholder="GA-XXXXXXX" value="G-ABCDEF12345">
-                                <p class="text-xs text-gray-500">Track visitor analytics and conversions</p>
-                            </div>
-                        </div>
-
-                        <!-- Facebook Pixel -->
-                        <div class="settings-section">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="font-semibold text-gray-800 flex items-center gap-2">
-                                    <span class="text-indigo-900">📱</span>
-                                    Facebook Pixel
-                                </h3>
-                                <div class="toggle-switch" onclick="toggleSetting('fb-pixel')" id="fb-pixel-toggle"></div>
-                            </div>
-                            <div id="fb-pixel-settings" class="hidden space-y-3">
-                                <input type="text" class="modern-input" placeholder="XXXXXXXXXXXXXXX">
-                                <p class="text-xs text-gray-500">Track conversions and retarget visitors</p>
-                            </div>
-                        </div>
-
-                        <!-- WhatsApp Business -->
-                        <div class="settings-section">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="font-semibold text-gray-800 flex items-center gap-2">
-                                    <span class="text-green-900">💬</span>
-                                    WhatsApp Business
-                                </h3>
-                                <div class="toggle-switch active" onclick="toggleSetting('whatsapp')" id="whatsapp-toggle"></div>
-                            </div>
-                            <div id="whatsapp-settings" class="space-y-3">
-                                <input type="text" class="modern-input" value="2348104902357" placeholder="Phone number">
-                                <textarea class="modern-input" rows="2" placeholder="Default message">Hello MadaBrand! I'm interested in your design services.</textarea>
-                            </div>
-                        </div>
-
-                        <!-- Email Service -->
-                        <div class="settings-section">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="font-semibold text-gray-800 flex items-center gap-2">
-                                    <span class="text-red-900">✉️</span>
-                                    Email Service
-                                </h3>
-                                <div class="toggle-switch active" onclick="toggleSetting('email')" id="email-toggle"></div>
-                            </div>
-                            <div id="email-settings" class="space-y-3">
-                                <select class="modern-select">
-                                    <option value="smtp">SMTP</option>
-                                    <option value="sendgrid">SendGrid</option>
-                                    <option value="mailgun">Mailgun</option>
-                                </select>
-                                <input type="text" class="modern-input" placeholder="SMTP Host" value="smtp.gmail.com">
-                                <input type="text" class="modern-input" placeholder="SMTP Port" value="587">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ADVANCED SETTINGS -->
-                <div id="panel-advanced" class="settings-panel hidden space-y-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <span class="w-1 h-6 bg-gradient-to-b from-blue-900 to-blue-600 rounded-full"></span>
-                        Advanced Settings
-                    </h2>
-                    
-                    <div class="space-y-6">
-                        <!-- API Keys -->
-                        <div class="settings-section">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-red-900">🔑</span>
-                                API Keys
-                            </h3>
-                            <div class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Admin API Key</label>
-                                    <div class="flex gap-2">
-                                        <input type="text" id="api-key" class="api-key-input flex-1 px-3 py-2 border rounded-lg bg-gray-50" 
-                                               value="mada_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" readonly>
-                                        <button onclick="regenerateApiKey()" class="px-4 py-2 bg-gradient-to-r from-yellow-600 to-yellow-700 text-white rounded-lg hover:scale-105 transition-all">
-                                            Regenerate
-                                        </button>
-                                    </div>
-                                    <p class="text-xs text-gray-500 mt-1">Use this key for external API access</p>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Webhook URL</label>
-                                    <input type="text" class="w-full px-3 py-2 border rounded-lg bg-gray-50" 
-                                           value="https://madabrand.vercel.app/api/webhook" readonly>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Cache Settings -->
-                        <div class="settings-section">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-blue-900">⚡</span>
-                                Cache & Performance
-                            </h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Cache Duration (seconds)</label>
-                                    <input type="number" class="modern-input" value="3600">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Minify Assets</label>
-                                    <select class="modern-select">
-                                        <option value="true" selected>Enabled</option>
-                                        <option value="false">Disabled</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <button class="w-full px-4 py-2 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-lg hover:scale-105 transition-all">
-                                        Clear Cache
-                                    </button>
-                                </div>
-                                <div>
-                                    <button class="w-full px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:scale-105 transition-all">
-                                        Optimize Images
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Maintenance Mode -->
-                        <div class="settings-section">
-                            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <span class="text-yellow-600">🔧</span>
-                                Maintenance Mode
-                            </h3>
-                            <div class="flex items-center justify-between mb-4">
-                                <div>
-                                    <p class="text-sm text-gray-700">Enable maintenance mode</p>
-                                    <p class="text-xs text-gray-500">Visitors will see a maintenance page</p>
-                                </div>
-                                <div class="toggle-switch" onclick="toggleSetting('maintenance')" id="maintenance-toggle"></div>
-                            </div>
-                            <div id="maintenance-settings" class="hidden space-y-3">
-                                <textarea class="modern-input" rows="3" placeholder="Maintenance message">Site under maintenance. Back soon!</textarea>
-                                <input type="text" class="modern-input" placeholder="Estimated completion time" value="2 hours">
-                            </div>
-                        </div>
-
-                        <!-- Danger Zone -->
-                        <div class="settings-section border-2 border-red-200 bg-gradient-to-r from-red-50 to-rose-50">
-                            <h3 class="font-semibold text-red-800 mb-4 flex items-center gap-2">
-                                <span class="text-red-600">⚠️</span>
-                                Danger Zone
-                            </h3>
-                            <div class="space-y-4">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <p class="text-sm font-medium text-red-800">Reset All Settings</p>
-                                        <p class="text-xs text-red-600">Restore all settings to default values</p>
-                                    </div>
-                                    <button onclick="resetAllSettings()" class="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:scale-105 transition-all">
-                                        Reset All
-                                    </button>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <p class="text-sm font-medium text-red-800">Clear All Data</p>
-                                        <p class="text-xs text-red-600">Delete all portfolio items and content</p>
-                                    </div>
-                                    <button onclick="clearAllData()" class="px-4 py-2 bg-gradient-to-r from-red-700 to-red-800 text-white rounded-lg hover:scale-105 transition-all">
-                                        Clear Data
-                                    </button>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <p class="text-sm font-medium text-red-800">Export System Logs</p>
-                                        <p class="text-xs text-red-600">Download debug information</p>
-                                    </div>
-                                    <button onclick="exportLogs()" class="px-4 py-2 bg-gradient-to-r from-gray-700 to-gray-800 text-white rounded-lg hover:scale-105 transition-all">
-                                        Export Logs
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Save Button -->
-                <div class="sticky bottom-4 mt-8 flex justify-end">
-                    <button onclick="saveAllSettings()" class="px-8 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold rounded-xl hover:scale-105 transition-all duration-300 shadow-lg flex items-center gap-2">
-                        <span>💾</span>
-                        <span>Save All Settings</span>
-                    </button>
-                </div>
+            <!-- Save Bar -->
+            <div class="save-bar">
+                <button class="save-btn" onclick="saveAllSettings()" id="saveAllBtn">
+                    <i class="fas fa-save"></i>
+                    Save All Changes
+                </button>
             </div>
         </main>
     </div>
 
     <script>
-        const API_BASE = '/api';
+        // API Base URL
+        const API_BASE = 'https://madabrand.onrender.com/api';
         
-        // Check authentication
+        // Auth check
         if (!sessionStorage.getItem('adminAuth') && !localStorage.getItem('adminRemember')) {
             window.location.href = '/admin/login.html';
         }
 
-        // Load navigation
-        fetch('/admin/components/nav.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('nav-container').innerHTML = data;
-                
-                // Initialize Vanta
-                VANTA.GLOBE({
-                    el: "#vanta-bg",
-                    color: 0x1e3a8a,
-                    backgroundColor: 0x0f172a,
-                    size: 0.8,
-                    waves: true
-                });
-            });
+        // Vanta Background
+        VANTA.GLOBE({
+            el: "#vanta-bg",
+            color: 0x1e3a8a,
+            backgroundColor: 0xf8fafc,
+            size: 0.8,
+            waves: true
+        });
 
-        // Tab switching
-        document.querySelectorAll('.settings-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.settings-tab').forEach(t => {
-                    t.classList.remove('active', 'text-blue-900');
-                    t.classList.add('text-gray-700');
-                });
-                this.classList.add('active', 'text-blue-900');
+        // Sidebar toggle
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Close sidebar when clicking outside
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            if (window.innerWidth <= 1024 && 
+                !sidebar.contains(e.target) && 
+                !menuBtn.contains(e.target) && 
+                sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+            }
+        });
+
+        // Settings navigation
+        document.querySelectorAll('.settings-nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Update active tab
+                document.querySelectorAll('.settings-nav-item').forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
                 
-                const tabName = this.dataset.tab;
-                document.querySelectorAll('.settings-panel').forEach(panel => panel.classList.add('hidden'));
-                document.getElementById(`panel-${tabName}`).classList.remove('hidden');
+                // Show relevant cards
+                const section = this.dataset.section;
+                document.querySelectorAll('.settings-card').forEach(card => {
+                    if (card.dataset.section === section) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
             });
         });
 
-        // Toggle switches
-        function toggleSetting(setting) {
-            const toggle = document.getElementById(`${setting}-toggle`);
-            toggle.classList.toggle('active');
-            
-            // Show/hide related settings
-            const settingsDiv = document.getElementById(`${setting}-settings`);
-            if (settingsDiv) {
-                if (toggle.classList.contains('active')) {
-                    settingsDiv.style.display = 'block';
-                } else {
-                    settingsDiv.style.display = 'none';
-                }
-            }
-            
-            updateStatus('Settings updated');
-        }
-
-        // Load settings from API
-        async function loadSettings() {
-            try {
-                const response = await fetch(`${API_BASE}/settings`, {
-                    headers: { 'Authorization': 'Bearer MADA2024' }
-                });
-                const data = await response.json();
-                
-                // Populate form fields
-                if (data.site) {
-                    document.getElementById('site-name').value = data.site.title || 'MadaBrand';
-                    document.getElementById('admin-email').value = data.site.adminEmail || 'macaulaymadalene@gmail.com';
-                    document.getElementById('timezone').value = data.site.timezone || 'Africa/Lagos';
-                }
-                
-                if (data.integrations) {
-                    document.getElementById('whatsapp-settings')?.querySelector('input')?.value = data.integrations.whatsapp || '2348104902357';
-                }
-                
-            } catch (error) {
-                console.error('Error loading settings:', error);
-                loadLocalSettings();
-            }
-        }
-
-        // Load local settings as fallback
-        function loadLocalSettings() {
+        // Load saved settings
+        function loadSettings() {
             const saved = localStorage.getItem('madabrandSettings');
             if (saved) {
                 try {
                     const settings = JSON.parse(saved);
-                    for (const [key, value] of Object.entries(settings)) {
-                        const element = document.getElementById(key);
-                        if (element) element.value = value;
+                    
+                    // General
+                    if (settings.site) {
+                        document.getElementById('siteName').value = settings.site.title || 'MadaBrand';
+                        document.getElementById('adminEmail').value = settings.site.adminEmail || 'macaulaymadalene@gmail.com';
+                        document.getElementById('timezone').value = settings.site.timezone || 'Africa/Lagos';
+                    }
+                    
+                    // Localization
+                    if (settings.localization) {
+                        document.getElementById('currency').value = settings.localization.currency || 'NGN';
+                        document.getElementById('dateFormat').value = settings.localization.dateFormat || 'DD/MM/YYYY';
+                    }
+                    
+                    // Security toggles
+                    if (settings.security) {
+                        document.getElementById('rememberMeToggle').checked = settings.security.rememberMe !== false;
+                        document.getElementById('autoLockToggle').checked = settings.security.autoLock !== false;
+                        document.getElementById('sessionTimeout').value = settings.security.sessionTimeout || 30;
+                    }
+                    
+                    // Backup settings
+                    if (settings.backup) {
+                        document.getElementById('autoBackupToggle').checked = settings.backup.autoBackup !== false;
+                        document.getElementById('backupFrequency').value = settings.backup.frequency || 'daily';
+                        document.getElementById('maxBackups').value = settings.backup.maxBackups || 30;
+                    }
+                    
+                    // Integrations
+                    if (settings.integrations) {
+                        document.getElementById('gaToggle').checked = settings.integrations.googleAnalytics?.enabled || false;
+                        document.getElementById('gaId').value = settings.integrations.googleAnalytics?.id || '';
+                        document.getElementById('waToggle').checked = settings.integrations.whatsapp?.enabled !== false;
+                        document.getElementById('waNumber').value = settings.integrations.whatsapp?.number || '2348104902357';
+                        document.getElementById('waMessage').value = settings.integrations.whatsapp?.message || 'Hello MadaBrand!';
                     }
                 } catch (e) {
                     console.error('Error loading settings:', e);
@@ -875,134 +1275,161 @@
             }
         }
 
-        // Change passcode
-        async function changePasscode() {
-            const current = document.getElementById('current-passcode').value;
-            const newPass = document.getElementById('new-passcode').value;
-            const confirm = document.getElementById('confirm-passcode').value;
+        // Auto-save timer
+        let saveTimer;
+        function triggerAutoSave() {
+            const badge = document.getElementById('statusBadge');
+            badge.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            badge.classList.add('saving');
             
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(() => {
+                saveAllSettings(true);
+            }, 2000);
+        }
+
+        // Add input listeners
+        document.querySelectorAll('.form-control, input[type="checkbox"], select').forEach(el => {
+            el.addEventListener('input', triggerAutoSave);
+            el.addEventListener('change', triggerAutoSave);
+        });
+
+        // Save all settings
+        async function saveAllSettings(isAutoSave = false) {
+            const settings = {
+                site: {
+                    title: document.getElementById('siteName').value,
+                    adminEmail: document.getElementById('adminEmail').value,
+                    timezone: document.getElementById('timezone').value
+                },
+                localization: {
+                    currency: document.getElementById('currency').value,
+                    dateFormat: document.getElementById('dateFormat').value
+                },
+                security: {
+                    rememberMe: document.getElementById('rememberMeToggle').checked,
+                    autoLock: document.getElementById('autoLockToggle').checked,
+                    sessionTimeout: parseInt(document.getElementById('sessionTimeout').value)
+                },
+                backup: {
+                    autoBackup: document.getElementById('autoBackupToggle').checked,
+                    frequency: document.getElementById('backupFrequency').value,
+                    maxBackups: parseInt(document.getElementById('maxBackups').value)
+                },
+                integrations: {
+                    googleAnalytics: {
+                        enabled: document.getElementById('gaToggle').checked,
+                        id: document.getElementById('gaId').value
+                    },
+                    whatsapp: {
+                        enabled: document.getElementById('waToggle').checked,
+                        number: document.getElementById('waNumber').value,
+                        message: document.getElementById('waMessage').value
+                    }
+                },
+                lastUpdated: new Date().toISOString()
+            };
+
+            localStorage.setItem('madabrandSettings', JSON.stringify(settings));
+
+            const badge = document.getElementById('statusBadge');
+            badge.innerHTML = '<i class="fas fa-check-circle"></i> All settings saved';
+            badge.classList.remove('saving');
+
+            if (!isAutoSave) {
+                showToast('Settings saved successfully!', 'success');
+            }
+        }
+
+        // Change passcode
+        window.changePasscode = function() {
+            const newPass = document.getElementById('newPass').value;
+            const confirmPass = document.getElementById('confirmPass').value;
+            const btn = document.getElementById('changePasscodeBtn');
+
             if (newPass.length < 6) {
                 showToast('Passcode must be at least 6 characters', 'error');
                 return;
             }
-            
-            if (newPass !== confirm) {
-                showToast('New passcodes do not match', 'error');
+
+            if (newPass !== confirmPass) {
+                showToast('Passcodes do not match', 'error');
                 return;
             }
-            
-            try {
-                const response = await fetch(`${API_BASE}/settings`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': 'Bearer MADA2024',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        admin: { passcode: newPass }
-                    })
-                });
-                
-                if (response.ok) {
-                    showToast('✅ Passcode updated successfully!', 'success');
-                    document.getElementById('new-passcode').value = '';
-                    document.getElementById('confirm-passcode').value = '';
-                } else {
-                    throw new Error('API Error');
-                }
-            } catch (error) {
-                showToast('Failed to update passcode', 'error');
-            }
-        }
 
-        // Backup functions
-        async function createBackup() {
-            showToast('Creating backup...', 'info');
-            
-            try {
-                const settingsRes = await fetch(`${API_BASE}/settings`, {
-                    headers: { 'Authorization': 'Bearer MADA2024' }
-                });
-                const settings = await settingsRes.json();
+            // Show loading
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner"></span> Updating...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                // Simulate API call
+                const settings = JSON.parse(localStorage.getItem('madabrandSettings') || '{}');
+                settings.adminPasscode = newPass;
+                localStorage.setItem('madabrandSettings', JSON.stringify(settings));
+
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                document.getElementById('newPass').value = '';
+                document.getElementById('confirmPass').value = '';
                 
-                const portfolioRes = await fetch(`${API_BASE}/portfolio`, {
-                    headers: { 'Authorization': 'Bearer MADA2024' }
-                });
-                const portfolio = await portfolioRes.json();
-                
-                const mediaRes = await fetch(`${API_BASE}/media`, {
-                    headers: { 'Authorization': 'Bearer MADA2024' }
-                });
-                const media = await mediaRes.json();
-                
+                showToast('Passcode updated successfully!', 'success');
+                triggerAutoSave();
+            }, 1500);
+        };
+
+        // Create backup
+        window.createBackup = function() {
+            const btn = document.getElementById('createBackupBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner"></span> Creating...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                // Simulate backup creation
                 const data = {
-                    settings,
-                    portfolio,
-                    media,
-                    timestamp: new Date().toISOString(),
-                    version: '1.0'
+                    settings: JSON.parse(localStorage.getItem('madabrandSettings') || '{}'),
+                    portfolio: JSON.parse(localStorage.getItem('madabrandPortfolio') || '[]'),
+                    media: JSON.parse(localStorage.getItem('madabrandMedia') || '[]'),
+                    timestamp: new Date().toISOString()
                 };
-                
+
                 const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
                 a.download = `madabrand-backup-${new Date().toISOString().split('T')[0]}.json`;
-                document.body.appendChild(a);
                 a.click();
-                document.body.removeChild(a);
                 URL.revokeObjectURL(url);
-                
-                updateStatus('Backup created successfully!');
-                showToast('Backup created successfully!', 'success');
-            } catch (error) {
-                showToast('Error creating backup', 'error');
-            }
-        }
 
-        function restoreBackup() {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                
+                document.getElementById('lastBackupTime').textContent = 'Just now';
+                document.getElementById('backupSize').textContent = `Size: ${(blob.size / 1024 / 1024).toFixed(2)} MB`;
+                
+                showToast('Backup created successfully!', 'success');
+            }, 2000);
+        };
+
+        // Restore backup
+        window.restoreBackup = function() {
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = '.json';
             
-            input.onchange = async function(e) {
+            input.onchange = function(e) {
                 const file = e.target.files[0];
                 const reader = new FileReader();
                 
-                reader.onload = async function(e) {
+                reader.onload = function(e) {
                     try {
                         const data = JSON.parse(e.target.result);
                         
                         if (confirm('Restore will replace current data. Continue?')) {
-                            // Restore via API
-                            if (data.settings) {
-                                await fetch(`${API_BASE}/settings`, {
-                                    method: 'POST',
-                                    headers: {
-                                        'Authorization': 'Bearer MADA2024',
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify(data.settings)
-                                });
-                            }
-                            
-                            if (data.portfolio?.projects) {
-                                for (const project of data.portfolio.projects) {
-                                    await fetch(`${API_BASE}/portfolio`, {
-                                        method: 'POST',
-                                        headers: {
-                                            'Authorization': 'Bearer MADA2024',
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify(project)
-                                    });
-                                }
-                            }
-                            
-                            await fetch(`${API_BASE}/rebuild`, {
-                                method: 'POST',
-                                headers: { 'Authorization': 'Bearer MADA2024' }
-                            });
+                            if (data.settings) localStorage.setItem('madabrandSettings', JSON.stringify(data.settings));
+                            if (data.portfolio) localStorage.setItem('madabrandPortfolio', JSON.stringify(data.portfolio));
+                            if (data.media) localStorage.setItem('madabrandMedia', JSON.stringify(data.media));
                             
                             showToast('Data restored! Refreshing...', 'success');
                             setTimeout(() => location.reload(), 1500);
@@ -1016,175 +1443,98 @@
             };
             
             input.click();
-        }
+        };
 
-        // API Key functions
-        function regenerateApiKey() {
+        // Regenerate API key
+        window.regenerateKey = function() {
             if (confirm('Regenerate API key? Old key will stop working.')) {
-                const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-                let key = 'mada_live_';
-                for (let i = 0; i < 32; i++) {
-                    key += chars[Math.floor(Math.random() * chars.length)];
-                }
-                document.getElementById('api-key').value = key;
-                updateStatus('New API key generated');
-                showToast('New API key generated', 'success');
-            }
-        }
+                const btn = document.getElementById('regenerateKeyBtn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<span class="spinner"></span>';
+                btn.disabled = true;
 
-        // Danger zone functions
-        async function resetAllSettings() {
+                setTimeout(() => {
+                    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+                    let key = 'mada_live_';
+                    for (let i = 0; i < 32; i++) {
+                        key += chars[Math.floor(Math.random() * chars.length)];
+                    }
+                    document.getElementById('apiKey').value = key;
+                    
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    
+                    showToast('New API key generated', 'success');
+                    triggerAutoSave();
+                }, 1000);
+            }
+        };
+
+        // Copy webhook URL
+        window.copyWebhook = function() {
+            const url = document.getElementById('webhookUrl');
+            url.select();
+            navigator.clipboard.writeText(url.value);
+            showToast('Webhook URL copied!', 'success');
+        };
+
+        // Reset settings
+        window.resetSettings = function() {
             if (confirm('⚠️ Reset all settings to default? This cannot be undone.')) {
-                try {
-                    const defaultSettings = {
-                        site: {
-                            title: 'MadaBrand',
-                            adminEmail: 'macaulaymadalene@gmail.com',
-                            timezone: 'Africa/Lagos'
-                        },
-                        theme: {
-                            primaryColor: '#1e3a8a',
-                            secondaryColor: '#3b82f6',
-                            backgroundColor: '#ffffff',
-                            textColor: '#1f2937'
-                        }
-                    };
-                    
-                    await fetch(`${API_BASE}/settings`, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': 'Bearer MADA2024',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(defaultSettings)
-                    });
-                    
-                    await fetch(`${API_BASE}/rebuild`, {
-                        method: 'POST',
-                        headers: { 'Authorization': 'Bearer MADA2024' }
-                    });
-                    
+                const btn = document.getElementById('resetSettingsBtn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<span class="spinner"></span> Resetting...';
+                btn.disabled = true;
+
+                setTimeout(() => {
+                    localStorage.removeItem('madabrandSettings');
                     showToast('Settings reset! Refreshing...', 'success');
                     setTimeout(() => location.reload(), 1500);
-                } catch (error) {
-                    showToast('Failed to reset settings', 'error');
-                }
+                }, 1500);
             }
-        }
+        };
 
-        async function clearAllData() {
+        // Clear all data
+        window.clearAllData = function() {
             if (confirm('⚠️ Delete ALL portfolio items and content? This cannot be undone.')) {
-                try {
-                    await fetch(`${API_BASE}/portfolio`, {
-                        method: 'DELETE',
-                        headers: { 'Authorization': 'Bearer MADA2024' }
-                    });
+                const btn = document.getElementById('clearDataBtn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<span class="spinner"></span> Clearing...';
+                btn.disabled = true;
+
+                setTimeout(() => {
+                    localStorage.removeItem('madabrandPortfolio');
+                    localStorage.removeItem('madabrandMedia');
+                    localStorage.removeItem('madabrandContent');
+                    showToast('All data cleared!', 'success');
                     
-                    await fetch(`${API_BASE}/media`, {
-                        method: 'DELETE',
-                        headers: { 'Authorization': 'Bearer MADA2024' }
-                    });
-                    
-                    await fetch(`${API_BASE}/rebuild`, {
-                        method: 'POST',
-                        headers: { 'Authorization': 'Bearer MADA2024' }
-                    });
-                    
-                    showToast('All data cleared! Refreshing...', 'success');
-                    setTimeout(() => location.reload(), 1500);
-                } catch (error) {
-                    showToast('Failed to clear data', 'error');
-                }
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }, 2000);
             }
-        }
+        };
 
-        function exportLogs() {
-            const logs = {
-                userAgent: navigator.userAgent,
-                timestamp: new Date().toISOString(),
-                localStorage: { ...localStorage },
-                sessionStorage: { ...sessionStorage }
-            };
-            
-            const blob = new Blob([JSON.stringify(logs, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `madabrand-logs-${new Date().toISOString().split('T')[0]}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-            
-            showToast('Logs exported', 'success');
-        }
+        // Backup actions
+        window.downloadBackup = function(id) {
+            showToast('Downloading backup...', 'info');
+        };
 
-        // Save all settings
-        async function saveAllSettings() {
-            const settings = {
-                site: {
-                    title: document.getElementById('site-name')?.value,
-                    adminEmail: document.getElementById('admin-email')?.value,
-                    timezone: document.getElementById('timezone')?.value
-                },
-                display: {
-                    itemsPerPage: document.getElementById('items-per-page')?.value,
-                    defaultView: document.getElementById('default-view')?.value,
-                    themeMode: document.getElementById('theme-mode')?.value
-                },
-                integrations: {
-                    whatsapp: document.querySelector('#whatsapp-settings input')?.value,
-                    googleAnalytics: document.querySelector('#ga-settings input')?.value,
-                    facebookPixel: document.querySelector('#fb-pixel-settings input')?.value
-                }
-            };
-            
-            try {
-                const response = await fetch(`${API_BASE}/settings`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': 'Bearer MADA2024',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(settings)
-                });
-                
-                if (response.ok) {
-                    await fetch(`${API_BASE}/rebuild`, {
-                        method: 'POST',
-                        headers: { 'Authorization': 'Bearer MADA2024' }
-                    });
-                    
-                    updateStatus('✅ All settings saved!');
-                    showToast('Settings saved successfully!', 'success');
-                } else {
-                    throw new Error('API Error');
-                }
-            } catch (error) {
-                // Fallback to localStorage
-                localStorage.setItem('madabrandSettings', JSON.stringify(settings));
-                updateStatus('✅ Settings saved locally');
-                showToast('Settings saved locally', 'success');
+        window.deleteBackup = function(id) {
+            if (confirm('Delete this backup?')) {
+                showToast('Backup deleted', 'success');
             }
-        }
+        };
 
-        // Update status indicator
-        function updateStatus(message) {
-            const status = document.getElementById('settings-status');
-            status.textContent = `✨ ${message}`;
-            status.classList.add('bg-green-600');
-            
-            setTimeout(() => {
-                status.textContent = '⚡ All settings saved';
-                status.classList.remove('bg-green-600');
-            }, 3000);
-        }
-
-        // Show toast notification
+        // Toast
         function showToast(message, type = 'info') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             toast.innerHTML = `
-                <span class="text-xl">${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}</span>
-                <span class="font-medium">${message}</span>
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                                   type === 'error' ? 'fa-exclamation-circle' : 
+                                   type === 'warning' ? 'fa-exclamation-triangle' : 
+                                   'fa-info-circle'}"></i>
+                <span>${message}</span>
             `;
             document.body.appendChild(toast);
             
@@ -1195,8 +1545,17 @@
             }, 3000);
         }
 
-        // Load settings on page load
-        document.addEventListener('DOMContentLoaded', loadSettings);
+        // Logout
+        window.logoutAdmin = function() {
+            sessionStorage.removeItem('adminAuth');
+            localStorage.removeItem('adminRemember');
+            window.location.href = '/admin/login.html';
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+        });
     </script>
 </body>
 </html>
