@@ -102,27 +102,98 @@ function updatePageContent(content) {
     }
 }
 
-// Mobile menu toggle
+// Mobile menu toggle - FIXED VERSION
 document.addEventListener('DOMContentLoaded', async function() {
     // Load server data first
     await loadServerData();
     
-    // Mobile Menu
+    // Mobile Menu - FIXED to work with new navbar structure
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+    const closeMobileMenu = document.getElementById('close-mobile-menu');
     
     if (mobileMenuBtn && mobileMenu) {
-        mobileMenuBtn.addEventListener('click', function() {
-            mobileMenu.classList.toggle('hidden');
-            mobileMenu.classList.toggle('animate-slide-up');
-        });
+        function openMenu() {
+            mobileMenu.classList.remove('-translate-x-full');
+            if (mobileMenuOverlay) mobileMenuOverlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            document.body.style.width = '100%';
+        }
         
-        // Close menu when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!mobileMenu.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
-                mobileMenu.classList.add('hidden');
+        function closeMenu() {
+            mobileMenu.classList.add('-translate-x-full');
+            if (mobileMenuOverlay) mobileMenuOverlay.classList.add('hidden');
+            document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.width = '';
+        }
+        
+        // Toggle menu on button click
+        mobileMenuBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (mobileMenu.classList.contains('-translate-x-full')) {
+                openMenu();
+            } else {
+                closeMenu();
             }
         });
+        
+        // Close with close button
+        if (closeMobileMenu) {
+            closeMobileMenu.addEventListener('click', function(e) {
+                e.preventDefault();
+                closeMenu();
+            });
+        }
+        
+        // Close with overlay
+        if (mobileMenuOverlay) {
+            mobileMenuOverlay.addEventListener('click', function(e) {
+                e.preventDefault();
+                closeMenu();
+            });
+        }
+        
+        // Close on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !mobileMenu.classList.contains('-translate-x-full')) {
+                closeMenu();
+            }
+        });
+        
+        // Handle window resize
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                if (window.innerWidth >= 768) {
+                    closeMenu();
+                }
+            }, 250);
+        });
+        
+        // Handle touch events for swipe to close
+        if ('ontouchstart' in window) {
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            mobileMenu.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+            
+            mobileMenu.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                if (touchEndX - touchStartX < -50) { // Swipe left to close
+                    closeMenu();
+                }
+            }, { passive: true });
+        }
+    } else {
+        console.warn('Mobile menu elements not found');
     }
     
     // Form validation for contact page
@@ -1412,7 +1483,7 @@ function removeAdminIndicators() {
     });
 }
 
-// ==================== RESPONSIVE UTILITIES (ADD THIS SECTION) ====================
+// ==================== RESPONSIVE UTILITIES ====================
 
 // Fix for 100vh on mobile browsers
 function setVH() {
@@ -1493,15 +1564,18 @@ function preventZoomOnInput() {
     }
 }
 
-// Handle orientation change
+// Handle orientation change - FIXED to use transform class
 function handleOrientationChange() {
     window.addEventListener('orientationchange', function() {
         setTimeout(() => {
             setVH();
-            // Close mobile menus on orientation change
+            // Close mobile menus on orientation change - FIXED
             const mobileMenu = document.getElementById('mobile-menu');
-            if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
-                mobileMenu.classList.add('hidden');
+            if (mobileMenu && !mobileMenu.classList.contains('-translate-x-full')) {
+                mobileMenu.classList.add('-translate-x-full');
+                const overlay = document.getElementById('mobile-menu-overlay');
+                if (overlay) overlay.classList.add('hidden');
+                document.body.style.overflow = '';
             }
         }, 100);
     });

@@ -9,668 +9,37 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- Three.js & Vanta -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
+    <!-- Include admin CSS -->
+    <link href="/admin/css/admin.css" rel="stylesheet">
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* Simplified background - no Vanta to prevent freezing */
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f8fafc;
-            overflow-x: hidden;
-        }
-
-        #vanta-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            opacity: 0.3;
-        }
-
-        /* Layout */
-        .app-wrapper {
-            display: flex;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             min-height: 100vh;
+        }
+        
+        /* Ensure content is visible */
+        .main-content {
             position: relative;
             z-index: 10;
-        }
-
-        /* Sidebar (same as dashboard) */
-        .sidebar {
-            width: 280px;
-            background: white;
-            border-right: 1px solid rgba(30, 58, 138, 0.1);
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            z-index: 30;
-            overflow-y: auto;
-            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.02);
-        }
-
-        .sidebar-header {
-            padding: 24px;
-            border-bottom: 1px solid #eef2f6;
-        }
-
-        .sidebar-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .sidebar-logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #1e3a8a, #2563eb);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-        }
-
-        .sidebar-logo-text {
-            font-weight: 700;
-            font-size: 1.25rem;
-            color: #1e293b;
-        }
-        .sidebar-logo-text span {
-            color: #1e3a8a;
-        }
-
-        .sidebar-nav {
-            padding: 24px 16px;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            border-radius: 12px;
-            color: #64748b;
-            transition: all 0.2s;
-            margin-bottom: 4px;
-            text-decoration: none;
-        }
-        .nav-item i {
-            width: 20px;
-            font-size: 1.1rem;
-        }
-        .nav-item:hover {
-            background: #f1f5f9;
-            color: #1e3a8a;
-        }
-        .nav-item.active {
-            background: #eef2ff;
-            color: #1e3a8a;
-            font-weight: 500;
-        }
-
-        .nav-divider {
-            height: 1px;
-            background: #eef2f6;
-            margin: 20px 0;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            margin-left: 280px;
-            padding: 24px 32px;
-            position: relative;
-            z-index: 20;
-        }
-
-        /* Top Bar */
-        .top-bar {
-            background: white;
-            border-radius: 20px;
-            padding: 16px 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .page-title h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #1e293b;
-        }
-        .page-title p {
-            color: #64748b;
-            font-size: 0.875rem;
-            margin-top: 4px;
-        }
-
-        .storage-badge {
-            background: #1e3a8a;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Upload Section */
-        .upload-section {
-            background: white;
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 24px;
-            border: 1px solid #eef2f6;
-        }
-
-        .upload-section h2 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .upload-area {
-            border: 2px dashed #cbd5e1;
-            background: #f8fafc;
-            border-radius: 16px;
-            padding: 40px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .upload-area:hover {
-            border-color: #1e3a8a;
-            background: #f1f5f9;
-        }
-        .upload-icon {
-            font-size: 4rem;
-            color: #1e3a8a;
-            margin-bottom: 16px;
-        }
-
-        /* Progress Bar */
-        .progress-container {
-            margin-top: 20px;
-        }
-        .progress-bar {
-            height: 8px;
-            background: #e2e8f0;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
-            transition: width 0.3s;
-        }
-
-        /* Toolbar */
-        .toolbar {
-            background: white;
-            border-radius: 20px;
-            padding: 16px 24px;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-            border: 1px solid #eef2f6;
-        }
-
-        .toolbar-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .toolbar-btn {
-            padding: 8px 16px;
-            border-radius: 30px;
-            background: #f1f5f9;
-            color: #475569;
-            font-size: 0.875rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: none;
-        }
-        .toolbar-btn:hover {
-            background: #e2e8f0;
-        }
-        .toolbar-btn.danger:hover {
-            background: #fee2e2;
-            color: #b91c1c;
-        }
-
-        .toolbar-search {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .toolbar-search input {
-            padding: 10px 16px;
-            border: 1px solid #e2e8f0;
-            border-radius: 30px;
-            width: 250px;
-        }
-        .toolbar-search select {
-            padding: 10px 16px;
-            border: 1px solid #e2e8f0;
-            border-radius: 30px;
-            background: white;
-        }
-
-        /* Media Grid */
-        .media-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 20px;
-        }
-
-        .media-item {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            border: 2px solid transparent;
-            transition: all 0.2s;
-            cursor: pointer;
-            position: relative;
-        }
-        .media-item:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.1);
-        }
-        .media-item.selected {
-            border-color: #1e3a8a;
-            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.2);
-        }
-
-        .media-thumb {
-            aspect-ratio: 1;
-            overflow: hidden;
-            position: relative;
-        }
-        .media-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s;
-        }
-        .media-item:hover .media-thumb img {
-            transform: scale(1.1);
-        }
-
-        .media-check {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            width: 24px;
-            height: 24px;
-            border-radius: 6px;
-            background: white;
-            border: 2px solid #1e3a8a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 0.8rem;
-            z-index: 2;
-        }
-        .media-check.checked {
-            background: #1e3a8a;
-        }
-
-        .media-info {
-            padding: 12px;
-        }
-        .media-name {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #1e293b;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .media-meta {
-            font-size: 0.7rem;
-            color: #64748b;
-            margin-top: 4px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .media-actions {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            display: flex;
-            gap: 4px;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        .media-item:hover .media-actions {
-            opacity: 1;
-        }
-        .media-action-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: white;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #475569;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .media-action-btn:hover {
-            background: #1e3a8a;
-            color: white;
-        }
-        .media-action-btn.delete:hover {
-            background: #b91c1c;
-            color: white;
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            background: white;
-            border-radius: 20px;
-            border: 1px solid #eef2f6;
-        }
-        .empty-state i {
-            font-size: 4rem;
-            color: #cbd5e1;
-            margin-bottom: 16px;
-        }
-        .empty-state h3 {
-            font-size: 1.25rem;
-            color: #475569;
-            margin-bottom: 8px;
-        }
-        .empty-state p {
-            color: #94a3b8;
-            margin-bottom: 20px;
-        }
-
-        /* Load More */
-        .load-more {
-            text-align: center;
-            margin-top: 32px;
-        }
-        .load-more-btn {
-            padding: 12px 32px;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 30px;
-            color: #475569;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .load-more-btn:hover {
-            background: #1e3a8a;
-            color: white;
-            border-color: #1e3a8a;
-        }
-
-        /* Modal */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 16px;
-        }
-        .modal-content {
-            background: white;
-            border-radius: 24px;
-            width: 100%;
-            max-width: 800px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .modal-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid #eef2f6;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .modal-header h3 {
-            font-weight: 600;
-            color: #1e293b;
-        }
-        .modal-close {
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: #94a3b8;
-            transition: color 0.2s;
-        }
-        .modal-close:hover {
-            color: #1e3a8a;
-        }
-        .modal-body {
-            padding: 24px;
-        }
-
-        .image-detail {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .image-detail img {
-            width: 100%;
-            max-height: 400px;
-            object-fit: contain;
-            border-radius: 12px;
-            background: #f8fafc;
-        }
-        .detail-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-        }
-        .detail-item {
-            padding: 12px;
-            background: #f8fafc;
-            border-radius: 12px;
-        }
-        .detail-label {
-            font-size: 0.7rem;
-            color: #64748b;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-        }
-        .detail-value {
-            font-weight: 500;
-            color: #1e293b;
-            word-break: break-all;
-        }
-
-        /* Mobile Menu Button */
-        .mobile-menu-btn {
-            display: none;
-            position: fixed;
-            top: 16px;
-            left: 16px;
-            z-index: 40;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 10px;
-            cursor: pointer;
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s;
-            }
-            .sidebar.open {
-                transform: translateX(0);
-            }
-            .main-content {
-                margin-left: 0;
-                padding: 24px 16px;
-            }
-            .mobile-menu-btn {
-                display: block;
-            }
-            .toolbar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .toolbar-search {
-                flex-direction: column;
-            }
-            .toolbar-search input,
-            .toolbar-search select {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .top-bar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .media-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .toolbar-actions {
-                flex-direction: column;
-            }
-            .toolbar-btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-
-        /* Spinner */
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #e2e8f0;
-            border-top-color: #1e3a8a;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            top: 24px;
-            right: 24px;
-            padding: 16px 24px;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 9999;
-            animation: slideIn 0.3s ease;
-            border-left: 4px solid;
-        }
-        .toast.success { border-color: #10b981; }
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
         }
     </style>
 </head>
 <body>
-    <!-- Vanta Background -->
-    <div id="vanta-bg"></div>
+    <!-- Simple gradient background instead of Vanta -->
+    <div class="fixed inset-0 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 opacity-90"></div>
 
     <!-- Mobile Menu Toggle -->
     <button class="mobile-menu-btn" onclick="toggleSidebar()">
-        <i class="fas fa-bars text-xl text-blue-900"></i>
+        <i class="fas fa-bars text-xl text-white"></i>
     </button>
 
     <div class="app-wrapper">
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <div class="sidebar-logo">
-                    <div class="sidebar-logo-icon">
-                        <i class="fas fa-pen-fancy"></i>
-                    </div>
-                    <div class="sidebar-logo-text">
-                        Mada<span>Brand</span>
-                    </div>
-                </div>
-            </div>
-
-            <nav class="sidebar-nav">
-                <a href="/admin/" class="nav-item">
-                    <i class="fas fa-chart-pie"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="/admin/portfolio-manager.html" class="nav-item">
-                    <i class="fas fa-folder-open"></i>
-                    <span>Portfolio</span>
-                </a>
-                <a href="/admin/media-library.html" class="nav-item active">
-                    <i class="fas fa-images"></i>
-                    <span>Media Library</span>
-                </a>
-                <a href="/admin/content-editor.html" class="nav-item">
-                    <i class="fas fa-edit"></i>
-                    <span>Content Editor</span>
-                </a>
-                <a href="/admin/settings.html" class="nav-item">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </a>
-
-                <div class="nav-divider"></div>
-
-                <a href="#" class="nav-item" onclick="logoutAdmin()">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Logout</span>
-                </a>
-            </nav>
+            <!-- Include nav via JS or direct HTML -->
+            <div id="nav-container"></div>
         </aside>
 
         <!-- Main Content -->
@@ -755,7 +124,7 @@
                 </div>
             </div>
 
-            <!-- Empty State (hidden by default) -->
+            <!-- Empty State -->
             <div id="emptyState" class="empty-state hidden">
                 <i class="fas fa-images"></i>
                 <h3>No images yet</h3>
@@ -802,14 +171,16 @@
             window.location.href = '/admin/login.html';
         }
 
-        // Vanta
-        VANTA.WAVES({
-            el: "#vanta-bg",
-            color: 0x1e3a8a,
-            backgroundColor: 0xf8fafc,
-            waveHeight: 20,
-            waveSpeed: 1
-        });
+        // Load navigation
+        fetch('/admin/components/nav.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('nav-container').innerHTML = data;
+            })
+            .catch(error => {
+                console.error('Error loading nav:', error);
+                document.getElementById('nav-container').innerHTML = '<div class="p-4 text-red-500">Error loading navigation</div>';
+            });
 
         // Sidebar toggle
         function toggleSidebar() {
@@ -820,7 +191,9 @@
             const sidebar = document.getElementById('sidebar');
             const menuBtn = document.querySelector('.mobile-menu-btn');
             if (window.innerWidth <= 1024 && 
+                sidebar && 
                 !sidebar.contains(e.target) && 
+                menuBtn && 
                 !menuBtn.contains(e.target) && 
                 sidebar.classList.contains('open')) {
                 sidebar.classList.remove('open');
@@ -845,7 +218,7 @@
             renderMedia();
         }
 
-        // Default media (from your existing images)
+        // Default media
         function getDefaultMedia() {
             return [
                 { id: 'img1', name: 'photo_1_2025-12-10_09-45-08.jpg', url: '/assets/images/photo_1_2025-12-10_09-45-08.jpg', size: 245760, type: 'image/jpeg' },

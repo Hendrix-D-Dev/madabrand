@@ -1,7 +1,7 @@
 <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-blue-900/20">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-3 lg:py-4">
         <div class="flex justify-between items-center">
-            <!-- Logo - Professional & Responsive -->
+            <!-- Logo -->
             <a href="/" class="flex items-center group touch-target">
                 <img src="/assets/images/photo_10_2025-12-10_09-49-24.jpg" 
                      alt="MadaBrand Logo" 
@@ -31,10 +31,10 @@
     </div>
 
     <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden" aria-hidden="true"></div>
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden transition-opacity duration-300" aria-hidden="true"></div>
     
     <!-- Mobile Menu Slide-out -->
-    <div id="mobile-menu" class="fixed top-0 left-0 h-full w-64 sm:w-72 bg-white shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+    <div id="mobile-menu" class="fixed top-0 left-0 h-full w-64 sm:w-72 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out md:hidden -translate-x-full">
         <div class="flex flex-col h-full">
             <!-- Mobile Menu Header -->
             <div class="p-4 border-b border-gray-200 flex justify-between items-center">
@@ -85,16 +85,9 @@
     </div>
 </nav>
 
-<!-- Mobile Menu JavaScript -->
+<!-- Mobile Menu JavaScript - FIXED -->
 <script>
 (function() {
-    // Wait for DOM to be ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initMobileMenu);
-    } else {
-        initMobileMenu();
-    }
-    
     function initMobileMenu() {
         const menuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
@@ -106,55 +99,110 @@
         function openMenu() {
             mobileMenu.classList.remove('-translate-x-full');
             if (overlay) overlay.classList.remove('hidden');
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            document.body.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            document.body.style.width = '100%';
         }
         
         function closeMenu() {
             mobileMenu.classList.add('-translate-x-full');
             if (overlay) overlay.classList.add('hidden');
-            document.body.style.overflow = ''; // Restore scrolling
+            document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.width = '';
         }
         
-        // Open menu
+        // Remove any existing listeners
+        menuBtn.removeEventListener('click', openMenu);
         menuBtn.addEventListener('click', openMenu);
         
-        // Close with close button
         if (closeBtn) {
+            closeBtn.removeEventListener('click', closeMenu);
             closeBtn.addEventListener('click', closeMenu);
         }
         
-        // Close with overlay
         if (overlay) {
+            overlay.removeEventListener('click', closeMenu);
             overlay.addEventListener('click', closeMenu);
         }
         
         // Close on escape key
-        document.addEventListener('keydown', function(e) {
+        document.removeEventListener('keydown', handleEscape);
+        document.addEventListener('keydown', handleEscape);
+        
+        function handleEscape(e) {
             if (e.key === 'Escape' && !mobileMenu.classList.contains('-translate-x-full')) {
                 closeMenu();
             }
-        });
+        }
         
         // Handle window resize
         let resizeTimer;
-        window.addEventListener('resize', function() {
+        window.removeEventListener('resize', handleResize);
+        window.addEventListener('resize', handleResize);
+        
+        function handleResize() {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(function() {
-                if (window.innerWidth >= 768) { // md breakpoint
+                if (window.innerWidth >= 768) {
                     closeMenu();
                 }
             }, 250);
-        });
+        }
+        
+        // Handle touch events on mobile
+        if ('ontouchstart' in window) {
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            mobileMenu.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+            
+            mobileMenu.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                if (touchEndX - touchStartX < -50) { // Swipe left to close
+                    closeMenu();
+                }
+            }, { passive: true });
+        }
+    }
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMobileMenu);
+    } else {
+        initMobileMenu();
     }
 })();
 </script>
 
-<!-- Add xs breakpoint for very small screens -->
 <style>
-@media (min-width: 475px) {
-    .xs\:block {
-        display: block;
-    }
+/* Fix for mobile menu */
+#mobile-menu {
+    will-change: transform;
+    max-width: 90vw;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+#mobile-menu-overlay {
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(2px);
+}
+
+#mobile-menu-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#mobile-menu-overlay:not(.hidden) {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Ensure no conflicting styles */
+.-translate-x-full {
+    transform: translateX(-100%) !important;
 }
 
 /* Touch target optimization */
@@ -168,32 +216,5 @@
         min-height: 44px;
         min-width: 44px;
     }
-}
-
-/* Prevent layout shift on mobile */
-#mobile-menu {
-    will-change: transform;
-    max-width: 90vw;
-}
-
-/* Smooth transitions */
-#mobile-menu, #mobile-menu-overlay {
-    transition-property: transform, opacity;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 300ms;
-}
-
-#mobile-menu-overlay {
-    transition-property: opacity;
-}
-
-#mobile-menu-overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
-}
-
-#mobile-menu-overlay:not(.hidden) {
-    opacity: 1;
-    pointer-events: auto;
 }
 </style>

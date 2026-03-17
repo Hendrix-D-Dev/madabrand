@@ -1,13 +1,13 @@
 <!-- admin/components/nav.html -->
 <div class="admin-sidebar w-72 text-white flex flex-col shadow-2xl relative overflow-hidden" id="adminSidebar">
-    <!-- Vanta Background for Sidebar -->
-    <div id="sidebar-vanta" class="absolute inset-0 z-0"></div>
+    <!-- Simple gradient background instead of Vanta -->
+    <div class="absolute inset-0 bg-gradient-to-b from-blue-900 to-blue-800 z-0"></div>
     
     <div class="relative z-10 flex flex-col h-full bg-gradient-to-b from-blue-900/90 to-blue-800/90 backdrop-blur-sm">
-        <!-- Logo Area with Animation -->
+        <!-- Logo Area -->
         <div class="p-6 border-b border-white/10">
             <div class="flex items-center space-x-3">
-                <div class="w-12 h-12 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center text-2xl animate-pulse shadow-lg">
+                <div class="w-12 h-12 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center text-2xl shadow-lg">
                     🎨
                 </div>
                 <div>
@@ -114,7 +114,7 @@
 </button>
 
 <!-- Mobile Menu Overlay -->
-<div id="admin-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
+<div id="admin-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden transition-opacity duration-300"></div>
 
 <style>
 .sidebar-item {
@@ -257,29 +257,38 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.style.overflow = '';
         }
         
+        // Remove old listeners and add new ones
+        menuToggle.removeEventListener('click', openMenu);
         menuToggle.addEventListener('click', openMenu);
         
         if (overlay) {
+            overlay.removeEventListener('click', closeMenu);
             overlay.addEventListener('click', closeMenu);
         }
         
         // Close on escape key
-        document.addEventListener('keydown', function(e) {
+        document.removeEventListener('keydown', handleEscape);
+        document.addEventListener('keydown', handleEscape);
+        
+        function handleEscape(e) {
             if (e.key === 'Escape' && sidebar.classList.contains('open')) {
                 closeMenu();
             }
-        });
+        }
         
         // Handle resize
         let resizeTimer;
-        window.addEventListener('resize', function() {
+        window.removeEventListener('resize', handleResize);
+        window.addEventListener('resize', handleResize);
+        
+        function handleResize() {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(function() {
                 if (window.innerWidth >= 1025) {
                     closeMenu();
                 }
             }, 250);
-        });
+        }
     }
 });
 
@@ -291,15 +300,5 @@ function logoutAdmin() {
     window.location.href = '/admin/login.html';
 }
 
-// Initialize Vanta for sidebar
-if (typeof VANTA !== 'undefined') {
-    VANTA.WAVES({
-        el: "#sidebar-vanta",
-        color: 0x1e3a8a,
-        waveHeight: 20,
-        shininess: 30,
-        waveSpeed: 1,
-        zoom: 0.8
-    });
-}
+// No Vanta initialization - removed to prevent freezing
 </script>
