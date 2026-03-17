@@ -13,6 +13,7 @@
     <link href="/admin/css/admin.css" rel="stylesheet">
     
     <style>
+        /* (keep all your existing styles - same as before) */
         * {
             margin: 0;
             padding: 0;
@@ -34,7 +35,7 @@
             z-index: 10;
         }
 
-        /* Sidebar (same as dashboard) */
+        /* Sidebar */
         .sidebar {
             width: 280px;
             background: white;
@@ -890,15 +891,66 @@
             window.location.href = '/admin/login.html';
         }
 
-        // Load navigation
-        fetch('/admin/components/nav.html')
-            .then(response => response.text())
+        // Load navigation - FIXED PATH (case-sensitive)
+        fetch('/admin/components/nav.html')  // Make sure it's lowercase 'admin'
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.text();
+            })
             .then(data => {
                 document.getElementById('nav-container').innerHTML = data;
             })
             .catch(error => {
                 console.error('Error loading nav:', error);
-                document.getElementById('nav-container').innerHTML = '<div class="p-4 text-red-500">Error loading navigation</div>';
+                document.getElementById('nav-container').innerHTML = `
+                    <div class="p-6 border-b border-white/10">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center text-2xl shadow-lg">
+                                🎨
+                            </div>
+                            <div>
+                                <h2 class="font-bold text-xl tracking-tight bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">MadaBrand</h2>
+                                <p class="text-xs text-white/70 flex items-center gap-1">
+                                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                                    Admin Dashboard
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+                        <a href="/admin/" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300 group">
+                            <span class="text-xl group-hover:scale-110 transition-transform">📊</span>
+                            <span class="font-medium">Dashboard</span>
+                        </a>
+                        <a href="/admin/portfolio-manager.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300 group active">
+                            <span class="text-xl group-hover:scale-110 transition-transform">📁</span>
+                            <span class="font-medium">Portfolio Manager</span>
+                        </a>
+                        <a href="/admin/media-library.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300 group">
+                            <span class="text-xl group-hover:scale-110 transition-transform">🖼️</span>
+                            <span class="font-medium">Media Library</span>
+                        </a>
+                        <a href="/admin/content-editor.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300 group">
+                            <span class="text-xl group-hover:scale-110 transition-transform">✏️</span>
+                            <span class="font-medium">Content Editor</span>
+                        </a>
+                        <a href="/admin/settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300 group">
+                            <span class="text-xl group-hover:scale-110 transition-transform">⚙️</span>
+                            <span class="font-medium">Settings</span>
+                        </a>
+                        <div class="border-t border-white/10 my-4"></div>
+                        <a href="/" target="_blank" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300 group">
+                            <span class="text-xl group-hover:scale-110 transition-transform">🌐</span>
+                            <span class="font-medium">View Site</span>
+                        </a>
+                        <a href="#" onclick="logoutAdmin()" class="sidebar-item flex items-center space-x-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300 group">
+                            <span class="text-xl group-hover:scale-110 transition-transform">🚪</span>
+                            <span class="font-medium">Logout</span>
+                        </a>
+                    </nav>
+                `;
             });
 
         // Sidebar toggle - FIXED
