@@ -13,7 +13,6 @@
     <link href="/admin/css/admin.css" rel="stylesheet">
     
     <style>
-        /* (keep all your existing styles - same as before) */
         * {
             margin: 0;
             padding: 0;
@@ -503,7 +502,7 @@
             color: white;
         }
 
-        /* Modal */
+        /* Modal - FIXED */
         .modal {
             position: fixed;
             top: 0;
@@ -517,7 +516,16 @@
             justify-content: center;
             z-index: 1000;
             padding: 16px;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.3s, opacity 0.3s;
         }
+        
+        .modal.show {
+            visibility: visible;
+            opacity: 1;
+        }
+        
         .modal-content {
             background: white;
             border-radius: 24px;
@@ -525,7 +533,14 @@
             max-width: 500px;
             max-height: 90vh;
             overflow-y: auto;
+            transform: scale(0.95);
+            transition: transform 0.3s;
         }
+        
+        .modal.show .modal-content {
+            transform: scale(1);
+        }
+
         .modal-header {
             padding: 20px 24px;
             border-bottom: 1px solid #eef2f6;
@@ -548,6 +563,11 @@
         }
         .modal-body {
             padding: 24px;
+        }
+
+        /* Image Preview Modal - FIXED */
+        #imageModal .modal-content {
+            max-width: 800px;
         }
 
         /* Mobile Menu Button */
@@ -657,7 +677,7 @@
     </style>
 </head>
 <body>
-    <!-- Simple gradient background instead of Vanta -->
+    <!-- Simple gradient background -->
     <div class="fixed inset-0 bg-gradient-to-br from-blue-50 via-white to-blue-50 opacity-90"></div>
 
     <!-- Mobile Menu Toggle -->
@@ -856,7 +876,7 @@
     </div>
 
     <!-- Edit Modal -->
-    <div id="editModal" class="modal hidden">
+    <div id="editModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Edit Project</h3>
@@ -868,9 +888,9 @@
         </div>
     </div>
 
-    <!-- Image Preview Modal -->
-    <div id="imageModal" class="modal hidden" onclick="if(event.target === this) closeImageModal()">
-        <div class="modal-content max-w-2xl">
+    <!-- Image Preview Modal - FIXED -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
             <div class="modal-header">
                 <h3>Image Preview</h3>
                 <span class="modal-close" onclick="closeImageModal()">&times;</span>
@@ -891,8 +911,8 @@
             window.location.href = '/admin/login.html';
         }
 
-        // Load navigation - FIXED PATH (case-sensitive)
-        fetch('/admin/components/nav.html')  // Make sure it's lowercase 'admin'
+        // Load navigation - FIXED PATH
+        fetch('/admin/components/nav.html')
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -953,7 +973,7 @@
                 `;
             });
 
-        // Sidebar toggle - FIXED
+        // Sidebar toggle
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
         }
@@ -973,7 +993,10 @@
         });
 
         // Set today's date
-        document.getElementById('date').valueAsDate = new Date();
+        const dateInput = document.getElementById('date');
+        if (dateInput) {
+            dateInput.valueAsDate = new Date();
+        }
 
         // Load projects
         async function loadProjects() {
@@ -1061,18 +1084,20 @@
         document.getElementById('fileInput').addEventListener('change', handleFiles);
         
         const uploadArea = document.getElementById('uploadArea');
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('border-blue-900', 'bg-blue-50');
-        });
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('border-blue-900', 'bg-blue-50');
-        });
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('border-blue-900', 'bg-blue-50');
-            handleFiles({ target: { files: e.dataTransfer.files } });
-        });
+        if (uploadArea) {
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('border-blue-900', 'bg-blue-50');
+            });
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('border-blue-900', 'bg-blue-50');
+            });
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('border-blue-900', 'bg-blue-50');
+                handleFiles({ target: { files: e.dataTransfer.files } });
+            });
+        }
 
         async function handleFiles(e) {
             const files = e.target.files;
@@ -1080,7 +1105,7 @@
             const bar = document.getElementById('uploadBar');
             const percent = document.getElementById('uploadPercent');
             
-            progress.classList.remove('hidden');
+            if (progress) progress.classList.remove('hidden');
             
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
@@ -1120,14 +1145,14 @@
 
                 // Update progress
                 const pct = ((i + 1) / files.length) * 100;
-                bar.style.width = pct + '%';
-                percent.textContent = Math.round(pct) + '%';
+                if (bar) bar.style.width = pct + '%';
+                if (percent) percent.textContent = Math.round(pct) + '%';
             }
 
             setTimeout(() => {
-                progress.classList.add('hidden');
-                bar.style.width = '0%';
-                percent.textContent = '0%';
+                if (progress) progress.classList.add('hidden');
+                if (bar) bar.style.width = '0%';
+                if (percent) percent.textContent = '0%';
             }, 500);
         }
 
@@ -1224,7 +1249,7 @@
                 </form>
             `;
 
-            modal.classList.remove('hidden');
+            modal.classList.add('show');
 
             document.getElementById('editForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -1249,7 +1274,7 @@
         };
 
         function closeEditModal() {
-            document.getElementById('editModal').classList.add('hidden');
+            document.getElementById('editModal').classList.remove('show');
         }
 
         // Delete project
@@ -1263,20 +1288,30 @@
             }
         };
 
-        // Image preview
+        // Image preview - FIXED
         window.previewImage = function(src) {
-            document.getElementById('previewImage').src = src;
-            document.getElementById('imageModal').classList.remove('hidden');
+            const modal = document.getElementById('imageModal');
+            const img = document.getElementById('previewImage');
+            if (modal && img) {
+                img.src = src;
+                modal.classList.add('show');
+            }
         };
 
         function closeImageModal() {
-            document.getElementById('imageModal').classList.add('hidden');
+            const modal = document.getElementById('imageModal');
+            if (modal) {
+                modal.classList.remove('show');
+            }
         }
 
         // Reset form
         function resetForm() {
             document.getElementById('projectForm').reset();
-            document.getElementById('date').valueAsDate = new Date();
+            const dateInput = document.getElementById('date');
+            if (dateInput) {
+                dateInput.valueAsDate = new Date();
+            }
             uploadedImages = [];
             document.getElementById('previewGrid').innerHTML = '';
         }
@@ -1327,8 +1362,8 @@
         }
 
         // Event listeners for filters
-        document.getElementById('searchInput').addEventListener('input', renderProjects);
-        document.getElementById('categoryFilter').addEventListener('change', renderProjects);
+        document.getElementById('searchInput')?.addEventListener('input', renderProjects);
+        document.getElementById('categoryFilter')?.addEventListener('change', renderProjects);
 
         // Load on start
         loadProjects();
