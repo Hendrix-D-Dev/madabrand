@@ -7,24 +7,39 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
   }
   
   body {
     @apply font-body text-black bg-off-white;
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
   }
   
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading font-semibold;
   }
+  
+  /* Responsive Typography */
+  h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
+  h2 { font-size: clamp(1.75rem, 4vw, 2.5rem); }
+  h3 { font-size: clamp(1.25rem, 3vw, 1.75rem); }
+  p { font-size: clamp(1rem, 2vw, 1.125rem); }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-deep-blue text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all duration-300 hover:scale-105 shadow-lg;
+    @apply bg-deep-blue text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all duration-300 hover:scale-105 shadow-lg text-sm sm:text-base;
+    min-height: 44px; /* Better touch target */
+    min-width: 44px;
   }
   
   .btn-secondary {
-    @apply bg-gold text-black px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all duration-300 hover:scale-105;
+    @apply bg-gold text-black px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all duration-300 hover:scale-105 text-sm sm:text-base;
+    min-height: 44px;
+    min-width: 44px;
   }
   
   .card-hover {
@@ -32,10 +47,168 @@
   }
   
   .section-padding {
-    @apply px-4 sm:px-6 lg:px-8 py-12 lg:py-20;
+    @apply px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-20;
   }
   
   .container-custom {
-    @apply max-w-7xl mx-auto;
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Mobile Menu Fixes */
+  .mobile-menu {
+    @apply fixed inset-0 bg-white z-50 transform transition-transform duration-300 ease-in-out;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  
+  .mobile-menu.closed {
+    transform: translateX(-100%);
+  }
+  
+  .mobile-menu.open {
+    transform: translateX(0);
+  }
+  
+  /* Better touch targets */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Responsive Grid */
+  .responsive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 1rem;
+  }
+  
+  @media (min-width: 640px) {
+    .responsive-grid {
+      gap: 1.5rem;
+    }
+  }
+  
+  /* Container Queries for Cards */
+  .card-container {
+    container-type: inline-size;
+  }
+  
+  @container (max-width: 300px) {
+    .card-content {
+      flex-direction: column;
+    }
+  }
+}
+
+/* Mobile Menu Animation */
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* Responsive Tables */
+@media (max-width: 640px) {
+  .responsive-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Responsive Images */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Fix for 100vh on mobile */
+.min-h-screen {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+/* Safe area insets for notched phones */
+@supports (padding: max(0px)) {
+  .safe-top {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+  
+  .safe-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* Prevent text resize on orientation change */
+@media screen and (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Touch-friendly spacing */
+@media (max-width: 640px) {
+  .gap-mobile {
+    gap: 1rem;
+  }
+  
+  .p-mobile {
+    padding: 1rem;
+  }
+  
+  .m-mobile {
+    margin: 0.5rem;
+  }
+}
+
+/* Admin Panel Mobile Fixes */
+@media (max-width: 1024px) {
+  .admin-sidebar {
+    position: fixed;
+    left: -280px;
+    transition: left 0.3s ease;
+  }
+  
+  .admin-sidebar.open {
+    left: 0;
+  }
+  
+  .admin-main {
+    margin-left: 0 !important;
+    width: 100%;
+  }
+  
+  #mobile-menu-toggle {
+    display: block !important;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  a[href]:after {
+    content: " (" attr(href) ")";
   }
 }

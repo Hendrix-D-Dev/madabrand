@@ -1,5 +1,5 @@
 <!-- admin/components/nav.html -->
-<div class="admin-sidebar w-72 text-white flex flex-col shadow-2xl relative overflow-hidden">
+<div class="admin-sidebar w-72 text-white flex flex-col shadow-2xl relative overflow-hidden" id="adminSidebar">
     <!-- Vanta Background for Sidebar -->
     <div id="sidebar-vanta" class="absolute inset-0 z-0"></div>
     
@@ -77,11 +77,11 @@
                     </div>
                     <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full animate-pulse"></div>
                 </div>
-                <div class="flex-1">
-                    <p class="text-sm font-medium text-white" id="admin-name">Admin User</p>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-white truncate" id="admin-name">Admin User</p>
                     <p class="text-xs text-white/60" id="admin-role">Administrator</p>
                 </div>
-                <button onclick="logoutAdmin()" class="text-white/60 hover:text-white transition-transform hover:scale-110" title="Logout">
+                <button onclick="logoutAdmin()" class="text-white/60 hover:text-white transition-transform hover:scale-110 touch-target" title="Logout">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                     </svg>
@@ -107,11 +107,14 @@
 </div>
 
 <!-- Mobile Menu Toggle -->
-<button id="mobile-menu-toggle" class="lg:hidden fixed top-4 left-4 z-50 w-12 h-12 bg-gradient-to-r from-blue-900 to-blue-800 rounded-xl shadow-lg flex items-center justify-center text-white hover:scale-110 transition-transform">
+<button id="mobile-menu-toggle" class="lg:hidden fixed top-4 left-4 z-50 w-12 h-12 bg-gradient-to-r from-blue-900 to-blue-800 rounded-xl shadow-lg flex items-center justify-center text-white hover:scale-110 transition-transform touch-target" aria-label="Toggle menu">
     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
     </svg>
 </button>
+
+<!-- Mobile Menu Overlay -->
+<div id="admin-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
 
 <style>
 .sidebar-item {
@@ -138,6 +141,58 @@
     background: rgba(255,255,255,0.15);
     border-left: 3px solid #fff;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* Mobile styles */
+@media (max-width: 1024px) {
+    .admin-sidebar {
+        position: fixed;
+        left: -280px;
+        transition: left 0.3s ease;
+        z-index: 100;
+    }
+    
+    .admin-sidebar.open {
+        left: 0;
+    }
+    
+    #mobile-menu-toggle {
+        display: flex;
+    }
+}
+
+@media (min-width: 1025px) {
+    #mobile-menu-toggle {
+        display: none;
+    }
+}
+
+/* Touch targets */
+.touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Smooth transitions */
+.admin-sidebar {
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#admin-menu-overlay {
+    transition: opacity 0.3s ease;
+}
+
+#admin-menu-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#admin-menu-overlay:not(.hidden) {
+    opacity: 1;
+    pointer-events: auto;
 }
 </style>
 
@@ -187,11 +242,43 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mobile menu toggle
     const menuToggle = document.getElementById('mobile-menu-toggle');
     const sidebar = document.querySelector('.admin-sidebar');
+    const overlay = document.getElementById('admin-menu-overlay');
     
     if (menuToggle && sidebar) {
-        menuToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('translate-x-0');
-            sidebar.classList.toggle('-translate-x-full');
+        function openMenu() {
+            sidebar.classList.add('open');
+            if (overlay) overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeMenu() {
+            sidebar.classList.remove('open');
+            if (overlay) overlay.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        
+        menuToggle.addEventListener('click', openMenu);
+        
+        if (overlay) {
+            overlay.addEventListener('click', closeMenu);
+        }
+        
+        // Close on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+                closeMenu();
+            }
+        });
+        
+        // Handle resize
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                if (window.innerWidth >= 1025) {
+                    closeMenu();
+                }
+            }, 250);
         });
     }
 });

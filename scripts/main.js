@@ -199,6 +199,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     // Initialize admin system
     initAdminSystem();
+    
+    // Initialize responsive features
+    initResponsiveFeatures();
 });
 
 // Form validation function
@@ -1408,3 +1411,165 @@ function removeAdminIndicators() {
         btn.remove();
     });
 }
+
+// ==================== RESPONSIVE UTILITIES (ADD THIS SECTION) ====================
+
+// Fix for 100vh on mobile browsers
+function setVH() {
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+// Safe area insets for notched phones
+function setSafeAreaInsets() {
+    const safeTop = getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-top)');
+    const safeBottom = getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-bottom)');
+    
+    document.documentElement.style.setProperty('--safe-top', safeTop || '0px');
+    document.documentElement.style.setProperty('--safe-bottom', safeBottom || '0px');
+}
+
+// Responsive image loading
+function setupResponsiveImages() {
+    const images = document.querySelectorAll('img[data-src]');
+    const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.classList.add('loaded');
+                imageObserver.unobserve(img);
+            }
+        });
+    }, { rootMargin: '50px' });
+    
+    images.forEach(img => imageObserver.observe(img));
+}
+
+// Touch device detection
+function detectTouchDevice() {
+    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+        document.documentElement.classList.add('touch-device');
+        
+        // Add touch-friendly styles
+        const style = document.createElement('style');
+        style.textContent = `
+            .touch-device .touch-target {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            .touch-device button,
+            .touch-device a {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+// Responsive tables
+function makeTablesResponsive() {
+    const tables = document.querySelectorAll('table:not(.responsive-table)');
+    tables.forEach(table => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'responsive-table';
+        wrapper.style.overflowX = 'auto';
+        wrapper.style.webkitOverflowScrolling = 'touch';
+        table.parentNode.insertBefore(wrapper, table);
+        wrapper.appendChild(table);
+        table.classList.add('responsive-table');
+    });
+}
+
+// Prevent zoom on input focus for iOS
+function preventZoomOnInput() {
+    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.style.fontSize = '16px';
+        });
+    }
+}
+
+// Handle orientation change
+function handleOrientationChange() {
+    window.addEventListener('orientationchange', function() {
+        setTimeout(() => {
+            setVH();
+            // Close mobile menus on orientation change
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+            }
+        }, 100);
+    });
+}
+
+// Debounced resize handler
+function debounceResize() {
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+            setVH();
+            // Trigger any resize callbacks
+            window.dispatchEvent(new CustomEvent('resizeComplete'));
+        }, 250);
+    });
+}
+
+// Responsive font scaling
+function scaleFonts() {
+    const width = window.innerWidth;
+    const root = document.documentElement;
+    
+    if (width < 360) {
+        root.style.fontSize = '14px';
+    } else if (width < 400) {
+        root.style.fontSize = '15px';
+    } else if (width < 640) {
+        root.style.fontSize = '16px';
+    } else {
+        root.style.fontSize = '16px';
+    }
+}
+
+// Check and fix viewport meta tag
+function ensureViewportMeta() {
+    if (!document.querySelector('meta[name="viewport"]')) {
+        const meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
+        document.head.appendChild(meta);
+    }
+}
+
+// Initialize all responsive features
+function initResponsiveFeatures() {
+    ensureViewportMeta();
+    setVH();
+    setSafeAreaInsets();
+    setupResponsiveImages();
+    detectTouchDevice();
+    makeTablesResponsive();
+    preventZoomOnInput();
+    handleOrientationChange();
+    debounceResize();
+    scaleFonts();
+    
+    // Re-scale fonts on resize
+    window.addEventListener('resize', scaleFonts);
+}
+
+// Export for use in other scripts
+window.ResponsiveUtils = {
+    setVH,
+    setSafeAreaInsets,
+    makeTablesResponsive,
+    scaleFonts,
+    initResponsiveFeatures
+};
+
+// Run on DOM load (already called in DOMContentLoaded above)
